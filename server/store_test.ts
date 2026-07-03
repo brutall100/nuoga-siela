@@ -1,11 +1,16 @@
 import {
+  checkRateLimit,
   createPost,
   deleteDeviceData,
+  getStats,
   hashDevice,
   hugPost,
   listFeed,
+  listMine,
+  listStories,
   reportPost,
   setKvForTesting,
+  STORY_LIMIT_PER_DAY,
 } from "./store.ts";
 
 function assert(cond: boolean, msg: string) {
@@ -79,6 +84,70 @@ Deno.test("ištrinti mano duomenis: dingsta tik to įrenginio postai", async () 
   assert(deleted === 1, "ištrintas vienas");
   const feed = await listFeed();
   assert(feed.length === 1 && feed[0].text === "kito tekstas", "kito liko");
+
+  kv.close();
+});
+
+Deno.test("istorijos: be termino, atskirtos nuo srauto, rūšiuojamos pagal hugs", async () => {
+  const kv = await freshKv();
+  const dev = await hashDevice("d1");
+
+  const story1 = await createPost(dev, "pirma istorija", "liudesys", "istorija");
+  await new Promise((r) => setTimeout(r, 5));
+  const story2 = await createPost(dev, "antra istorija", "viltis", "istorija");
+  await createPost(dev, "srauto tekstas", "pyktis", "srautas");
+
+  assert(story1.expiresAt === 0, "istorija be termino");
+
+  const feed = await listFeed();
+  assert(feed.length === 1 && feed[0].text === "srauto tekstas", "sraute tik srauto tekstai");
+
+  // Be hugs — naujausios pirmos pagal antrinį kriterijų.
+  let stories = await listStories();
+  assert(stories.length === 2, "abi istorijos matomos");
+  assert(stories[0].text === "antra istorija", "naujausia pirmesnė kai hugs lygūs");
+
+  // Pirmajai daugiau hugs — ji iškyla į viršų.
+  await hugPost(story1.id, await hashDevice("kitas"));
+  stories = await listStories();
+  assert(stories[0].id === story1.id, "daugiausia suprasta iškyla");
+
+  stories = await listStories(undefined, "naujausios");
+  assert(stories[0].id === story2.id, "rūšiavimas 'naujausios' veikia");
+
+  // Istorija dalyvauja "mano" sąraše ir trynime.
+  const mine = await listMine(dev);
+  assert(mine.length === 3, "mano sąraše postas ir istorijos");
+  const deleted = await deleteDeviceData(dev);
+  assert(deleted === 3, "trinamos ir istorijos");
+  assert((await listStories()).length === 0, "istorijų neliko");
+
+  kv.close();
+});
+
+Deno.test("istorijų rate limit: atskiras nuo srauto", async () => {
+  const kv = await freshKv();
+  const dev = await hashDevice("d1");
+
+  for (let i = 0; i < STORY_LIMIT_PER_DAY; i++) {
+    assert(await checkRateLimit(dev, "istorija"), `istorija ${i + 1} leidžiama`);
+  }
+  assert(!(await checkRateLimit(dev, "istorija")), "trečia istorija per parą blokuojama");
+  assert(await checkRateLimit(dev, "srautas"), "srauto limitas nepriklausomas");
+
+  kv.close();
+});
+
+Deno.test("statistika: skaičiuoja postus ir hugs", async () => {
+  const kv = await freshKv();
+  const dev = await hashDevice("d1");
+
+  const post = await createPost(dev, "tekstas", "pyktis");
+  await hugPost(post.id, await hashDevice("kitas"));
+
+  const stats = await getStats();
+  assert(stats.postsToday === 1, "postai skaičiuojami");
+  assert(stats.hugsToday === 1, "hugs skaičiuojami");
 
   kv.close();
 });

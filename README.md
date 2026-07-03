@@ -3,8 +3,9 @@
 > Anoniminė erdvė išsilieti. **Mes nežinome, kas tu. Ir nenorime žinoti.**
 
 Rašai, ką jauti. Tada arba **sudegini** (tekstas su žarijų animacija išnyksta — niekur
-nesiunčiamas), arba **paleidi anonimiškai** į bendrą srautą, kur kiti gali paspausti „Suprantu
-tave". Po 24 valandų kiekvienas tekstas **fiziškai ištrinamas**.
+nesiunčiamas), arba **paleidi anonimiškai**. Paleisdamas renkiesi gyvavimo laiką: **srautas** (po 24
+val. fiziškai ištrinama) arba **istorija** (ilgas tekstas iki 5000 ženklų, lieka tol, kol pats
+ištrini). Kiti gali paspausti tik „Suprantu tave" — jokių komentarų.
 
 Domenas: **nuogasiela.lt** · Stack'as: **Deno + Deno KV + vanilla PWA, nulis priklausomybių**
 
@@ -45,13 +46,16 @@ public/            vanilla HTML/CSS/JS PWA — jokių bibliotekų
 
 ### API
 
-| Metodas | Kelias                  | Kas                                                                                   |
-| ------- | ----------------------- | ------------------------------------------------------------------------------------- |
-| `POST`  | `/api/posts`            | `{text, emotion}` + `X-Device` header. Grąžina `sos: true`, jei tekste krizės žodžiai |
-| `GET`   | `/api/posts?emotion=`   | srautas, naujausi viršuje (paslėpti ≥3 pranešimų negrąžinami)                         |
-| `POST`  | `/api/posts/:id/hug`    | „Suprantu tave" (1×/įrenginiui)                                                       |
-| `POST`  | `/api/posts/:id/report` | pranešti; po 3 — auto-slėpimas                                                        |
-| `POST`  | `/api/mine/delete`      | ištrinti visus savo postus                                                            |
+| Metodas | Kelias                        | Kas                                                                                                                                                                                              |
+| ------- | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `POST`  | `/api/posts`                  | `{text, emotion, kind}` + `X-Device`. `kind`: `srautas` (24 val., iki 1000 ženklų, 5/val.) arba `istorija` (be termino, iki 5000 ženklų, 2/parą). Grąžina `sos: true`, jei tekste krizės žodžiai |
+| `GET`   | `/api/posts?emotion=`         | srautas, naujausi viršuje (paslėpti ≥3 pranešimų negrąžinami)                                                                                                                                    |
+| `GET`   | `/api/stories?emotion=&sort=` | istorijos; `sort`: `suprastos` (pagal hugs, default) arba `naujausios`                                                                                                                           |
+| `GET`   | `/api/mine`                   | mano tekstai su hugs — „tave suprato X žmonių" banneriui                                                                                                                                         |
+| `GET`   | `/api/stats`                  | `{postsToday, hugsToday}` — socialinio įrodymo eilutei                                                                                                                                           |
+| `POST`  | `/api/posts/:id/hug`          | „Suprantu tave" (1×/įrenginiui, veikia ir istorijoms)                                                                                                                                            |
+| `POST`  | `/api/posts/:id/report`       | pranešti; po 3 — auto-slėpimas (ne trynimas)                                                                                                                                                     |
+| `POST`  | `/api/mine/delete`            | ištrinti visus savo postus ir istorijas                                                                                                                                                          |
 
 ### Anonimiškumo garantijos (technologijos, ne pažadų lygiu)
 
@@ -79,12 +83,19 @@ public/            vanilla HTML/CSS/JS PWA — jokių bibliotekų
 - _HearMe / 7 Cups_ — palaikymas be komentarų: „Suprantu tave" skaitiklis
 - _Jodel_ — bendruomeninė moderacija: auto-slėpimas po pranešimų
 - Deginimo ritualas — katarsis be jokio serverio
+- **Istorijos** — ilgi tekstai, kurie lieka; rūšiavimas pagal „Suprantu tave"
+
+**Psichologija (kur įausta, be dark patterns):**
+
+- _Pennebaker (ekspresyvusis rašymas)_ — hint'as rašymo ekrane: mokslas duoda „leidimą" rašyti
+- _Yalom universalumas_ („ne aš vienas") — Istorijų ekranas + emocijų filtrai
+- _Pripažinimas_ — „Tavo tekstus suprato X žmonių" banneris = grįžimo priežastis be push'ų
+- _Socialinis įrodymas_ — „šiandien paleisti X tekstų" (rodoma tik kai ≥5, kad tuštuma nesimatytų)
+- Jokių streak'ų, badge'ų ar FOMO — tai kirstųsi su saugios erdvės jausmu
 
 **v1.5:**
 
 - Šauksmo kambarys: garso įrašymas į RAM → atgrojimas → trynimas (niekas nesaugoma)
-- „Istorijos, kurios padėjo" — daugiausia „Suprantu" gavę tekstai (autorių sutikimu prieš
-  išnykstant)
 - Kvėpavimo pratimų biblioteka, EN kalba
 
 **Vėliau:**

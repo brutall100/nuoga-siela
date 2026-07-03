@@ -31,6 +31,8 @@
         <!-- 1. Rašymo ekranas -->
         <section class="screen" id="screen-rasyti" hidden>
           <p class="promise">Mes nežinome, kas tu. Ir nenorime žinoti.</p>
+          <p class="social-proof" id="social-proof" hidden></p>
+          <button type="button" class="hug-banner" id="hug-banner" hidden></button>
           <div class="write-area">
             <textarea
               id="write-input"
@@ -53,6 +55,14 @@
             </div>
             <span class="char-count" id="char-count">0 / 1000</span>
           </div>
+          <div class="lifespan" id="lifespan-picker">
+            <button type="button" class="chip is-active" data-kind="srautas">
+              ⏳ Išnyks po 24 val.
+            </button>
+            <button type="button" class="chip" data-kind="istorija">
+              📖 Palikti kaip istoriją
+            </button>
+          </div>
           <div class="write-actions">
             <button type="button" class="btn btn-burn" id="btn-burn">
               <span class="btn-icon">🔥</span> Sudeginti
@@ -62,8 +72,8 @@
             </button>
           </div>
           <p class="write-hint">
-            Sudegintas tekstas niekur nesiunčiamas. Paleistas — anonimiškai patenka į srautą ir po
-            24 val. išnyksta visam laikui.
+            Rašymas apie jausmus mažina jų intensyvumą — tai patvirtinta tyrimais. Sudegintas
+            tekstas niekur nesiunčiamas.
           </p>
         </section>
 
@@ -89,6 +99,43 @@
             <p>Srautas šiuo metu tylus.</p>
             <p class="muted">
               Kiekvienas tekstas čia gyvena tik 24 valandas — būk tas, kuris paleidžia pirmas.
+            </p>
+            <a class="empty-link" href="#/istorijos">Arba paskaityk istorijas →</a>
+          </div>
+        </section>
+
+        <!-- 2b. Istorijos -->
+        <section class="screen" id="screen-istorijos" hidden>
+          <div class="feed-head">
+            <h1>Istorijos</h1>
+            <button type="button" class="refresh" id="btn-refresh-stories" aria-label="Atnaujinti">
+              ↻
+            </button>
+          </div>
+          <p class="muted screen-intro">
+            Tekstai, kuriuos žmonės paliko ilgam. Gal tarp jų — ir tavo istorija.
+          </p>
+          <div class="feed-filters" id="story-sort">
+            <button type="button" class="chip is-active" data-sort="suprastos">
+              Labiausiai suprastos
+            </button>
+            <button type="button" class="chip" data-sort="naujausios">Naujausios</button>
+          </div>
+          <div class="feed-filters" id="story-filters">
+            <button type="button" class="chip is-active" data-filter="">Visos</button>
+            <button type="button" class="chip" data-filter="pyktis">Pyktis</button>
+            <button type="button" class="chip" data-filter="liudesys">Liūdesys</button>
+            <button type="button" class="chip" data-filter="nerimas">Nerimas</button>
+            <button type="button" class="chip" data-filter="kalte">Kaltė</button>
+            <button type="button" class="chip" data-filter="vienatve">Vienatvė</button>
+            <button type="button" class="chip" data-filter="viltis">Viltis</button>
+          </div>
+          <div class="feed" id="story-feed"></div>
+          <div class="feed-empty" id="story-empty" hidden>
+            <p>Istorijų dar nėra.</p>
+            <p class="muted">
+              Parašyk savo — rašymo ekrane pasirink „Palikti kaip istoriją". Ji liks tiems, kam jos
+              reikės.
             </p>
           </div>
         </section>
@@ -139,6 +186,19 @@
               Iškart ištrina visus tavo paleistus tekstus iš srauto ir tavo įrenginio žymę.
             </p>
           </div>
+          <div class="setting support">
+            <h2>Palaikyk projektą</h2>
+            <p class="muted">
+              Jokių reklamų čia nebus niekada. Jei ši erdvė tau padėjo — gali pavaišinti kava.
+            </p>
+            <a
+              class="btn btn-support"
+              id="btn-support"
+              href="https://buymeacoffee.com/nuogasiela"
+              target="_blank"
+              rel="noopener"
+            >☕ Pavaišinti kava</a>
+          </div>
           <div class="privacy">
             <h2>Privatumas</h2>
             <p>
@@ -147,8 +207,8 @@
               susieti su tavimi.
             </p>
             <p>
-              Prie tekstų nesaugomi IP adresai. Kiekvienas paleistas tekstas po 24 valandų fiziškai
-              ištrinamas — ne paslepiamas, o ištrinamas.
+              Prie tekstų nesaugomi IP adresai. Srauto tekstai po 24 valandų fiziškai ištrinami — ne
+              paslepiami, o ištrinami. Istorijos lieka tol, kol pats jų neištrini.
             </p>
             <p class="promise">Mes nežinome, kas tu. Ir nenorime žinoti.</p>
           </div>
@@ -161,6 +221,9 @@
         </a>
         <a href="#/srautas" data-screen="srautas" class="tab">
           <span class="tab-icon">☽</span><span>Srautas</span>
+        </a>
+        <a href="#/istorijos" data-screen="istorijos" class="tab">
+          <span class="tab-icon">❝</span><span>Istorijos</span>
         </a>
         <a href="#/nustatymai" data-screen="nustatymai" class="tab">
           <span class="tab-icon">⚙</span><span>Nustatymai</span>

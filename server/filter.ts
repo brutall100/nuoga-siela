@@ -2,6 +2,7 @@
 // blokuojamas tik akivaizdus spamas ir asmens duomenis primenantys šablonai.
 
 export const MAX_TEXT_LENGTH = 1000;
+export const MAX_STORY_LENGTH = 5000;
 
 export const EMOTIONS = ["pyktis", "liudesys", "nerimas", "kalte", "vienatve", "viltis"] as const;
 export type Emotion = (typeof EMOTIONS)[number];
@@ -34,13 +35,13 @@ const SPAM_WORDS = [
 
 export type FilterResult = { ok: true } | { ok: false; reason: string };
 
-export function checkText(raw: string): FilterResult {
+export function checkText(raw: string, maxLength: number = MAX_TEXT_LENGTH): FilterResult {
   const text = raw.trim();
   if (text.length === 0) {
     return { ok: false, reason: "Tuščias tekstas." };
   }
-  if (text.length > MAX_TEXT_LENGTH) {
-    return { ok: false, reason: `Tekstas per ilgas (daugiausia ${MAX_TEXT_LENGTH} ženklų).` };
+  if (text.length > maxLength) {
+    return { ok: false, reason: `Tekstas per ilgas (daugiausia ${maxLength} ženklų).` };
   }
   if (URL_PATTERN.test(text)) {
     return { ok: false, reason: "Nuorodos sraute nepublikuojamos." };

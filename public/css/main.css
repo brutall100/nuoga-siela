@@ -783,6 +783,96 @@ h2 {
   }
 }
 
+/* ---------- v1.1: istorijos, banneris, parama ---------- */
+
+.social-proof {
+  text-align: center;
+  color: var(--calm);
+  font-size: 12.5px;
+  margin: -6px 0 12px;
+  opacity: 0.85;
+}
+
+.hug-banner {
+  display: block;
+  width: 100%;
+  font: inherit;
+  font-size: 14px;
+  color: var(--text);
+  text-align: center;
+  background: linear-gradient(135deg, rgba(127, 209, 193, 0.14), rgba(63, 167, 150, 0.08));
+  border: 1px solid rgba(127, 209, 193, 0.35);
+  border-radius: var(--radius-sm);
+  padding: 11px 14px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  animation: screen-in 0.4s ease both;
+}
+.hug-banner:hover {
+  border-color: var(--calm);
+}
+
+.lifespan {
+  display: flex;
+  gap: 6px;
+  margin-top: 14px;
+}
+.lifespan .chip {
+  flex: 1;
+  padding: 8px 10px;
+  text-align: center;
+}
+.lifespan .chip.is-active {
+  color: var(--text);
+  border-color: var(--calm-deep);
+  background: rgba(127, 209, 193, 0.08);
+}
+
+.screen-intro {
+  margin-bottom: 12px;
+}
+
+.expand {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--calm);
+  background: none;
+  border: none;
+  padding: 8px 0 0;
+  cursor: pointer;
+}
+.expand:hover {
+  text-decoration: underline;
+}
+
+.empty-link {
+  display: inline-block;
+  margin-top: 14px;
+  color: var(--calm);
+  font-size: 14px;
+  text-decoration: none;
+}
+.empty-link:hover {
+  text-decoration: underline;
+}
+
+.support {
+  margin-top: 30px;
+  border-top: 1px solid var(--line);
+  padding-top: 20px;
+}
+.support .muted {
+  margin-bottom: 12px;
+}
+
+.btn-support {
+  text-decoration: none;
+  color: #1a0e00;
+  background: linear-gradient(135deg, #ffd28a 0%, var(--amber) 100%);
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.2);
+}
+
 /* ---------- Judesio mažinimas ---------- */
 
 @media (prefers-reduced-motion: reduce) {

@@ -2,14 +2,18 @@
 // Vienintelis identifikatorius — kliento atsiųstas X-Device UUID,
 // kuris čia pat paverčiamas salted hash'u ir toliau niekur nekeliauja.
 
-import { checkText, detectCrisis, isEmotion } from "./filter.ts";
+import { checkText, detectCrisis, isEmotion, MAX_STORY_LENGTH } from "./filter.ts";
 import {
   checkRateLimit,
   createPost,
   deleteDeviceData,
+  getStats,
   hashDevice,
   hugPost,
   listFeed,
+  listMine,
+  listStories,
+  type PostKind,
   reportPost,
 } from "./store.ts";
 
@@ -42,11 +46,31 @@ export async function handleApi(req: Request, url: URL): Promise<Response> {
       return json({ ok: true, posts, now: Date.now() });
     }
 
+    if (method === "GET" && path === "/api/stories") {
+      const emotionParam = url.searchParams.get("emotion") ?? undefined;
+      const emotion = isEmotion(emotionParam) ? emotionParam : undefined;
+      const sort = url.searchParams.get("sort") === "naujausios" ? "naujausios" : "suprastos";
+      const posts = await listStories(emotion, sort);
+      return json({ ok: true, posts, now: Date.now() });
+    }
+
+    if (method === "GET" && path === "/api/stats") {
+      const stats = await getStats();
+      return json({ ok: true, ...stats });
+    }
+
+    if (method === "GET" && path === "/api/mine") {
+      const deviceHash = await deviceHashFrom(req);
+      if (!deviceHash) return badRequest("Trūksta įrenginio identifikatoriaus.");
+      const posts = await listMine(deviceHash);
+      return json({ ok: true, posts });
+    }
+
     if (method === "POST" && path === "/api/posts") {
       const deviceHash = await deviceHashFrom(req);
       if (!deviceHash) return badRequest("Trūksta įrenginio identifikatoriaus.");
 
-      let body: { text?: unknown; emotion?: unknown };
+      let body: { text?: unknown; emotion?: unknown; kind?: unknown };
       try {
         body = await req.json();
       } catch {
@@ -54,20 +78,21 @@ export async function handleApi(req: Request, url: URL): Promise<Response> {
       }
       if (typeof body.text !== "string") return badRequest("Trūksta teksto.");
       if (!isEmotion(body.emotion)) return badRequest("Pasirink emociją.");
+      const kind: PostKind = body.kind === "istorija" ? "istorija" : "srautas";
 
       const text = body.text.trim();
-      const filter = checkText(text);
+      const filter = kind === "istorija" ? checkText(text, MAX_STORY_LENGTH) : checkText(text);
       if (!filter.ok) return badRequest(filter.reason);
 
-      if (!(await checkRateLimit(deviceHash))) {
-        return json(
-          { ok: false, reason: "Šiek tiek lėčiau — daugiausia 5 paleidimai per valandą." },
-          429,
-        );
+      if (!(await checkRateLimit(deviceHash, kind))) {
+        const reason = kind === "istorija"
+          ? "Istorijos — apgalvoti tekstai: daugiausia 2 per parą."
+          : "Šiek tiek lėčiau — daugiausia 5 paleidimai per valandą.";
+        return json({ ok: false, reason }, 429);
       }
 
       const sos = detectCrisis(text);
-      const post = await createPost(deviceHash, text, body.emotion);
+      const post = await createPost(deviceHash, text, body.emotion, kind);
       return json({
         ok: true,
         sos,
@@ -75,6 +100,7 @@ export async function handleApi(req: Request, url: URL): Promise<Response> {
           id: post.id,
           text: post.text,
           emotion: post.emotion,
+          kind: post.kind,
           hugs: post.hugs,
           createdAt: post.createdAt,
           expiresAt: post.expiresAt,
