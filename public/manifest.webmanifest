@@ -1,0 +1,24 @@
+{
+  "name": "Nuoga Siela",
+  "short_name": "Nuoga Siela",
+  "description": "Anoniminė erdvė išsilieti. Mes nežinome, kas tu. Ir nenorime žinoti.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0F1420",
+  "theme_color": "#0F1420",
+  "lang": "lt",
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
