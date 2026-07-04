@@ -3,12 +3,14 @@
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this
 repository.
 
-## Changelog
+## Versijos ir changelog
 
-Prieš kiekvieną commit'ą, kuris keičia elgseną (naują funkciją, taisymą, pastebimą refaktoringą — ne
-formatavimą ar komentarus), papildyk `CHANGELOG.md` `[Unreleased]` sekciją trumpu įrašu apie tai,
-kas ir kodėl pakeista. Kai commit'as žymi naują versiją (žr. `README.md` versijų stilių `v1.x`),
-perkelk `[Unreleased]` turinį į naują datuotą/numeruotą sekciją.
+Kiekvienas commit'as gauna versijos prefiksą commit žinutėje, pvz. `v1.6: Trumpas aprašymas` — net
+smulkūs tooling/CI pakeitimai, ne tik pilni feature release'ai. Versiją didink nuo paskutinio
+`git log` matomo `vX.Y` prefikso (paskutinis komponentas +1; jei reikia naujo minor/major lygio,
+spręsk pagal pakeitimo apimtį). Prieš commit'ą papildyk `CHANGELOG.md` — arba nauja `## [vX.Y]`
+sekcija su tuo pačiu numeriu, arba įrašu `[Unreleased]` sekcijoje, jei versija dar neapsisprendus
+apie release'ą.
 
 ## Komandos
 
