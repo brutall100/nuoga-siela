@@ -32,7 +32,7 @@ const SECURITY_HEADERS: Record<string, string> = {
 };
 
 async function serveStatic(pathname: string): Promise<Response> {
-  let path = pathname === "/" ? "/index.html" : pathname;
+  const path = pathname === "/" ? "/index.html" : pathname;
   // Apsauga nuo path traversal: leidžiami tik paprasti segmentai.
   if (path.includes("..") || path.includes("//") || path.includes("\\")) {
     return new Response("Nerasta.", { status: 404 });

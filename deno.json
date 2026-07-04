@@ -2,13 +2,17 @@
   "tasks": {
     "dev": "deno run --watch --unstable-kv --allow-net --allow-read --allow-write --allow-env main.ts",
     "start": "deno run --unstable-kv --allow-net --allow-read --allow-write --allow-env main.ts",
-    "test": "deno test --unstable-kv --allow-read --allow-env server/"
+    "test": "deno test --unstable-kv --allow-read --allow-env server/",
+    "lint": "deno lint main.ts server/"
   },
   "fmt": {
     "lineWidth": 100,
     "indentWidth": 2,
     "semiColons": true,
     "singleQuote": false
+  },
+  "lint": {
+    "exclude": ["public/"]
   },
   "compilerOptions": {
     "strict": true

@@ -1006,7 +1006,8 @@ h2 {
 }
 
 @keyframes scream-pulse {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: 0 0 40px rgba(229, 72, 77, 0.25);
     transform: scale(1);
   }
@@ -1036,7 +1037,9 @@ h2 {
 /* ---------- Judesio mažinimas ---------- */
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
