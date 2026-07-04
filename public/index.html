@@ -178,6 +178,17 @@
               <option value="en" disabled>English (netrukus)</option>
             </select>
           </div>
+          <div class="setting setting-toggle">
+            <label class="toggle">
+              <input type="checkbox" id="soft-toggle" checked>
+              <span class="toggle-track" aria-hidden="true"><span class="toggle-thumb"></span></span
+              >
+              <span class="toggle-text">Švelnus srautas</span>
+            </label>
+            <p class="muted">
+              Keiksmažodžiai sraute rodomi kaip b***. Tavo paties rašymo tai neriboja.
+            </p>
+          </div>
           <div class="setting setting-danger">
             <button type="button" class="btn btn-danger" id="btn-delete-data">
               Ištrinti mano duomenis
@@ -252,6 +263,7 @@
       </div>
     </div>
 
+    <script src="/js/profanity.js"></script>
     <script src="/js/burn.js"></script>
     <script src="/js/breathe.js"></script>
     <script src="/js/app.js"></script>

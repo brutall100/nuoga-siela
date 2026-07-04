@@ -31,6 +31,13 @@
 
   const MAX_LEN = { srautas: 1000, istorija: 5000 };
 
+  // „Švelnus srautas": keiksmai rodomi kaip b*** (tik rodymas, ne cenzūra).
+  const SOFT_KEY = "ns_svelnus";
+  let softMode = (localStorage.getItem(SOFT_KEY) ?? "1") === "1";
+  function displayText(text) {
+    return softMode && window.maskProfanity ? window.maskProfanity(text) : text;
+  }
+
   // ---------- Pagalbinės ----------
 
   const $ = (sel) => document.querySelector(sel);
@@ -238,21 +245,22 @@
 
     const text = document.createElement("p");
     text.className = "card-text";
-    if (isStory && post.text.length > STORY_PREVIEW) {
-      text.textContent = post.text.slice(0, STORY_PREVIEW).trimEnd() + "…";
+    const shown = displayText(post.text);
+    if (isStory && shown.length > STORY_PREVIEW) {
+      const preview = shown.slice(0, STORY_PREVIEW).trimEnd() + "…";
+      text.textContent = preview;
       const expand = document.createElement("button");
       expand.type = "button";
       expand.className = "expand";
       expand.textContent = "Skaityti viską";
       expand.addEventListener("click", () => {
         const open = expand.textContent === "Suskleisti";
-        text.textContent = open ? post.text.slice(0, STORY_PREVIEW).trimEnd() + "…" : post.text;
+        text.textContent = open ? preview : shown;
         expand.textContent = open ? "Skaityti viską" : "Suskleisti";
-        card.insertBefore(text, expand);
       });
       card.append(text, expand);
     } else {
-      text.textContent = post.text;
+      text.textContent = shown;
       card.append(text);
     }
 
@@ -422,6 +430,13 @@
   });
 
   // ---------- Nustatymai ----------
+
+  const softToggle = $("#soft-toggle");
+  softToggle.checked = softMode;
+  softToggle.addEventListener("change", () => {
+    softMode = softToggle.checked;
+    localStorage.setItem(SOFT_KEY, softMode ? "1" : "0");
+  });
 
   $("#btn-delete-data").addEventListener("click", async () => {
     if (
