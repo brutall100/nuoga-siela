@@ -9,6 +9,8 @@ Formatas paremtas [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - CLAUDE.md, CHANGELOG.md, GitHub Actions CI (fmt/lint/test), `.env.example`, `.gitattributes` (LF
   eilučių galūnės).
 - Nuo šiol kiekvienas commit'as gauna versijos prefiksą (žr. `CLAUDE.md` → „Versijos ir changelog").
+- Privatumo politikos puslapiai (`/privatumas.html` LT, `/privacy.html` EN) — reikalinga Google Play
+  pateikimui. Nuoroda pridėta ir Nustatymų ekrane.
 
 ## [1.5] — Šauksmo kambarys + LT/EN kalbos
 

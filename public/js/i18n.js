@@ -75,6 +75,7 @@
         "Jokios registracijos. Jokių vardų, el. paštų ar telefonų. Tavo įrenginys gauna atsitiktinį kodą, kuris serveryje saugomas tik kaip negrįžtamas hash'as — jo neįmanoma susieti su tavimi.",
       "set.privacy2":
         "Prie tekstų nesaugomi IP adresai. Srauto tekstai po 24 valandų fiziškai ištrinami — ne paslepiami, o ištrinami. Istorijos lieka tol, kol pats jų neištrini.",
+      "set.privacyLink": "Visa privatumo politika →",
       "tab.write": "Rašyti",
       "tab.feed": "Srautas",
       "tab.stories": "Istorijos",
@@ -174,6 +175,7 @@
         "No registration. No names, emails or phones. Your device gets a random code stored on the server only as an irreversible hash — it cannot be linked to you.",
       "set.privacy2":
         "No IP addresses are stored with texts. Stream texts are physically deleted after 24 hours — not hidden, deleted. Stories stay until you delete them yourself.",
+      "set.privacyLink": "Full privacy policy →",
       "tab.write": "Write",
       "tab.feed": "Stream",
       "tab.stories": "Stories",

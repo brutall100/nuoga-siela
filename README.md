@@ -117,7 +117,8 @@ PWA (manifest + service worker jau yra) →
 [Bubblewrap](https://github.com/GoogleChromeLabs/bubblewrap) → TWA → Play Console. Prieš pateikimą:
 
 - [ ] PNG ikonos 192/512 px (Play nepriima SVG) — sugeneruoti iš `public/icons/icon.svg`
-- [ ] Privatumo politikos puslapis viešu URL
+- [x] Privatumo politikos puslapis viešu URL — `https://nuogasiela.lt/privatumas.html` (LT),
+      `https://nuogasiela.lt/privacy.html` (EN)
 - [ ] Data safety forma: „no data collected linked to user" (turim tik anoniminius hash'us);
       mikrofonas naudojamas Šauksmo kambaryje, bet garsas niekada nepalieka įrenginio — žymėti „not
       collected"
