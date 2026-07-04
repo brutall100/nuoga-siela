@@ -37,11 +37,17 @@ Aplinkos kintamieji (visi nebūtini lokaliai):
 ## Architektūra
 
 ```
-main.ts            Deno.serve: statika iš /public + /api routeris + CSP header'iai
-server/api.ts      API handleriai (JSON in/out)
-server/store.ts    Deno KV: postai, „suprantu", pranešimai, rate limit
-server/filter.ts   spam/PII filtras + krizės žodžių detekcija (LT)
-public/            vanilla HTML/CSS/JS PWA — jokių bibliotekų
+main.ts             Deno.serve: statika iš /public + /api routeris + CSP header'iai
+server/api.ts       API handleriai (JSON in/out)
+server/store.ts     Deno KV: postai, istorijos, „suprantu", pranešimai, rate limit, statistika
+server/filter.ts    spam/PII filtras + krizės žodžių detekcija (LT)
+public/js/app.js    kliento logika: routeris, rašymas, srautas, istorijos, SOS, nustatymai
+public/js/i18n.js   kalbos LT/EN (data-i18n atributai + t() dinaminiams tekstams)
+public/js/scream.js Šauksmo kambarys — garso įrašas TIK RAM'e (niekada nesiunčiamas)
+public/js/burn.js   deginimo animacija (Canvas žarijos)
+public/js/breathe.js kvėpavimo ratas 4s/6s
+public/js/profanity.js keiksmų maskavimas rodant (b***)
+public/             vanilla HTML/CSS/JS PWA — jokių bibliotekų
 ```
 
 ### API
@@ -84,6 +90,10 @@ public/            vanilla HTML/CSS/JS PWA — jokių bibliotekų
 - _Jodel_ — bendruomeninė moderacija: auto-slėpimas po pranešimų
 - Deginimo ritualas — katarsis be jokio serverio
 - **Istorijos** — ilgi tekstai, kurie lieka; rūšiavimas pagal „Suprantu tave"
+- **Šauksmo kambarys** — garso įrašymas TIK į RAM: įrašai, perklausai, ištrini; niekada nesiunčiama
+  į serverį, niekada nerašoma į diską (palikus ekraną — MediaRecorder stabdomas, blob'as ir object
+  URL panaikinami, mikrofonas atlaisvinamas)
+- **Kalbos** — LT (default) ir EN, perjungiama nustatymuose
 
 **Psichologija (kur įausta, be dark patterns):**
 
@@ -92,11 +102,6 @@ public/            vanilla HTML/CSS/JS PWA — jokių bibliotekų
 - _Pripažinimas_ — „Tavo tekstus suprato X žmonių" banneris = grįžimo priežastis be push'ų
 - _Socialinis įrodymas_ — „šiandien paleisti X tekstų" (rodoma tik kai ≥5, kad tuštuma nesimatytų)
 - Jokių streak'ų, badge'ų ar FOMO — tai kirstųsi su saugios erdvės jausmu
-
-**v1.5:**
-
-- Šauksmo kambarys: garso įrašymas į RAM → atgrojimas → trynimas (niekas nesaugoma)
-- Kvėpavimo pratimų biblioteka, EN kalba
 
 **Vėliau:**
 
@@ -113,5 +118,7 @@ PWA (manifest + service worker jau yra) →
 
 - [ ] PNG ikonos 192/512 px (Play nepriima SVG) — sugeneruoti iš `public/icons/icon.svg`
 - [ ] Privatumo politikos puslapis viešu URL
-- [ ] Data safety forma: „no data collected linked to user" (turim tik anoniminius hash'us)
+- [ ] Data safety forma: „no data collected linked to user" (turim tik anoniminius hash'us);
+      mikrofonas naudojamas Šauksmo kambaryje, bet garsas niekada nepalieka įrenginio — žymėti „not
+      collected"
 - [ ] Self-harm policy: SOS ekranas su linijomis jau yra — Play to reikalauja tokio tipo app'ams

@@ -30,7 +30,7 @@
       <main class="screens">
         <!-- 1. Rašymo ekranas -->
         <section class="screen" id="screen-rasyti" hidden>
-          <p class="promise">Mes nežinome, kas tu. Ir nenorime žinoti.</p>
+          <p class="promise" data-i18n="promise">Mes nežinome, kas tu. Ir nenorime žinoti.</p>
           <p class="social-proof" id="social-proof" hidden></p>
           <button type="button" class="hug-banner" id="hug-banner" hidden></button>
           <div class="write-area">
@@ -39,6 +39,7 @@
               maxlength="1000"
               rows="6"
               placeholder="Išliek viską…"
+              data-i18n-placeholder="write.placeholder"
               autocomplete="off"
               spellcheck="false"
             ></textarea>
@@ -46,94 +47,151 @@
           </div>
           <div class="write-meta">
             <div class="emotions" id="emotion-picker" role="radiogroup" aria-label="Kaip jautiesi?">
-              <button type="button" class="emo" data-emotion="pyktis">Pyktis</button>
-              <button type="button" class="emo" data-emotion="liudesys">Liūdesys</button>
-              <button type="button" class="emo" data-emotion="nerimas">Nerimas</button>
-              <button type="button" class="emo" data-emotion="kalte">Kaltė</button>
-              <button type="button" class="emo" data-emotion="vienatve">Vienatvė</button>
-              <button type="button" class="emo" data-emotion="viltis">Viltis</button>
+              <button type="button" class="emo" data-emotion="pyktis" data-i18n="emo.pyktis">
+                Pyktis
+              </button>
+              <button type="button" class="emo" data-emotion="liudesys" data-i18n="emo.liudesys">
+                Liūdesys
+              </button>
+              <button type="button" class="emo" data-emotion="nerimas" data-i18n="emo.nerimas">
+                Nerimas
+              </button>
+              <button type="button" class="emo" data-emotion="kalte" data-i18n="emo.kalte">
+                Kaltė
+              </button>
+              <button type="button" class="emo" data-emotion="vienatve" data-i18n="emo.vienatve">
+                Vienatvė
+              </button>
+              <button type="button" class="emo" data-emotion="viltis" data-i18n="emo.viltis">
+                Viltis
+              </button>
             </div>
             <span class="char-count" id="char-count">0 / 1000</span>
           </div>
           <div class="lifespan" id="lifespan-picker">
-            <button type="button" class="chip is-active" data-kind="srautas">
+            <button
+              type="button"
+              class="chip is-active"
+              data-kind="srautas"
+              data-i18n="life.srautas"
+            >
               ⏳ Išnyks po 24 val.
             </button>
-            <button type="button" class="chip" data-kind="istorija">
+            <button type="button" class="chip" data-kind="istorija" data-i18n="life.istorija">
               📖 Palikti kaip istoriją
             </button>
           </div>
           <div class="write-actions">
             <button type="button" class="btn btn-burn" id="btn-burn">
-              <span class="btn-icon">🔥</span> Sudeginti
+              <span class="btn-icon">🔥</span>
+              <span data-i18n="btn.burn">Sudeginti</span>
             </button>
             <button type="button" class="btn btn-release" id="btn-release">
-              <span class="btn-icon">🕊️</span> Paleisti anonimiškai
+              <span class="btn-icon">🕊️</span>
+              <span data-i18n="btn.release">Paleisti anonimiškai</span>
             </button>
           </div>
-          <p class="write-hint">
+          <p class="write-hint" data-i18n="write.hint">
             Rašymas apie jausmus mažina jų intensyvumą — tai patvirtinta tyrimais. Sudegintas
             tekstas niekur nesiunčiamas.
           </p>
+          <a class="scream-link" href="#/sauksmas" data-i18n="scream.link">🔊 Šauksmo kambarys →</a>
         </section>
 
         <!-- 2. Srautas -->
         <section class="screen" id="screen-srautas" hidden>
           <div class="feed-head">
-            <h1>Srautas</h1>
+            <h1 data-i18n="feed.title">Srautas</h1>
             <button type="button" class="refresh" id="btn-refresh" aria-label="Atnaujinti">
               ↻
             </button>
           </div>
           <div class="feed-filters" id="feed-filters">
-            <button type="button" class="chip is-active" data-filter="">Visi</button>
-            <button type="button" class="chip" data-filter="pyktis">Pyktis</button>
-            <button type="button" class="chip" data-filter="liudesys">Liūdesys</button>
-            <button type="button" class="chip" data-filter="nerimas">Nerimas</button>
-            <button type="button" class="chip" data-filter="kalte">Kaltė</button>
-            <button type="button" class="chip" data-filter="vienatve">Vienatvė</button>
-            <button type="button" class="chip" data-filter="viltis">Viltis</button>
+            <button type="button" class="chip is-active" data-filter="" data-i18n="feed.all">
+              Visi
+            </button>
+            <button type="button" class="chip" data-filter="pyktis" data-i18n="emo.pyktis">
+              Pyktis
+            </button>
+            <button type="button" class="chip" data-filter="liudesys" data-i18n="emo.liudesys">
+              Liūdesys
+            </button>
+            <button type="button" class="chip" data-filter="nerimas" data-i18n="emo.nerimas">
+              Nerimas
+            </button>
+            <button type="button" class="chip" data-filter="kalte" data-i18n="emo.kalte">
+              Kaltė
+            </button>
+            <button type="button" class="chip" data-filter="vienatve" data-i18n="emo.vienatve">
+              Vienatvė
+            </button>
+            <button type="button" class="chip" data-filter="viltis" data-i18n="emo.viltis">
+              Viltis
+            </button>
           </div>
           <div class="feed" id="feed"></div>
           <div class="feed-empty" id="feed-empty" hidden>
-            <p>Srautas šiuo metu tylus.</p>
-            <p class="muted">
+            <p data-i18n="feed.emptyTitle">Srautas šiuo metu tylus.</p>
+            <p class="muted" data-i18n="feed.emptyText">
               Kiekvienas tekstas čia gyvena tik 24 valandas — būk tas, kuris paleidžia pirmas.
             </p>
-            <a class="empty-link" href="#/istorijos">Arba paskaityk istorijas →</a>
+            <a class="empty-link" href="#/istorijos" data-i18n="feed.emptyLink">
+              Arba paskaityk istorijas →
+            </a>
           </div>
         </section>
 
         <!-- 2b. Istorijos -->
         <section class="screen" id="screen-istorijos" hidden>
           <div class="feed-head">
-            <h1>Istorijos</h1>
+            <h1 data-i18n="stories.title">Istorijos</h1>
             <button type="button" class="refresh" id="btn-refresh-stories" aria-label="Atnaujinti">
               ↻
             </button>
           </div>
-          <p class="muted screen-intro">
+          <p class="muted screen-intro" data-i18n="stories.intro">
             Tekstai, kuriuos žmonės paliko ilgam. Gal tarp jų — ir tavo istorija.
           </p>
           <div class="feed-filters" id="story-sort">
-            <button type="button" class="chip is-active" data-sort="suprastos">
+            <button
+              type="button"
+              class="chip is-active"
+              data-sort="suprastos"
+              data-i18n="stories.sortHugs"
+            >
               Labiausiai suprastos
             </button>
-            <button type="button" class="chip" data-sort="naujausios">Naujausios</button>
+            <button type="button" class="chip" data-sort="naujausios" data-i18n="stories.sortNew">
+              Naujausios
+            </button>
           </div>
           <div class="feed-filters" id="story-filters">
-            <button type="button" class="chip is-active" data-filter="">Visos</button>
-            <button type="button" class="chip" data-filter="pyktis">Pyktis</button>
-            <button type="button" class="chip" data-filter="liudesys">Liūdesys</button>
-            <button type="button" class="chip" data-filter="nerimas">Nerimas</button>
-            <button type="button" class="chip" data-filter="kalte">Kaltė</button>
-            <button type="button" class="chip" data-filter="vienatve">Vienatvė</button>
-            <button type="button" class="chip" data-filter="viltis">Viltis</button>
+            <button type="button" class="chip is-active" data-filter="" data-i18n="stories.all">
+              Visos
+            </button>
+            <button type="button" class="chip" data-filter="pyktis" data-i18n="emo.pyktis">
+              Pyktis
+            </button>
+            <button type="button" class="chip" data-filter="liudesys" data-i18n="emo.liudesys">
+              Liūdesys
+            </button>
+            <button type="button" class="chip" data-filter="nerimas" data-i18n="emo.nerimas">
+              Nerimas
+            </button>
+            <button type="button" class="chip" data-filter="kalte" data-i18n="emo.kalte">
+              Kaltė
+            </button>
+            <button type="button" class="chip" data-filter="vienatve" data-i18n="emo.vienatve">
+              Vienatvė
+            </button>
+            <button type="button" class="chip" data-filter="viltis" data-i18n="emo.viltis">
+              Viltis
+            </button>
           </div>
           <div class="feed" id="story-feed"></div>
           <div class="feed-empty" id="story-empty" hidden>
-            <p>Istorijų dar nėra.</p>
-            <p class="muted">
+            <p data-i18n="stories.emptyTitle">Istorijų dar nėra.</p>
+            <p class="muted" data-i18n="stories.emptyText">
               Parašyk savo — rašymo ekrane pasirink „Palikti kaip istoriją". Ji liks tiems, kam jos
               reikės.
             </p>
@@ -142,40 +200,72 @@
 
         <!-- 3. SOS -->
         <section class="screen" id="screen-sos" hidden>
-          <h1 class="sos-title">Tu ne vienas.</h1>
-          <p class="muted">
+          <h1 class="sos-title" data-i18n="sos.title">Tu ne vienas.</h1>
+          <p class="muted" data-i18n="sos.text">
             Jei dabar sunku — pasikalbėk su žmogumi. Tai nemokama, anonimiška ir veikia visą parą.
           </p>
           <div class="hotlines">
             <a class="hotline" href="tel:116123">
-              <span class="hotline-name">Vilties linija</span>
+              <span class="hotline-name" data-i18n="sos.hope">Vilties linija</span>
               <span class="hotline-number">116 123</span>
-              <span class="hotline-note">suaugusiems, visą parą</span>
+              <span class="hotline-note" data-i18n="sos.hopeNote">suaugusiems, visą parą</span>
             </a>
             <a class="hotline" href="tel:880028888">
-              <span class="hotline-name">Jaunimo linija</span>
+              <span class="hotline-name" data-i18n="sos.youth">Jaunimo linija</span>
               <span class="hotline-number">8 800 28888</span>
-              <span class="hotline-note">jaunimui, visą parą</span>
+              <span class="hotline-note" data-i18n="sos.youthNote">jaunimui, visą parą</span>
             </a>
           </div>
           <div class="breathe-block">
-            <h2>Pakvėpuokim kartu</h2>
+            <h2 data-i18n="sos.breatheTitle">Pakvėpuokim kartu</h2>
             <div class="breathe-stage">
               <div class="breathe-circle" id="breathe-circle"></div>
-              <span class="breathe-label" id="breathe-label">Pradėti</span>
+              <span class="breathe-label" id="breathe-label" data-i18n="breathe.idle">Pradėti</span>
             </div>
-            <button type="button" class="btn btn-calm" id="btn-breathe">Pradėti kvėpavimą</button>
+            <button type="button" class="btn btn-calm" id="btn-breathe" data-i18n="breathe.start">
+              Pradėti kvėpavimą
+            </button>
+          </div>
+        </section>
+
+        <!-- 3b. Šauksmo kambarys -->
+        <section class="screen" id="screen-sauksmas" hidden>
+          <h1 data-i18n="scream.title">Šauksmo kambarys</h1>
+          <p class="muted screen-intro" data-i18n="scream.intro">
+            Išrėk. Įrašas gyvena tik tavo telefono atmintyje — niekur nesiunčiamas, niekur
+            nesaugomas. Išeini — jis dingsta.
+          </p>
+          <div class="scream-stage">
+            <button type="button" class="scream-orb" id="scream-orb" aria-label="Rėkti">
+              <span class="scream-orb-icon" id="scream-icon">🎙️</span>
+            </button>
+            <p class="scream-status" id="scream-status" data-i18n="scream.tapToStart">
+              Spausk ir rėk.
+            </p>
+          </div>
+          <div class="scream-actions" id="scream-actions" hidden>
+            <button type="button" class="btn btn-calm" id="scream-play" data-i18n="scream.play">
+              ▶ Perklausyti
+            </button>
+            <button
+              type="button"
+              class="btn btn-danger"
+              id="scream-discard"
+              data-i18n="scream.discard"
+            >
+              Ištrinti dabar
+            </button>
           </div>
         </section>
 
         <!-- 4. Nustatymai -->
         <section class="screen" id="screen-nustatymai" hidden>
-          <h1>Nustatymai</h1>
+          <h1 data-i18n="set.title">Nustatymai</h1>
           <div class="setting">
-            <label for="lang-select">Kalba</label>
+            <label for="lang-select" data-i18n="set.lang">Kalba</label>
             <select id="lang-select">
-              <option value="lt" selected>Lietuvių</option>
-              <option value="en" disabled>English (netrukus)</option>
+              <option value="lt">Lietuvių</option>
+              <option value="en">English</option>
             </select>
           </div>
           <div class="setting setting-toggle">
@@ -183,23 +273,28 @@
               <input type="checkbox" id="soft-toggle" checked>
               <span class="toggle-track" aria-hidden="true"><span class="toggle-thumb"></span></span
               >
-              <span class="toggle-text">Švelnus srautas</span>
+              <span class="toggle-text" data-i18n="set.soft">Švelnus srautas</span>
             </label>
-            <p class="muted">
+            <p class="muted" data-i18n="set.softDesc">
               Keiksmažodžiai sraute rodomi kaip b***. Tavo paties rašymo tai neriboja.
             </p>
           </div>
           <div class="setting setting-danger">
-            <button type="button" class="btn btn-danger" id="btn-delete-data">
+            <button
+              type="button"
+              class="btn btn-danger"
+              id="btn-delete-data"
+              data-i18n="set.deleteBtn"
+            >
               Ištrinti mano duomenis
             </button>
-            <p class="muted">
+            <p class="muted" data-i18n="set.deleteDesc">
               Iškart ištrina visus tavo paleistus tekstus iš srauto ir tavo įrenginio žymę.
             </p>
           </div>
           <div class="setting support">
-            <h2>Palaikyk projektą</h2>
-            <p class="muted">
+            <h2 data-i18n="set.supportTitle">Palaikyk projektą</h2>
+            <p class="muted" data-i18n="set.supportDesc">
               Jokių reklamų čia nebus niekada. Jei ši erdvė tau padėjo — gali pavaišinti kava.
             </p>
             <a
@@ -208,36 +303,37 @@
               href="https://buymeacoffee.com/nuogasiela"
               target="_blank"
               rel="noopener"
+              data-i18n="set.supportBtn"
             >☕ Pavaišinti kava</a>
           </div>
           <div class="privacy">
-            <h2>Privatumas</h2>
-            <p>
+            <h2 data-i18n="set.privacyTitle">Privatumas</h2>
+            <p data-i18n="set.privacy1">
               Jokios registracijos. Jokių vardų, el. paštų ar telefonų. Tavo įrenginys gauna
               atsitiktinį kodą, kuris serveryje saugomas tik kaip negrįžtamas hash'as — jo neįmanoma
               susieti su tavimi.
             </p>
-            <p>
+            <p data-i18n="set.privacy2">
               Prie tekstų nesaugomi IP adresai. Srauto tekstai po 24 valandų fiziškai ištrinami — ne
               paslepiami, o ištrinami. Istorijos lieka tol, kol pats jų neištrini.
             </p>
-            <p class="promise">Mes nežinome, kas tu. Ir nenorime žinoti.</p>
+            <p class="promise" data-i18n="promise">Mes nežinome, kas tu. Ir nenorime žinoti.</p>
           </div>
         </section>
       </main>
 
       <nav class="tabbar">
         <a href="#/rasyti" data-screen="rasyti" class="tab">
-          <span class="tab-icon">✎</span><span>Rašyti</span>
+          <span class="tab-icon">✎</span><span data-i18n="tab.write">Rašyti</span>
         </a>
         <a href="#/srautas" data-screen="srautas" class="tab">
-          <span class="tab-icon">☽</span><span>Srautas</span>
+          <span class="tab-icon">☽</span><span data-i18n="tab.feed">Srautas</span>
         </a>
         <a href="#/istorijos" data-screen="istorijos" class="tab">
-          <span class="tab-icon">❝</span><span>Istorijos</span>
+          <span class="tab-icon">❝</span><span data-i18n="tab.stories">Istorijos</span>
         </a>
         <a href="#/nustatymai" data-screen="nustatymai" class="tab">
-          <span class="tab-icon">⚙</span><span>Nustatymai</span>
+          <span class="tab-icon">⚙</span><span data-i18n="tab.settings">Nustatymai</span>
         </a>
       </nav>
 
@@ -246,26 +342,30 @@
       <!-- Švelnus SOS pasiūlymas po krizės žodžių -->
       <div class="sos-sheet" id="sos-sheet" hidden>
         <div class="sos-sheet-card">
-          <p>
+          <p data-i18n="sheet.text">
             Skamba, lyg tau dabar tikrai sunku. Tavo žodžiai paleisti — bet jei norisi su kuo nors
             pasikalbėti balsu, čia yra žmonės, kurie klauso:
           </p>
           <a class="hotline compact" href="tel:116123">
-            <span class="hotline-name">Vilties linija</span>
+            <span class="hotline-name" data-i18n="sos.hope">Vilties linija</span>
             <span class="hotline-number">116 123</span>
           </a>
           <a class="hotline compact" href="tel:880028888">
-            <span class="hotline-name">Jaunimo linija</span>
+            <span class="hotline-name" data-i18n="sos.youth">Jaunimo linija</span>
             <span class="hotline-number">8 800 28888</span>
           </a>
-          <button type="button" class="btn btn-calm" id="sos-sheet-close">Ačiū, suprantu</button>
+          <button type="button" class="btn btn-calm" id="sos-sheet-close" data-i18n="sheet.close">
+            Ačiū, suprantu
+          </button>
         </div>
       </div>
     </div>
 
+    <script src="/js/i18n.js"></script>
     <script src="/js/profanity.js"></script>
     <script src="/js/burn.js"></script>
     <script src="/js/breathe.js"></script>
+    <script src="/js/scream.js"></script>
     <script src="/js/app.js"></script>
   </body>
 </html>

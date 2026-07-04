@@ -22,10 +22,13 @@ const MIME: Record<string, string> = {
 const SECURITY_HEADERS: Record<string, string> = {
   "content-security-policy":
     "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; " +
-    "connect-src 'self'; manifest-src 'self'; base-uri 'none'; frame-ancestors 'none'",
+    "media-src 'self' blob:; connect-src 'self'; manifest-src 'self'; " +
+    "base-uri 'none'; frame-ancestors 'none'",
   "x-content-type-options": "nosniff",
   "referrer-policy": "no-referrer",
-  "permissions-policy": "camera=(), microphone=(), geolocation=()",
+  // Mikrofonas leidžiamas tik savai kilmei — Šauksmo kambariui. Garsas
+  // niekada nepalieka naršyklės (žr. public/js/scream.js).
+  "permissions-policy": "camera=(), microphone=(self), geolocation=()",
 };
 
 async function serveStatic(pathname: string): Promise<Response> {

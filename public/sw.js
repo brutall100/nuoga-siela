@@ -1,12 +1,14 @@
 // Service worker: statinis karkasas iš cache, API visada iš tinklo.
-const CACHE = "nuoga-siela-v3";
+const CACHE = "nuoga-siela-v4";
 const SHELL = [
   "/",
   "/css/main.css",
   "/js/app.js",
+  "/js/i18n.js",
   "/js/profanity.js",
   "/js/burn.js",
   "/js/breathe.js",
+  "/js/scream.js",
   "/manifest.webmanifest",
   "/icons/icon.svg",
 ];

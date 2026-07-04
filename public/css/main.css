@@ -34,6 +34,13 @@
   box-sizing: border-box;
 }
 
+/* `hidden` atributas turi nugalėti bet kokį display iš klasių
+   (pvz., .scream-actions ir .hug-banner nustato display, tad be šito
+   liktų matomi net su hidden). */
+[hidden] {
+  display: none !important;
+}
+
 html {
   height: 100%;
 }
@@ -928,6 +935,102 @@ h2 {
 .toggle-text {
   font-size: 15px;
   color: var(--text);
+}
+
+/* ---------- Šauksmo kambarys ---------- */
+
+.scream-link {
+  display: block;
+  text-align: center;
+  margin: 18px 0 4px;
+  color: var(--text-dim);
+  font-size: 13.5px;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.scream-link:hover {
+  color: var(--amber);
+}
+
+.scream-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+  padding: 40px 0 20px;
+}
+
+.scream-orb {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  background: radial-gradient(
+    circle at 35% 30%,
+    rgba(245, 158, 11, 0.35),
+    rgba(239, 108, 0, 0.15) 65%
+  );
+  box-shadow: 0 0 50px rgba(239, 108, 0, 0.2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s, box-shadow 0.3s;
+}
+.scream-orb:active {
+  transform: scale(0.96);
+}
+.scream-orb-icon {
+  font-size: 54px;
+  line-height: 1;
+}
+
+.scream-orb.is-recording {
+  border-color: var(--danger);
+  background: radial-gradient(
+    circle at 35% 30%,
+    rgba(229, 72, 77, 0.5),
+    rgba(229, 72, 77, 0.15) 65%
+  );
+  animation: scream-pulse 1.1s ease-in-out infinite;
+}
+
+.scream-orb.is-ready {
+  border-color: var(--calm-deep);
+  background: radial-gradient(
+    circle at 35% 30%,
+    rgba(127, 209, 193, 0.35),
+    rgba(63, 167, 150, 0.12) 65%
+  );
+  box-shadow: 0 0 40px rgba(127, 209, 193, 0.18);
+}
+
+@keyframes scream-pulse {
+  0%, 100% {
+    box-shadow: 0 0 40px rgba(229, 72, 77, 0.25);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 70px rgba(229, 72, 77, 0.55);
+    transform: scale(1.05);
+  }
+}
+
+.scream-status {
+  color: var(--text-dim);
+  font-size: 15px;
+  text-align: center;
+  max-width: 320px;
+}
+
+.scream-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+.scream-actions .btn {
+  flex: 1;
+  max-width: 200px;
 }
 
 /* ---------- Judesio mažinimas ---------- */

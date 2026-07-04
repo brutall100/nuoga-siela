@@ -66,7 +66,9 @@
 
   // ---------- Routing'as ----------
 
-  const SCREENS = ["rasyti", "srautas", "istorijos", "sos", "nustatymai"];
+  const SCREENS = ["rasyti", "srautas", "istorijos", "sos", "sauksmas", "nustatymai"];
+
+  let prevScreen = null;
 
   function currentScreen() {
     const name = location.hash.replace(/^#\//, "");
@@ -78,6 +80,8 @@
     for (const name of SCREENS) {
       $("#screen-" + name).hidden = name !== active;
     }
+    // Tab'ai sekami tik tiems ekranams, kurie turi tab'ą; kiti (sos, sauksmas)
+    // pasiekiami per nuorodas, tad meniu paryškinimo nekeičia.
     document.querySelectorAll(".tab").forEach((tab) => {
       tab.classList.toggle("is-active", tab.dataset.screen === active);
     });
@@ -87,6 +91,9 @@
     if (active !== "sos") {
       window.breatheStop($("#breathe-circle"), $("#breathe-label"), $("#btn-breathe"));
     }
+    // Palikus Šauksmo kambarį — viskas iš atminties dingsta.
+    if (prevScreen === "sauksmas" && active !== "sauksmas") resetScream();
+    prevScreen = active;
   }
 
   addEventListener("hashchange", render);
@@ -124,7 +131,9 @@
       el.classList.toggle("is-active", el.dataset.kind === selectedKind);
     });
     input.maxLength = MAX_LEN[selectedKind];
-    input.placeholder = selectedKind === "istorija" ? "Papasakok savo istoriją…" : "Išliek viską…";
+    input.placeholder = selectedKind === "istorija"
+      ? window.t("write.storyPlaceholder")
+      : window.t("write.placeholder");
     updateCounter();
   });
 
@@ -136,7 +145,7 @@
     btnBurn.disabled = btnRelease.disabled = true;
     await window.burnText(input, $("#burn-canvas"));
     updateCounter();
-    toast("Paleista. Niekas to nematė.", "calm");
+    toast(window.t("toast.burned"), "calm");
     busy = false;
     btnBurn.disabled = btnRelease.disabled = false;
   });
@@ -146,7 +155,7 @@
     const text = input.value.trim();
     if (!text) return;
     if (!selectedEmotion) {
-      toast("Pasirink, kaip jautiesi — tai padės kitiems tave rasti.");
+      toast(window.t("toast.pickEmotion"));
       return;
     }
     busy = true;
@@ -163,16 +172,16 @@
         if (data.sos) {
           $("#sos-sheet").hidden = false;
         } else if (selectedKind === "istorija") {
-          toast("Tavo istorija liks tiems, kam jos reikės.", "calm");
+          toast(window.t("toast.storyReleased"), "calm");
         } else {
-          toast("Paleista į srautą. Po 24 val. išnyks visam laikui.", "calm");
+          toast(window.t("toast.released"), "calm");
         }
         location.hash = selectedKind === "istorija" ? "#/istorijos" : "#/srautas";
       } else {
-        toast(data.reason || "Nepavyko paleisti.", "warn");
+        toast(data.reason || window.t("toast.releaseFail"), "warn");
       }
     } catch {
-      toast("Nėra ryšio. Tekstas liko tik pas tave.", "warn");
+      toast(window.t("toast.noConnection"), "warn");
     }
     busy = false;
     btnBurn.disabled = btnRelease.disabled = false;
@@ -188,8 +197,7 @@
       const data = await api("/api/stats");
       const el = $("#social-proof");
       if (data.ok && data.postsToday >= 5) {
-        el.textContent =
-          `Šiandien paleisti ${data.postsToday} tekstai · ${data.hugsToday} kartų „suprantu"`;
+        el.textContent = window.t("proof.line", { p: data.postsToday, h: data.hugsToday });
         el.hidden = false;
       } else {
         el.hidden = true;
@@ -211,8 +219,8 @@
         const diff = total - seen;
         const banner = $("#hug-banner");
         banner.textContent = diff === 1
-          ? "Tavo tekstą suprato dar 1 žmogus 🤍"
-          : `Tavo tekstus suprato dar ${diff} žmonės 🤍`;
+          ? window.t("banner.one")
+          : window.t("banner.many", { n: diff });
         banner.hidden = false;
         banner.onclick = () => {
           banner.hidden = true;
@@ -231,10 +239,10 @@
   const STORY_PREVIEW = 400;
 
   function formatTimeLeft(ms) {
-    if (ms <= 0) return "išnyksta…";
+    if (ms <= 0) return window.t("time.gone");
     const h = Math.floor(ms / 3600000);
     const m = Math.floor((ms % 3600000) / 60000);
-    return h > 0 ? `liko ${h} val. ${m} min.` : `liko ${m} min.`;
+    return h > 0 ? window.t("time.hm", { h, m }) : window.t("time.m", { m });
   }
 
   function buildCard(post, now) {
@@ -252,11 +260,12 @@
       const expand = document.createElement("button");
       expand.type = "button";
       expand.className = "expand";
-      expand.textContent = "Skaityti viską";
+      expand.textContent = window.t("story.readAll");
+      let open = false;
       expand.addEventListener("click", () => {
-        const open = expand.textContent === "Suskleisti";
-        text.textContent = open ? preview : shown;
-        expand.textContent = open ? "Skaityti viską" : "Suskleisti";
+        open = !open;
+        text.textContent = open ? shown : preview;
+        expand.textContent = open ? window.t("story.collapse") : window.t("story.readAll");
       });
       card.append(text, expand);
     } else {
@@ -273,7 +282,7 @@
     const hugIcon = document.createElement("span");
     hugIcon.textContent = "🤍";
     const hugLabel = document.createElement("span");
-    hugLabel.textContent = "Suprantu tave";
+    hugLabel.textContent = window.t("hug.label");
     const hugCount = document.createElement("span");
     hugCount.className = "hug-count";
     hugCount.textContent = post.hugs > 0 ? String(post.hugs) : "";
@@ -303,10 +312,10 @@
     report.textContent = "⚑";
     report.title = "Pranešti";
     report.addEventListener("click", async () => {
-      if (!confirm("Pranešti apie šį tekstą? Po kelių pranešimų jis dings.")) return;
+      if (!confirm(window.t("confirm.report"))) return;
       await api(`/api/posts/${post.id}/report`, { method: "POST" });
       card.remove();
-      toast("Ačiū. Pranešimas gautas.");
+      toast(window.t("toast.reported"));
     });
 
     right.append(report);
@@ -370,7 +379,7 @@
         });
       }, 30000);
     } catch {
-      toast("Nepavyko pasiekti srauto.", "warn");
+      toast(window.t("toast.feedFail"), "warn");
     }
   }
 
@@ -419,7 +428,7 @@
       }
       $("#story-empty").hidden = data.posts.length > 0;
     } catch {
-      toast("Nepavyko pasiekti istorijų.", "warn");
+      toast(window.t("toast.storiesFail"), "warn");
     }
   }
 
@@ -427,6 +436,69 @@
 
   $("#btn-breathe").addEventListener("click", () => {
     window.breatheStart($("#breathe-circle"), $("#breathe-label"), $("#btn-breathe"));
+  });
+
+  // ---------- Šauksmo kambarys ----------
+  // Visas garsas — tik atmintyje (žr. scream.js). Čia tik UI valdymas.
+
+  const screamOrb = $("#scream-orb");
+  const screamIcon = $("#scream-icon");
+  const screamStatus = $("#scream-status");
+  const screamActions = $("#scream-actions");
+  let screamBusy = false;
+
+  function resetScream() {
+    if (window.screamCleanup) window.screamCleanup();
+    screamOrb.classList.remove("is-recording", "is-ready");
+    screamOrb.disabled = false;
+    screamIcon.textContent = "🎙️";
+    screamStatus.textContent = window.t("scream.tapToStart");
+    screamActions.hidden = true;
+    screamBusy = false;
+  }
+
+  screamOrb.addEventListener("click", async () => {
+    if (screamBusy) return;
+    const st = window.screamState ? window.screamState() : "idle";
+    if (st === "idle") {
+      screamBusy = true;
+      try {
+        await window.screamStart();
+        screamOrb.classList.add("is-recording");
+        screamIcon.textContent = "⏹";
+        screamStatus.textContent = window.t("scream.recording");
+      } catch {
+        toast(window.t("scream.noMic"), "warn");
+      }
+      screamBusy = false;
+    } else if (st === "recording") {
+      screamBusy = true;
+      const ok = await window.screamStop();
+      screamOrb.classList.remove("is-recording");
+      if (ok) {
+        screamOrb.classList.add("is-ready");
+        screamIcon.textContent = "🔇";
+        screamStatus.textContent = window.t("scream.done");
+        screamActions.hidden = false;
+      } else {
+        resetScream();
+      }
+      screamBusy = false;
+    }
+  });
+
+  $("#scream-play").addEventListener("click", () => {
+    if (window.screamPlay) window.screamPlay();
+  });
+
+  $("#scream-discard").addEventListener("click", () => {
+    resetScream();
+    toast(window.t("scream.deleted"), "calm");
+  });
+
+  // Jei vartotojas uždaro/užrakina puslapį — irgi viską išvalom.
+  addEventListener("pagehide", () => {
+    if (window.screamCleanup) window.screamCleanup();
   });
 
   // ---------- Nustatymai ----------
@@ -438,10 +510,21 @@
     localStorage.setItem(SOFT_KEY, softMode ? "1" : "0");
   });
 
+  // Kalba: pakeitus perpiešiam statinius tekstus ir aktyvų sąrašą.
+  const langSelect = $("#lang-select");
+  langSelect.value = window.i18n.lang;
+  langSelect.addEventListener("change", () => {
+    window.i18n.set(langSelect.value);
+    input.placeholder = selectedKind === "istorija"
+      ? window.t("write.storyPlaceholder")
+      : window.t("write.placeholder");
+    const active = currentScreen();
+    if (active === "srautas") loadFeed();
+    if (active === "istorijos") loadStories();
+  });
+
   $("#btn-delete-data").addEventListener("click", async () => {
-    if (
-      !confirm("Ištrinti visus tavo paleistus tekstus ir įrenginio žymę? To atšaukti nebus galima.")
-    ) {
+    if (!confirm(window.t("confirm.delete"))) {
       return;
     }
     try {
@@ -455,15 +538,16 @@
         localStorage.setItem(DEVICE_KEY, deviceId);
         hugged.clear();
         mineCount = 0;
-        toast("Ištrinta. Tavo įrenginys dabar — visiškai naujas nepažįstamasis.", "calm");
+        toast(window.t("toast.deleted"), "calm");
       }
     } catch {
-      toast("Nepavyko susisiekti su serveriu.", "warn");
+      toast(window.t("toast.serverFail"), "warn");
     }
   });
 
   // ---------- Startas ----------
 
+  window.i18n.apply();
   render();
   checkMyHugs();
 
