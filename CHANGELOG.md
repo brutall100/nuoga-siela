@@ -29,6 +29,12 @@ Formatas paremtas [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   atributus, kuriuos CSP `style-src 'self'` tyliai blokuodavo — puslapiai realiai rodydavosi
   visiškai be stilių. Visos taisyklės perkeltos į `public/css/main.css` (`.legal`, `.legal-brand`,
   `.lang-switch`).
+- SEO smulkmenos: kiekvienas istorijos permalink'as (`/istorijos/:id`) dabar turi savo
+  `CreativeWork` JSON-LD (`jsonLdScript()` `main.ts` — `</script>` sekos tekste escaping'inamos į
+  `<\/script>`, kad nenulaužtų HTML). Pagrindinio puslapio `WebSite` JSON-LD `inLanguage` pataisytas
+  iš `["lt","en"]` į `"lt"` — EN yra tik kliento pusės perjungimas, ne atskiras URL/locale, tad
+  dviejų kalbų žymėjimas būtų klaidinantis. `privacy.html`/`privatumas.html` (vienintelė reali
+  dviejų URL vertimo pora) gavo `hreflang` alternate nuorodas.
 
 ## [1.5] — Šauksmo kambarys + LT/EN kalbos
 

@@ -142,13 +142,33 @@ function excerpt(text: string, max: number): string {
   return clean.length > max ? clean.slice(0, max).trimEnd() + "…" : clean;
 }
 
+// JSON-LD <script> blokai nėra CSP script-src taikymo objektas (naršyklės jų
+// nevykdo kaip JS), bet "</script>" sekoje esantis tekstas vis tiek nulaužtų
+// HTML parsinimą — todėl "</" pakeičiama į "<\/" prieš įterpiant.
+function jsonLdScript(data: unknown): string {
+  return `<script type="application/ld+json">${
+    JSON.stringify(data).replaceAll("</", "<\\/")
+  }</script>`;
+}
+
 function renderStoryPage(
-  story: { id: string; text: string; emotion: Emotion; hugs: number },
+  story: { id: string; text: string; emotion: Emotion; hugs: number; createdAt: number },
 ): string {
   const description = escapeHtml(excerpt(story.text, 155));
   const title = escapeHtml(`${excerpt(story.text, 60)} — Nuoga Siela`);
   const url = `${SITE_URL}/istorijos/${story.id}`;
   const emotionLabel = escapeHtml(EMOTION_LABELS_LT[story.emotion]);
+  const jsonLd = jsonLdScript({
+    "@context": "https://schema.org",
+    "@type": "CreativeWork",
+    "headline": excerpt(story.text, 60),
+    "text": story.text,
+    "url": url,
+    "datePublished": new Date(story.createdAt).toISOString(),
+    "inLanguage": "lt",
+    "isAccessibleForFree": true,
+    "publisher": { "@type": "Organization", "name": "Nuoga Siela", "url": SITE_URL },
+  });
   return `<!DOCTYPE html>
 <html lang="lt">
   <head>
@@ -171,6 +191,7 @@ function renderStoryPage(
     <meta name="twitter:image" content="${SITE_URL}/icons/og-image.png">
     <link rel="stylesheet" href="/css/main.css">
     <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+    ${jsonLd}
   </head>
   <body>
     <div class="story-page">
