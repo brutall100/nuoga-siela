@@ -127,6 +127,17 @@ export async function listFeed(emotion?: Emotion): Promise<PublicPost[]> {
   return out;
 }
 
+// Vienos istorijos paskyra (SSR permalink'ui) — tik "story" prefikse, ne
+// findPost() abiejų prefiksų paieška, nes "srautas" postai neturi permalink'o.
+// Grąžina null jei nerasta arba paslėpta — todėl ištrinta/paslėpta istorija
+// permalink'e iškart 404, be atskiro cache invalidavimo.
+export async function getPublicStory(id: string): Promise<PublicPost | null> {
+  const kv = await getKv();
+  const entry = await kv.get<Post>(["story", id]);
+  if (!entry.value || entry.value.hidden) return null;
+  return toPublic(entry.value);
+}
+
 export async function listStories(
   emotion?: Emotion,
   sort: "suprastos" | "naujausios" = "suprastos",

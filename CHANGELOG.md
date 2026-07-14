@@ -11,6 +11,24 @@ Formatas paremtas [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Nuo šiol kiekvienas commit'as gauna versijos prefiksą (žr. `CLAUDE.md` → „Versijos ir changelog").
 - Privatumo politikos puslapiai (`/privatumas.html` LT, `/privacy.html` EN) — reikalinga Google Play
   pateikimui. Nuoroda pridėta ir Nustatymų ekrane.
+- SEO pagrindas: `robots.txt`, Open Graph/Twitter Card meta žymos ir WebSite JSON-LD schema pridėti
+  į `index.html`, `privacy.html`, `privatumas.html`. `main.ts` MIME lentelė papildyta `.txt`/`.xml`
+  tipais, kad šie failai būtų atiduodami su teisingu `content-type`.
+- Maršrutizacija pereita nuo hash (`#/rasyti`) prie tikrų URL kelių (`/rasyti`) per
+  `history.pushState`/`popstate` (`public/js/app.js`) — Google dabar gali indeksuoti kiekvieną
+  ekraną atskirai. `main.ts` kiekvienam iš šešių kelių prieš atiduodant `index.html` pakeičia
+  `<title>`/meta aprašymą (`applyRouteMeta()`, be templating variklio).
+- Viešos istorijos gauna savo serveryje atrenderintą, indeksuojamą puslapį — `/istorijos/:id`
+  (`main.ts` `serveStoryPage()`, `server/store.ts` `getPublicStory()`). Ištrinta ar paslėpta
+  istorija iškart grąžina `404`. Kortelėse pridėtas 🔗 mygtukas nuorodai kopijuoti. `sitemap.xml`
+  dabar generuojamas dinamiškai (`serveSitemap()`) su visomis gyvomis istorijomis — statinis
+  `public/sitemap.xml` failas pašalintas.
+- `og:image`/`twitter:image` (1200×630, `public/icons/og-image.png`) visiems puslapiams, įskaitant
+  istorijų permalink'us.
+- Pataisyta: `privacy.html`/`privatumas.html` turėjo inline `<style>` bloką ir inline `style=""`
+  atributus, kuriuos CSP `style-src 'self'` tyliai blokuodavo — puslapiai realiai rodydavosi
+  visiškai be stilių. Visos taisyklės perkeltos į `public/css/main.css` (`.legal`, `.legal-brand`,
+  `.lang-switch`).
 
 ## [1.5] — Šauksmo kambarys + LT/EN kalbos
 

@@ -509,6 +509,21 @@ h2 {
   background: rgba(229, 72, 77, 0.08);
 }
 
+.copy-link {
+  font: inherit;
+  color: #55607a;
+  background: none;
+  border: none;
+  font-size: 17px;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+}
+.copy-link:hover {
+  color: var(--calm);
+  background: rgba(127, 209, 193, 0.1);
+}
+
 /* Likusio laiko juosta — "smilkstantis dagtis" kortelės apačioje */
 .fuse {
   height: 2px;
@@ -1052,4 +1067,75 @@ h2 {
   .btn-release {
     flex: 1;
   }
+}
+
+/* ---------- Statiniai teisiniai puslapiai (privacy.html, privatumas.html) ---------- */
+/* CSP style-src 'self' neleidžia inline <style>/style="" — visos šių puslapių
+   taisyklės todėl gyvena čia, ne pačiuose HTML failuose. */
+
+.legal {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 32px 16px 64px;
+}
+.legal h1 {
+  margin-bottom: 6px;
+}
+.legal .updated {
+  margin-bottom: 28px;
+}
+.legal h2 {
+  margin-top: 28px;
+  color: var(--text);
+}
+.legal p,
+.legal li {
+  color: var(--text-dim);
+  font-size: 14.5px;
+  line-height: 1.7;
+}
+.legal ul {
+  padding-left: 20px;
+  margin: 8px 0;
+}
+.legal a {
+  color: var(--calm);
+}
+.legal .back {
+  display: inline-block;
+  margin-top: 32px;
+  font-size: 14px;
+}
+.lang-switch {
+  text-align: right;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+.legal-brand {
+  text-decoration: none;
+  color: var(--text);
+  display: inline-flex;
+  gap: 9px;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+/* ---------- Istorijos SSR permalink'as (main.ts serveStoryPage) ---------- */
+
+.story-page {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 32px 16px 64px;
+}
+.story-page .story-text {
+  white-space: pre-wrap;
+  margin: 20px 0;
+}
+.story-page .story-meta {
+  color: var(--text-dim);
+  font-size: 14px;
+}
+.story-page .back-link {
+  display: inline-block;
+  margin-top: 28px;
 }

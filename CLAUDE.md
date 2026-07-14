@@ -47,6 +47,37 @@ tiesiogiai `<script>` tag'ais (žr. `public/index.html` tvarką) — ne ES modul
 `window.xxx` eksportai (`window.t`, `window.i18n`, `window.maskProfanity`, `window.burnText`,
 `window.breatheStart/Stop`, `window.scream*`).
 
+### Maršrutizacija: tikri URL keliai, ne hash
+
+Ekranai (`rasyti`, `srautas`, `istorijos`, `sos`, `sauksmas`, `nustatymai`) turi tikrus kelius
+(`/rasyti`, `/srautas`, ...), ne `#/rasyti` — svarbu SEO, kad Google galėtų juos indeksuoti kaip
+atskirus puslapius. Klientas (`public/js/app.js`) naršo per `history.pushState`/`popstate`
+(`currentScreen()` skaito `location.pathname`, `navigate()` — bendra pagalbinė funkcija stumti naują
+kelią ir perpiešti); vidinių nuorodų paspaudimai perimami delegated click handler'iu, kad SPA
+neperkrautų viso puslapio. Be JS naršyklė tiesiog atlieka įprastą navigaciją — `main.ts`
+`serveStatic()` fallback'as (nežinomas kelias be taško → `index.html`) tai jau sprendžia serverio
+pusėje, tad tiesioginis atidarymas/perkrovimas ant `/srautas` ir pan. veikia visada. `main.ts`
+`applyRouteMeta()` kiekvienam iš šių šešių kelių prieš atiduodant `index.html` pakeičia
+`<title>`/`<meta description>`/OG/Twitter turinį paprastu string replace (`ROUTE_META` lentelė) —
+vis dar be jokio templating variklio, tik `.replace()` su regex'ais, apgaubiančiais žymos turinį.
+
+### Istorijų SSR permalink'ai (`/istorijos/:id`)
+
+Kiekviena vieša istorija turi savo indeksuojamą, serveryje atrenderintą puslapį — `main.ts`
+`serveStoryPage()`, atpažįstamas prieš bendrą statinių failų dispatch'ą (`STORY_PATH_RE`). Tekstas
+įterpiamas per `escapeHtml()` (XSS apsauga, nes tai vartotojo tekstas), niekada per innerHTML
+analogą be escaping'o. Duomenys imami per `getPublicStory()` (`server/store.ts`) — tiesioginis
+`["story", id]` skaitymas, **ne** `findPost()` (tas naudojamas tik vidiniam hug/report), nes
+`srautas` postai niekada neturi permalink'o. `getPublicStory()` grąžina `null`, jei įrašo nėra arba
+jis `hidden` — todėl ištrinta/paslėpta istorija tampa realiu `404` nedelsiant, jokio atskiro cache
+invalidavimo nereikia. Tai tiesiogiai palaiko anonimiškumo pažadą žemiau: pašalinta istorija negali
+toliau "gyventi" per užkešuotą SSR puslapį.
+
+`GET /sitemap.xml` (`serveSitemap()`) generuojamas dinamiškai kiekvienam request'ui — statiniai
+keliai + `listStories()` rezultatas, konvertuotas į `/istorijos/:id` `<url>` įrašus. Statinio
+`public/sitemap.xml` failo sąmoningai nėra — jei jį vėl pridėsi, sitemap nustos atspindėti realias
+istorijas.
+
 Serverio sluoksniai griežtai atskirti:
 
 - `server/filter.ts` — grynos funkcijos, jokio I/O. Sprendžia, ar tekstas praeina (spam/PII/ilgis)
@@ -76,6 +107,10 @@ pažado lygio**. Kai keiti kodą, laikykis šių invariantų:
 - Naujų API endpoint'ų negalima projektuoti taip, kad reikalautų slapukų, sesijų ar bet kokio
   serverio pusėje saugomo identifikatoriaus, kuris susietų kelis veiksmus su konkrečiu asmeniu
   daugiau nei leidžia `deviceHash`.
+- Istorijų SSR permalink'ai (`/istorijos/:id`, žr. žemiau) renderinami tiesiogiai iš KV kiekvienam
+  request'ui — jokio disko/atminties cache tarp KV ir atsakymo. Ištrintos ar paslėptos istorijos
+  permalink'as **privalo** iškart grąžinti `404`, ne senai užkešuotą HTML — priešingu atveju
+  "fiziškai ištrinta" pažadas taptų melagingas paieškos sistemoms ir dalintasis nuorodoms.
 
 ### Duomenų modelis (Deno KV raktai)
 

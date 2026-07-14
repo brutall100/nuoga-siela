@@ -71,8 +71,13 @@
   let prevScreen = null;
 
   function currentScreen() {
-    const name = location.hash.replace(/^#\//, "");
+    const name = location.pathname.replace(/^\//, "");
     return SCREENS.includes(name) ? name : "rasyti";
+  }
+
+  function navigate(path) {
+    history.pushState(null, "", path);
+    render();
   }
 
   function render() {
@@ -96,7 +101,27 @@
     prevScreen = active;
   }
 
-  addEventListener("hashchange", render);
+  addEventListener("popstate", render);
+
+  // Perimame paspaudimus ant vidinių nuorodų (tabbar, brand, SOS, tarpiniai
+  // "→" linkai), kad naršymas vyktų per pushState be viso puslapio perkrovimo.
+  // Be JS naršyklė tiesiog atlieka įprastą navigaciją — main.ts fallback'as
+  // (nežinomas kelias be taško → index.html) ją ir taip išspręstų.
+  document.addEventListener("click", (e) => {
+    const link = e.target.closest("a[href^='/']");
+    if (!link || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    const path = link.getAttribute("href").replace(/^\//, "");
+    if (!SCREENS.includes(path)) return;
+    e.preventDefault();
+    navigate(link.getAttribute("href"));
+  });
+
+  // Senos hash nuorodos (žymelės, dalinimasis) — konvertuojam vieną kartą į tikrą kelią.
+  if (location.hash.startsWith("#/")) {
+    const legacy = location.hash.replace(/^#\//, "");
+    const path = SCREENS.includes(legacy) ? "/" + legacy : "/rasyti";
+    history.replaceState(null, "", path);
+  }
 
   // ---------- Rašymo ekranas ----------
 
@@ -176,7 +201,7 @@
         } else {
           toast(window.t("toast.released"), "calm");
         }
-        location.hash = selectedKind === "istorija" ? "#/istorijos" : "#/srautas";
+        navigate(selectedKind === "istorija" ? "/istorijos" : "/srautas");
       } else {
         toast(data.reason || window.t("toast.releaseFail"), "warn");
       }
@@ -225,7 +250,7 @@
         banner.onclick = () => {
           banner.hidden = true;
           localStorage.setItem(SEEN_HUGS_KEY, JSON.stringify(total));
-          location.hash = "#/srautas";
+          navigate("/srautas");
         };
       }
       localStorage.setItem(SEEN_HUGS_KEY, JSON.stringify(total));
@@ -304,6 +329,20 @@
       timeLeft.className = "time-left";
       timeLeft.textContent = formatTimeLeft(post.expiresAt - now);
       right.append(timeLeft);
+    }
+
+    if (isStory) {
+      const copyLink = document.createElement("button");
+      copyLink.type = "button";
+      copyLink.className = "copy-link";
+      copyLink.textContent = "🔗";
+      copyLink.title = window.t("story.copyLink");
+      copyLink.addEventListener("click", async () => {
+        const url = location.origin + "/istorijos/" + post.id;
+        await navigator.clipboard.writeText(url);
+        toast(window.t("toast.linkCopied"), "calm");
+      });
+      right.append(copyLink);
     }
 
     const report = document.createElement("button");

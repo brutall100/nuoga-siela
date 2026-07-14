@@ -2,6 +2,7 @@ import {
   checkRateLimit,
   createPost,
   deleteDeviceData,
+  getPublicStory,
   getStats,
   hashDevice,
   hugPost,
@@ -134,6 +135,28 @@ Deno.test("istorijų rate limit: atskiras nuo srauto", async () => {
   }
   assert(!(await checkRateLimit(dev, "istorija")), "trečia istorija per parą blokuojama");
   assert(await checkRateLimit(dev, "srautas"), "srauto limitas nepriklausomas");
+
+  kv.close();
+});
+
+Deno.test("getPublicStory: SSR permalink'ui — 404 elgesys ištrintai/paslėptai/srauto įrašui", async () => {
+  const kv = await freshKv();
+  const dev = await hashDevice("d1");
+
+  const story = await createPost(dev, "mano istorija", "viltis", "istorija");
+  const post = await createPost(dev, "srauto tekstas", "pyktis", "srautas");
+
+  const found = await getPublicStory(story.id);
+  assert(found?.text === "mano istorija", "istorija randama pagal id");
+
+  assert((await getPublicStory(post.id)) === null, "srauto postas neturi permalink'o");
+  assert((await getPublicStory("nera-tokio")) === null, "neegzistuojantis id → null");
+
+  // 3 pranešimai → paslėpta → permalink'as turi iškart dingti.
+  await reportPost(story.id, await hashDevice("r1"));
+  await reportPost(story.id, await hashDevice("r2"));
+  await reportPost(story.id, await hashDevice("r3"));
+  assert((await getPublicStory(story.id)) === null, "paslėpta istorija → null");
 
   kv.close();
 });
