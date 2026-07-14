@@ -17,6 +17,7 @@
       "emo.viltis": "Viltis",
       "life.srautas": "⏳ Išnyks po 24 val.",
       "life.istorija": "📖 Palikti kaip istoriją",
+      "life.istorijaHint": "Vieša neribotai, kol pati(s) ištrini. Gali rasti ir Google paieška.",
       "btn.burn": "Sudeginti",
       "btn.release": "Paleisti anonimiškai",
       "write.hint":
@@ -121,6 +122,7 @@
       "emo.viltis": "Hope",
       "life.srautas": "⏳ Gone in 24 hours",
       "life.istorija": "📖 Keep as a story",
+      "life.istorijaHint": "Public indefinitely until you delete it. Can also be found via Google.",
       "btn.burn": "Burn it",
       "btn.release": "Release anonymously",
       "write.hint":

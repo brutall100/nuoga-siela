@@ -159,6 +159,7 @@
     input.placeholder = selectedKind === "istorija"
       ? window.t("write.storyPlaceholder")
       : window.t("write.placeholder");
+    $("#lifespan-hint").hidden = selectedKind !== "istorija";
     updateCounter();
   });
 

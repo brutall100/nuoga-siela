@@ -126,6 +126,26 @@ Deno.test("istorijos: be termino, atskirtos nuo srauto, rūšiuojamos pagal hugs
   kv.close();
 });
 
+Deno.test("listStories: limit parametras atskiria sitemap nuo UI srauto ribos", async () => {
+  const kv = await freshKv();
+  const dev = await hashDevice("d1");
+
+  await createPost(dev, "istorija A", "liudesys", "istorija");
+  await createPost(dev, "istorija B", "viltis", "istorija");
+  await createPost(dev, "istorija C", "nerimas", "istorija");
+
+  const capped = await listStories(undefined, "naujausios", 1);
+  assert(capped.length === 1, "eksplicitinis limit apkarpo rezultatą");
+
+  const uncapped = await listStories(undefined, "naujausios");
+  assert(uncapped.length === 3, "numatytas limit (STORY_FEED_LIMIT) neapkarpo mažo kiekio");
+
+  const sitemapSized = await listStories(undefined, "naujausios", 5000);
+  assert(sitemapSized.length === 3, "didelis limit (sitemap atvejis) grąžina visas istorijas");
+
+  kv.close();
+});
+
 Deno.test("istorijų rate limit: atskiras nuo srauto", async () => {
   const kv = await freshKv();
   const dev = await hashDevice("d1");

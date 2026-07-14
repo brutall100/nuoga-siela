@@ -12,6 +12,11 @@ export const STORY_LIMIT_PER_DAY = 2;
 export const REPORTS_TO_HIDE = 3;
 export const FEED_LIMIT = 100;
 export const STORY_FEED_LIMIT = 50;
+// sitemap.xml/feed.xml turi matyti visas istorijas, ne tik UI srauto ekrano
+// STORY_FEED_LIMIT viršūnę — kitaip senesnės/mažiau "suprastos" istorijos
+// taptų nepasiekiamos paieškos sistemoms. Gerokai po sitemap protokolo
+// 50000 URL riba; jei kada pasiekiama, kitas žingsnis — sitemap index skaidymas.
+export const SITEMAP_STORY_LIMIT = 5000;
 
 export type PostKind = "srautas" | "istorija";
 
@@ -141,11 +146,13 @@ export async function getPublicStory(id: string): Promise<PublicPost | null> {
 export async function listStories(
   emotion?: Emotion,
   sort: "suprastos" | "naujausios" = "suprastos",
+  limit: number = STORY_FEED_LIMIT,
 ): Promise<PublicPost[]> {
   const kv = await getKv();
   const out: PublicPost[] = [];
-  // Prefikso tvarka = naujausios pirmos; skaitome iki 500 ir rūšiuojame atmintyje.
-  for await (const entry of kv.list<Post>({ prefix: ["story"] }, { limit: 500 })) {
+  // Prefikso tvarka = naujausios pirmos; skaitome iki limit*2 ir rūšiuojame
+  // atmintyje (marža dėl hidden/emotion filtro, kaip ir listFeed()).
+  for await (const entry of kv.list<Post>({ prefix: ["story"] }, { limit: limit * 2 })) {
     const p = entry.value;
     if (p.hidden) continue;
     if (emotion && p.emotion !== emotion) continue;
@@ -154,7 +161,7 @@ export async function listStories(
   if (sort === "suprastos") {
     out.sort((a, b) => b.hugs - a.hugs || b.createdAt - a.createdAt);
   }
-  return out.slice(0, STORY_FEED_LIMIT);
+  return out.slice(0, limit);
 }
 
 // Postas gali būti sraute arba istorijose — randame pagal id abiejuose.

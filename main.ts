@@ -3,12 +3,15 @@
 // Loguose sąmoningai NĖRA IP adresų ar header'ių — tik metodas, kelias, statusas.
 
 import { handleApi } from "./server/api.ts";
-import { getPublicStory, listStories } from "./server/store.ts";
+import { getPublicStory, listStories, SITEMAP_STORY_LIMIT } from "./server/store.ts";
 import type { Emotion } from "./server/filter.ts";
 
 const PUBLIC_DIR = new URL("./public/", import.meta.url);
 const PORT = Number(Deno.env.get("PORT") ?? 8000);
 const SITE_URL = "https://nuogasiela.lt";
+// IndexNow (Bing/Yandex) — nustatoma tik jei INDEXNOW_KEY aplinkos kintamasis
+// paduotas; lokaliame dev'e paprastai neduodamas, tad ping'ai tyliai nevyksta.
+const INDEXNOW_KEY = Deno.env.get("INDEXNOW_KEY");
 
 const MIME: Record<string, string> = {
   ".html": "text/html; charset=utf-8",
@@ -216,28 +219,128 @@ async function serveStoryPage(pathname: string): Promise<Response> {
 
 // ---------- Dinaminis sitemap.xml (statiniai keliai + gyvos istorijos) ----------
 
-const STATIC_SITEMAP_PATHS = [
-  "/",
-  "/rasyti",
-  "/srautas",
-  "/istorijos",
-  "/sos",
-  "/sauksmas",
-  "/nustatymai",
-  "/privatumas.html",
-  "/privacy.html",
+interface SitemapAlternate {
+  hreflang: string;
+  href: string;
+}
+
+interface SitemapEntry {
+  path: string;
+  changefreq: string;
+  priority: string;
+  lastmod?: string;
+  alternates?: SitemapAlternate[];
+}
+
+// Ta pati data, kuri jau rodoma pačiuose puslapiuose ("Paskutinį kartą
+// atnaujinta:") — nekuriame naujos, tik pakartojame jau tikslią.
+const LEGAL_PAGES_UPDATED = "2026-07-04";
+
+const STATIC_SITEMAP_ENTRIES: SitemapEntry[] = [
+  { path: "/", changefreq: "daily", priority: "1.0" },
+  { path: "/rasyti", changefreq: "daily", priority: "0.8" },
+  { path: "/srautas", changefreq: "daily", priority: "0.8" },
+  { path: "/istorijos", changefreq: "daily", priority: "0.8" },
+  { path: "/sos", changefreq: "monthly", priority: "0.5" },
+  { path: "/sauksmas", changefreq: "monthly", priority: "0.5" },
+  { path: "/nustatymai", changefreq: "monthly", priority: "0.4" },
+  {
+    path: "/privatumas.html",
+    changefreq: "monthly",
+    priority: "0.3",
+    lastmod: LEGAL_PAGES_UPDATED,
+    alternates: [
+      { hreflang: "lt", href: `${SITE_URL}/privatumas.html` },
+      { hreflang: "en", href: `${SITE_URL}/privacy.html` },
+      { hreflang: "x-default", href: `${SITE_URL}/privatumas.html` },
+    ],
+  },
+  {
+    path: "/privacy.html",
+    changefreq: "monthly",
+    priority: "0.3",
+    lastmod: LEGAL_PAGES_UPDATED,
+    alternates: [
+      { hreflang: "en", href: `${SITE_URL}/privacy.html` },
+      { hreflang: "lt", href: `${SITE_URL}/privatumas.html` },
+      { hreflang: "x-default", href: `${SITE_URL}/privatumas.html` },
+    ],
+  },
 ];
 
+function sitemapUrlXml(loc: string, entry: Omit<SitemapEntry, "path">): string {
+  const lines = [`  <url>`, `    <loc>${loc}</loc>`];
+  if (entry.lastmod) lines.push(`    <lastmod>${entry.lastmod}</lastmod>`);
+  lines.push(
+    `    <changefreq>${entry.changefreq}</changefreq>`,
+    `    <priority>${entry.priority}</priority>`,
+  );
+  for (const alt of entry.alternates ?? []) {
+    lines.push(`    <xhtml:link rel="alternate" hreflang="${alt.hreflang}" href="${alt.href}"/>`);
+  }
+  lines.push(`  </url>`);
+  return lines.join("\n");
+}
+
 async function serveSitemap(): Promise<Response> {
-  const stories = await listStories();
+  const stories = await listStories(undefined, "naujausios", SITEMAP_STORY_LIMIT);
   const urls = [
-    ...STATIC_SITEMAP_PATHS.map((path) => `  <url><loc>${SITE_URL}${path}</loc></url>`),
-    ...stories.map((s) => `  <url><loc>${SITE_URL}/istorijos/${s.id}</loc></url>`),
+    ...STATIC_SITEMAP_ENTRIES.map((e) => sitemapUrlXml(`${SITE_URL}${e.path}`, e)),
+    ...stories.map((s) =>
+      sitemapUrlXml(`${SITE_URL}/istorijos/${s.id}`, {
+        changefreq: "monthly",
+        priority: "0.6",
+        lastmod: new Date(s.createdAt).toISOString().slice(0, 10),
+      })
+    ),
   ];
   const xml = `<?xml version="1.0" encoding="UTF-8"?>\n` +
-    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.join("\n")}\n</urlset>\n`;
+    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" ` +
+    `xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${urls.join("\n")}\n</urlset>\n`;
   return new Response(xml, {
     headers: { ...SECURITY_HEADERS, "content-type": MIME[".xml"], "cache-control": "no-cache" },
+  });
+}
+
+// ---------- Atom feed (naujausios istorijos) ----------
+
+const FEED_ENTRY_LIMIT = 30;
+
+async function serveStoriesFeed(): Promise<Response> {
+  const stories = await listStories(undefined, "naujausios", FEED_ENTRY_LIMIT);
+  const updated = stories[0]
+    ? new Date(stories[0].createdAt).toISOString()
+    : new Date().toISOString();
+  const entries = stories.map((s) => {
+    const url = `${SITE_URL}/istorijos/${s.id}`;
+    const iso = new Date(s.createdAt).toISOString();
+    return `  <entry>
+    <title>${escapeHtml(excerpt(s.text, 60))}</title>
+    <link href="${url}"/>
+    <id>${url}</id>
+    <published>${iso}</published>
+    <updated>${iso}</updated>
+    <summary type="text">${escapeHtml(s.text)}</summary>
+  </entry>`;
+  }).join("\n");
+  const xml = `<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Nuoga Siela — Istorijos</title>
+  <subtitle>Naujausios anoniminės istorijos</subtitle>
+  <link href="${SITE_URL}/istorijos/feed.xml" rel="self"/>
+  <link href="${SITE_URL}/istorijos"/>
+  <id>${SITE_URL}/istorijos</id>
+  <updated>${updated}</updated>
+  <author><name>Nuoga Siela</name></author>
+${entries}
+</feed>
+`;
+  return new Response(xml, {
+    headers: {
+      ...SECURITY_HEADERS,
+      "content-type": "application/atom+xml; charset=utf-8",
+      "cache-control": "no-cache",
+    },
   });
 }
 
@@ -282,8 +385,14 @@ Deno.serve({ port: PORT }, async (req) => {
     for (const [k, v] of Object.entries(SECURITY_HEADERS)) res.headers.set(k, v);
   } else if (req.method === "GET" && url.pathname === "/sitemap.xml") {
     res = await serveSitemap();
+  } else if (req.method === "GET" && url.pathname === "/istorijos/feed.xml") {
+    res = await serveStoriesFeed();
   } else if (req.method === "GET" && STORY_PATH_RE.test(url.pathname)) {
     res = await serveStoryPage(url.pathname);
+  } else if (INDEXNOW_KEY && req.method === "GET" && url.pathname === `/${INDEXNOW_KEY}.txt`) {
+    res = new Response(INDEXNOW_KEY, {
+      headers: { ...SECURITY_HEADERS, "content-type": MIME[".txt"] },
+    });
   } else {
     res = await serveStatic(url.pathname);
   }

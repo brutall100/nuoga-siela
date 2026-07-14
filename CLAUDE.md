@@ -78,6 +78,19 @@ keliai + `listStories()` rezultatas, konvertuotas į `/istorijos/:id` `<url>` į
 `public/sitemap.xml` failo sąmoningai nėra — jei jį vėl pridėsi, sitemap nustos atspindėti realias
 istorijas.
 
+`listStories()` (`server/store.ts`) turi trečią, pasirenkamą `limit` parametrą — **nekeisk jo
+numatytosios reikšmės** (`STORY_FEED_LIMIT = 50`), nes nuo jos priklauso `/api/stories` UI srauto
+ekranas. `serveSitemap()` ir `serveStoriesFeed()` (`GET /istorijos/feed.xml`, Atom naujausioms
+istorijoms) sąmoningai paduoda daug didesnį `SITEMAP_STORY_LIMIT`/`FEED_ENTRY_LIMIT`, kad senesnės
+ar mažiau "suprastos" istorijos neišnyktų iš paieškos sistemų matomumo vien todėl, kad jos nebetelpa
+į vieno UI ekrano sąrašą — tai buvo tyliai sulaužyta prieš šį atskyrimą.
+
+IndexNow (`server/api.ts` `pingIndexNow()`) paskelbia naują istoriją Bing/Yandex iš karto, bet
+**tik** kai `INDEXNOW_KEY` aplinkos kintamasis nustatytas (numatyta — nenustatytas, tad lokaliame
+dev'e tyliai neveikia) ir **tik** `kind === "istorija"` postams — `srautas` niekada nesiunčiamas,
+nes jis vis tiek išnyks per 24 val. ir nėra prasmės jo indeksuoti. Ping'as visada `fire-and-forget`
+(`.catch(() => {})`) — jo klaida niekada neturi sutrikdyti paties posto sukūrimo atsakymo.
+
 Serverio sluoksniai griežtai atskirti:
 
 - `server/filter.ts` — grynos funkcijos, jokio I/O. Sprendžia, ar tekstas praeina (spam/PII/ilgis)

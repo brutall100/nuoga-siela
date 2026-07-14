@@ -35,6 +35,26 @@ Formatas paremtas [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   iš `["lt","en"]` į `"lt"` — EN yra tik kliento pusės perjungimas, ne atskiras URL/locale, tad
   dviejų kalbų žymėjimas būtų klaidinantis. `privacy.html`/`privatumas.html` (vienintelė reali
   dviejų URL vertimo pora) gavo `hreflang` alternate nuorodas.
+- Rašymo ekrane, pasirinkus „📖 Palikti kaip istoriją", rodomas trumpas paaiškinimas, kad tekstas
+  liks viešas neribotai ir bus randamas per Google paiešką — anksčiau šio atskleidimo nebuvo, nors
+  istorijos jau seniai buvo viešos ir naršomos `/istorijos` ekrane.
+- `listStories()` (`server/store.ts`) gavo trečią, pasirenkamą `limit` parametrą — anksčiau
+  `/api/stories` UI riba (`STORY_FEED_LIMIT = 50`) buvo bendra su `sitemap.xml`, tad istorijos virš
+  50-osios (pagal hugs) tapdavo nei UI, nei paieškos sistemoms nematomos. `serveSitemap()` ir naujas
+  `GET /istorijos/feed.xml` (Atom, naujausios 30 istorijų) dabar naudoja savo, gerokai didesnę ribą
+  (`SITEMAP_STORY_LIMIT = 5000`).
+- `sitemap.xml` papildytas `<lastmod>`/`<changefreq>`/`<priority>` kiekvienam URL, ir
+  `<xhtml:link rel="alternate" hreflang="...">` įrašais `privacy.html`/`privatumas.html` porai.
+- IndexNow (Bing/Yandex) integracija: kiekviena nauja istorija iš karto pastumiama į
+  `api.indexnow.org`, kai `INDEXNOW_KEY` aplinkos kintamasis nustatytas (`server/api.ts`
+  `pingIndexNow()`, `fire-and-forget`, niekada nesutrikdo posto kūrimo atsakymo). `main.ts` atiduoda
+  `/{raktas}.txt` patvirtinimo failą, kai raktas sukonfigūruotas. Numatyta (lokaliame dev'e) —
+  raktas nenustatytas, ping'ai tyliai nevyksta. Dokumentuota `.env.example`.
+- Pataisyta: `public/sw.js` `CACHE` versija nebuvo pakelta nuo v1.6 iki v1.9, nors visos tos
+  versijos keitė service worker'io `SHELL` sąrašo failus (`app.js`, `index.html`, `main.css`,
+  `i18n.js`) — grįžtantys naudotojai su jau įdiegtu PWA cache'u būtų toliau matę seną, hash
+  maršrutizacijos versiją. `CACHE` pakelta į `nuoga-siela-v5`, kad `activate` handler'is išvalytų
+  senus cache'us.
 
 ## [1.5] — Šauksmo kambarys + LT/EN kalbos
 

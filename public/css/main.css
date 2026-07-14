@@ -850,6 +850,12 @@ h2 {
   background: rgba(127, 209, 193, 0.08);
 }
 
+.lifespan-hint {
+  color: #55607a;
+  font-size: 12px;
+  margin-top: 6px;
+}
+
 .screen-intro {
   margin-bottom: 12px;
 }

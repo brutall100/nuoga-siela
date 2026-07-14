@@ -24,6 +24,27 @@ function json(body: unknown, status = 200): Response {
   });
 }
 
+const SITE_URL = "https://nuogasiela.lt";
+const INDEXNOW_KEY = Deno.env.get("INDEXNOW_KEY");
+
+// IndexNow (Bing/Yandex): naujai paskelbta istorija pastumiama iš karto, o ne
+// laukiant kito crawl'o. Tik "istorija" — "srautas" niekada netikslinga
+// indeksuoti, jis pats išnyks per 24 val. Fire-and-forget: klaida čia niekada
+// neturi sutrikdyti paties posto sukūrimo atsakymo vartotojui.
+function pingIndexNow(storyId: string): void {
+  if (!INDEXNOW_KEY) return;
+  fetch("https://api.indexnow.org/indexnow", {
+    method: "POST",
+    headers: { "content-type": "application/json; charset=utf-8" },
+    body: JSON.stringify({
+      host: "nuogasiela.lt",
+      key: INDEXNOW_KEY,
+      keyLocation: `${SITE_URL}/${INDEXNOW_KEY}.txt`,
+      urlList: [`${SITE_URL}/istorijos/${storyId}`],
+    }),
+  }).catch(() => {});
+}
+
 function badRequest(reason: string): Response {
   return json({ ok: false, reason }, 400);
 }
@@ -93,6 +114,7 @@ export async function handleApi(req: Request, url: URL): Promise<Response> {
 
       const sos = detectCrisis(text);
       const post = await createPost(deviceHash, text, body.emotion, kind);
+      if (kind === "istorija") pingIndexNow(post.id);
       return json({
         ok: true,
         sos,
