@@ -155,4 +155,10 @@ docs/                README screenshots
 
 ## License
 
-[MIT](LICENSE) © 2026 brutall100
+[AGPL-3.0](LICENSE) © 2026 brutall100
+
+In plain words: you may use, change and share this code, but if you run a modified version as a
+website or service, you must publish your source code under the same license to its users.
+
+The name **"Nuoga Siela"** and its logo are not covered by the license and may not be used for other
+projects without permission.

@@ -153,4 +153,10 @@ docs/                ekrano nuotraukos README failui
 
 ## Licencija
 
-[MIT](LICENSE) © 2026 brutall100
+[AGPL-3.0](LICENSE) © 2026 brutall100
+
+Paprastai tariant: kodą gali naudoti, keisti ir dalinti, bet jei paleidi pakeistą versiją kaip
+svetainę ar paslaugą, savo kodą turi atverti jos naudotojams pagal tą pačią licenciją.
+
+Pavadinimui **„Nuoga Siela“** ir logotipui licencija netaikoma. Kituose projektuose juos naudoti
+galima tik gavus leidimą.
