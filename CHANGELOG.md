@@ -4,6 +4,13 @@ Visi pastebimi projekto pakeitimai bus fiksuojami šiame faile.
 
 Formatas paremtas [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [v2.1] — 2026-09-24
+
+- Licencija pakeista iš MIT į **AGPL-3.0** (`LICENSE`): pakeistą versiją paleidęs kaip svetainę
+  privalo atverti savo kodą naudotojams. Ankstesni commit'ai lieka su MIT.
+- README.md / README.lt.md: License skyrius atnaujintas, pridėta pastaba, kad pavadinimas „Nuoga
+  Siela“ ir logotipas licencijai nepriklauso.
+
 ## [v2.0] — 2026-09-24
 
 Naujas dizainas „Paleisk upe“ ir repozitorijos sutvarkymas portfolio.
