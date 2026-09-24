@@ -1,4 +1,4 @@
-// Nuoga Siela — pagrindinis kliento kodas: hash routing'as, rašymas,
+// Nuoga Siela — pagrindinis kliento kodas: routing'as (tikri URL keliai), rašymas,
 // srautas, istorijos, SOS, nustatymai. Tekstas visada per textContent — niekada innerHTML.
 
 (function () {
@@ -195,6 +195,9 @@
         input.value = "";
         updateCounter();
         rememberMine();
+        // Žiburys „nuplaukia" nuo mygtuko prieš pereinant į srautą.
+        btnRelease.classList.add("is-sending");
+        setTimeout(() => btnRelease.classList.remove("is-sending"), 900);
         if (data.sos) {
           $("#sos-sheet").hidden = false;
         } else if (selectedKind === "istorija") {
@@ -202,6 +205,9 @@
         } else {
           toast(window.t("toast.released"), "calm");
         }
+        // Trumpa pauzė, kad spėtų pamatyti nuplaukiantį žiburį.
+        const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+        await new Promise((r) => setTimeout(r, reduced ? 0 : 450));
         navigate(selectedKind === "istorija" ? "/istorijos" : "/srautas");
       } else {
         toast(data.reason || window.t("toast.releaseFail"), "warn");
@@ -223,8 +229,13 @@
       const data = await api("/api/stats");
       const el = $("#social-proof");
       if (data.ok && data.postsToday >= 5) {
-        el.textContent = window.t("proof.line", { p: data.postsToday, h: data.hugsToday });
         el.hidden = false;
+        // Abu skaičiai „suskaičiuoja" kartu (0 → 100 % tikrosios reikšmės).
+        window.ui.countUp(el, 100, (pct) =>
+          window.t("proof.line", {
+            p: Math.round((data.postsToday * pct) / 100),
+            h: Math.round((data.hugsToday * pct) / 100),
+          }));
       } else {
         el.hidden = true;
       }
@@ -311,7 +322,7 @@
     hugLabel.textContent = window.t("hug.label");
     const hugCount = document.createElement("span");
     hugCount.className = "hug-count";
-    hugCount.textContent = post.hugs > 0 ? String(post.hugs) : "";
+    if (post.hugs > 0) window.ui.countUp(hugCount, post.hugs);
     hug.append(hugIcon, hugLabel, hugCount);
     hug.addEventListener("click", async () => {
       if (hugged.has(post.id)) return;
@@ -338,6 +349,7 @@
       copyLink.className = "copy-link";
       copyLink.textContent = "🔗";
       copyLink.title = window.t("story.copyLink");
+      copyLink.setAttribute("aria-label", window.t("story.copyLink"));
       copyLink.addEventListener("click", async () => {
         const url = location.origin + "/istorijos/" + post.id;
         await navigator.clipboard.writeText(url);
@@ -350,7 +362,8 @@
     report.type = "button";
     report.className = "report";
     report.textContent = "⚑";
-    report.title = "Pranešti";
+    report.title = window.t("report.title");
+    report.setAttribute("aria-label", window.t("report.title"));
     report.addEventListener("click", async () => {
       if (!confirm(window.t("confirm.report"))) return;
       await api(`/api/posts/${post.id}/report`, { method: "POST" });
@@ -372,6 +385,7 @@
       card.append(fuse);
     }
 
+    window.ui.reveal(card);
     return card;
   }
 

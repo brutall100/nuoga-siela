@@ -1,125 +1,158 @@
-# Nuoga Siela
+<p align="right"><strong>English</strong> · <a href="README.lt.md">Lietuviškai</a></p>
 
-> Anoniminė erdvė išsilieti. **Mes nežinome, kas tu. Ir nenorime žinoti.**
+# 🔥🌊 Nuoga Siela
 
-Rašai, ką jauti. Tada arba **sudegini** (tekstas su žarijų animacija išnyksta — niekur
-nesiunčiamas), arba **paleidi anonimiškai**. Paleisdamas renkiesi gyvavimo laiką: **srautas** (po 24
-val. fiziškai ištrinama) arba **istorija** (ilgas tekstas iki 5000 ženklų, lieka tol, kol pats
-ištrini). Kiti gali paspausti tik „Suprantu tave" — jokių komentarų.
+**An anonymous place to let it out: write what you feel, then burn it or set it adrift on the river.
+We don't know who you are, and we don't want to.**
 
-Domenas: **nuogasiela.lt** · Stack'as: **Deno + Deno KV + vanilla PWA, nulis priklausomybių**
+🌐 **Live site:** [nuogasiela.lt](https://nuogasiela.lt) · 💻 **Code:**
+[github.com/brutall100/nuoga-siela](https://github.com/brutall100/nuoga-siela)
 
----
+![Nuoga Siela: the stream in light mode](docs/screenshot.webp)
 
-## Paleidimas
+| Dark mode                                                 | Phone (390px)                                                                   |
+| --------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| ![Writing screen in dark mode](docs/screenshot-dark.webp) | <img src="docs/screenshot-mobile.webp" alt="The stream on a phone" width="260"> |
+
+## About
+
+Sometimes you need to say what hurts without telling anyone. That's what _Nuoga Siela_ ("Naked Soul"
+in Lithuanian) is for. There are no accounts, no names and no comments. Other people can only tap "I
+understand you".
+
+The design comes from the Lithuanian midsummer (Joninės) tradition of floating wreaths and candles
+down a river at night, so whatever is heavy drifts away. Fire is for burning, water is for letting
+go.
+
+## Features
+
+- ✍️ **Write freely.** Tag an emotion (anger, sadness, anxiety, guilt, loneliness, hope).
+- 🔥 **Burn it.** The text turns into embers and disappears. It is never sent to the server.
+- 🏮 **Release it.** Choose the **stream**, which is physically deleted after 24 h, or a **story**,
+  which stays until you delete it.
+- 🤍 **"I understand you".** Support without comments, one vote per device.
+- 🆘 **SOS.** Helplines and a breathing circle. If the text contains crisis words, help is offered
+  gently and the post is never blocked.
+- 🔊 **Scream room.** Audio lives only in the phone's memory and is never uploaded.
+- 🌗 **Light and dark mode.** Follows the system setting, has a toggle, and doesn't flash while
+  loading.
+- 🌊 **Living background.** Ripples spread on the water, lantern lights rise and soft glows drift.
+  Phones get half the particles, and `prefers-reduced-motion` turns them off.
+- 🌍 **LT / EN**, installable PWA, SEO (sitemap, Atom feed, server-rendered story pages).
+
+### Anonymity is enforced by technology, not just promised
+
+- The device ID is created in the browser (`crypto.randomUUID()`). The server immediately turns it
+  into `sha256(salt + uuid)` and never stores the original.
+- IP addresses are never stored. The server log keeps only `method path status`.
+- Stream posts are written with `expireIn: 24h`, so Deno KV deletes them physically on its own.
+- Fonts are self-hosted, so Google never sees who visits.
+
+## Built with
+
+| Area    | What                                                                                                                               |
+| ------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Server  | [Deno](https://deno.com) 2 + Deno KV, zero dependencies                                                                            |
+| Client  | Vanilla HTML / CSS / JS (PWA), no libraries and no build step                                                                      |
+| Fonts   | [Lora](https://fonts.google.com/specimen/Lora) for headings, [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) for text |
+| Testing | `deno test`, CI on GitHub Actions (fmt + lint + test)                                                                              |
+
+**"Let it drift" color palette** (every color lives at the top of `public/css/main.css`, in
+`:root`):
+
+| Role                 | Dark      | Light     |
+| -------------------- | --------- | --------- |
+| Background           | `#08171C` | `#EAF4F2` |
+| Surface              | `#0F242B` | `#FFFFFF` |
+| Text                 | `#E4F1EE` | `#10292E` |
+| Accent (water)       | `#4FD1BD` | `#0B7A6A` |
+| Second accent (lamp) | `#FFB86B` | `#E08A33` |
+
+All contrast ratios are checked against WCAG: body text is at least 4.5:1, UI elements at least 3:1.
+
+## What I learned
+
+- How to guarantee anonymity through **architecture**: hashes instead of IDs, TTLs instead of
+  "hidden" flags, and no IPs in logs.
+- How a reversed timestamp at the start of a Deno KV key returns the newest items first with no
+  index.
+- How an SPA with real URL paths (`history.pushState`) and server-rendered pages becomes visible to
+  Google.
+- How to build a living background that doesn't load the CPU: only `transform` and `opacity` are
+  animated, and particles are created once.
+- How a strict CSP (`script-src 'self'`) changes habits: no inline scripts or styles, and the theme
+  is set by a separate file in `<head>`.
+
+## Run it locally
+
+You need [Deno 2](https://docs.deno.com/runtime/getting_started/installation/).
 
 ```bash
-deno task dev    # http://localhost:8000 (su --watch)
-deno task test   # serverio testai
+git clone https://github.com/brutall100/nuoga-siela.git
+cd nuoga-siela
+cp .env.example .env   # optional locally; change DEVICE_SALT in production
+deno task dev          # http://localhost:8000
 ```
 
-Aplinkos kintamieji (visi nebūtini lokaliai):
+In `.env` you can set `PORT`, `DEVICE_SALT` (in production use a long random string:
+`openssl rand -hex 32`), `POST_TTL_MS`, `KV_PATH` and `INDEXNOW_KEY`. Each one is explained in
+`.env.example`.
 
-| Kintamasis    | Kam                                                         | Default      |
-| ------------- | ----------------------------------------------------------- | ------------ |
-| `PORT`        | serverio portas                                             | `8000`       |
-| `DEVICE_SALT` | druska įrenginio hash'ui — **produkcijoje BŪTINA pakeisti** | dev reikšmė  |
-| `POST_TTL_MS` | posto gyvavimo laikas (testavimui)                          | 24 val.      |
-| `KV_PATH`     | Deno KV failo kelias (lokaliai)                             | Deno default |
+Other commands:
 
-## Deploy į Deno Deploy
+```bash
+deno task test   # server tests
+deno task lint   # lint (main.ts + server/)
+deno fmt         # format
+```
 
-1. [dash.deno.com](https://dash.deno.com) → New Project → prijunk šį GitHub repo.
-2. Entrypoint: `main.ts`. Deno KV įsijungia automatiškai — jokios DB konfigūracijos.
-3. Nustatyk `DEVICE_SALT` env kintamąjį (ilgas atsitiktinis stringas).
-4. Settings → Domains → prijunk `nuogasiela.lt` (A/CNAME įrašai pagal instrukciją).
+> This project needs a server (Deno + KV), so GitHub Pages can't run it. The live version runs on
+> [Deno Deploy](https://deno.com/deploy) at [nuogasiela.lt](https://nuogasiela.lt). To deploy:
+> dash.deno.com → New Project → this repo → entrypoint `main.ts` → set `DEVICE_SALT`.
 
-## Architektūra
+## Project structure
 
 ```
-main.ts             Deno.serve: statika iš /public + /api routeris + CSP header'iai
-server/api.ts       API handleriai (JSON in/out)
-server/store.ts     Deno KV: postai, istorijos, „suprantu", pranešimai, rate limit, statistika
-server/filter.ts    spam/PII filtras + krizės žodžių detekcija (LT)
-public/js/app.js    kliento logika: routeris, rašymas, srautas, istorijos, SOS, nustatymai
-public/js/i18n.js   kalbos LT/EN (data-i18n atributai + t() dinaminiams tekstams)
-public/js/scream.js Šauksmo kambarys — garso įrašas TIK RAM'e (niekada nesiunčiamas)
-public/js/burn.js   deginimo animacija (Canvas žarijos)
-public/js/breathe.js kvėpavimo ratas 4s/6s
-public/js/profanity.js keiksmų maskavimas rodant (b***)
-public/             vanilla HTML/CSS/JS PWA — jokių bibliotekų
+main.ts              server: static files, /api, SSR story pages, sitemap, Atom, CSP
+server/api.ts        API (JSON)
+server/store.ts      Deno KV: posts, stories, hugs, rate limits, stats
+server/filter.ts     spam / personal data filter and crisis word detection
+public/index.html    single page with every screen
+public/css/main.css  design system and palette (:root)
+public/js/theme.js   light / dark mode (no flash)
+public/js/river.js   living background (ripples, lanterns)
+public/js/ui.js      button ripple, reveal on scroll, count-up
+public/js/app.js     routing, writing, stream, stories, settings
+public/js/burn.js    burn animation (Canvas)
+public/js/scream.js  scream room (audio only in RAM)
+public/fonts/        Lora and Nunito Sans (woff2 + OFL licenses)
+public/images/       og-image.webp
+docs/                README screenshots
 ```
 
 ### API
 
-| Metodas | Kelias                        | Kas                                                                                                                                                                                              |
-| ------- | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `POST`  | `/api/posts`                  | `{text, emotion, kind}` + `X-Device`. `kind`: `srautas` (24 val., iki 1000 ženklų, 5/val.) arba `istorija` (be termino, iki 5000 ženklų, 2/parą). Grąžina `sos: true`, jei tekste krizės žodžiai |
-| `GET`   | `/api/posts?emotion=`         | srautas, naujausi viršuje (paslėpti ≥3 pranešimų negrąžinami)                                                                                                                                    |
-| `GET`   | `/api/stories?emotion=&sort=` | istorijos; `sort`: `suprastos` (pagal hugs, default) arba `naujausios`                                                                                                                           |
-| `GET`   | `/api/mine`                   | mano tekstai su hugs — „tave suprato X žmonių" banneriui                                                                                                                                         |
-| `GET`   | `/api/stats`                  | `{postsToday, hugsToday}` — socialinio įrodymo eilutei                                                                                                                                           |
-| `POST`  | `/api/posts/:id/hug`          | „Suprantu tave" (1×/įrenginiui, veikia ir istorijoms)                                                                                                                                            |
-| `POST`  | `/api/posts/:id/report`       | pranešti; po 3 — auto-slėpimas (ne trynimas)                                                                                                                                                     |
-| `POST`  | `/api/mine/delete`            | ištrinti visus savo postus ir istorijas                                                                                                                                                          |
+| Method | Path                          | What                                                                      |
+| ------ | ----------------------------- | ------------------------------------------------------------------------- |
+| `POST` | `/api/posts`                  | `{text, emotion, kind}` + `X-Device`. Returns `sos: true` on crisis words |
+| `GET`  | `/api/posts?emotion=`         | stream, newest first                                                      |
+| `GET`  | `/api/stories?emotion=&sort=` | stories (`suprastos` = most understood, `naujausios` = newest)            |
+| `GET`  | `/api/mine`                   | my texts with their hug counts                                            |
+| `GET`  | `/api/stats`                  | `{postsToday, hugsToday}`                                                 |
+| `POST` | `/api/posts/:id/hug`          | "I understand you" (once per device)                                      |
+| `POST` | `/api/posts/:id/report`       | report; after 3 reports the post is hidden automatically                  |
+| `POST` | `/api/mine/delete`            | delete all my posts                                                       |
 
-### Anonimiškumo garantijos (technologijos, ne pažadų lygiu)
+## Credits
 
-- Jokios registracijos. Įrenginio UUID gimsta naršyklėje (`crypto.randomUUID()`), serveris jį iškart
-  paverčia `sha256(salt + uuid)` ir originalo niekur nesaugo.
-- Prie postų nėra IP adresų. Loguose — tik `metodas kelias statusas`.
-- Kiekvienas KV įrašas kuriamas su `expireIn: 24h` — Deno KV pats **fiziškai ištrina** duomenis. Ne
-  cron'as, ne „hidden" flag'as — trynimas įrašo sukūrimo momentu užprogramuotas.
-- „Ištrinti mano duomenis" nustatymuose trina viską iškart.
+- Fonts: [Lora](https://github.com/cyrealtype/Lora-Cyrillic) (The Lora Project Authors) and
+  [Nunito Sans](https://github.com/Fonthausen/NunitoSans) (The Nunito Sans Project Authors), both
+  under the [SIL Open Font License 1.1](https://openfontlicense.org). The license texts are in
+  `public/fonts/`.
+- Helplines: [Vilties linija](https://www.viltieslinija.lt) 116 123,
+  [Jaunimo linija](https://www.jaunimolinija.lt) 8 800 28888.
+- Inspiration: Vent, 7 Cups, Jodel. Psychology: J. Pennebaker (expressive writing).
 
-### Apsauga nuo šiukšlių (be moderatorių)
+## License
 
-- Žodžių filtras: nuorodos, el. paštai, telefonai (išskyrus pagalbos linijas), spam žodynas.
-  Keiksmai **leidžiami** — tai išsiliejimo erdvė.
-- Rate limit: 5 paleidimai/val. įrenginiui.
-- „Pranešti" → po 3 pranešimų iš skirtingų įrenginių postas dingsta automatiškai.
-- Krizės žodžiai (savižudybė ir pan.) → klientui grąžinama `sos: true`, parodomos pagalbos linijos:
-  **Vilties linija 116 123**, **Jaunimo linija 8 800 28888**.
-
-## Idėjos iš užsienio app'ų (kas įtraukta / kas laukia)
-
-**v1 (įtraukta):**
-
-- _Vent_ — emocijos žyma prie posto + srauto filtras „randu tokius kaip aš"
-- _HearMe / 7 Cups_ — palaikymas be komentarų: „Suprantu tave" skaitiklis
-- _Jodel_ — bendruomeninė moderacija: auto-slėpimas po pranešimų
-- Deginimo ritualas — katarsis be jokio serverio
-- **Istorijos** — ilgi tekstai, kurie lieka; rūšiavimas pagal „Suprantu tave"
-- **Šauksmo kambarys** — garso įrašymas TIK į RAM: įrašai, perklausai, ištrini; niekada nesiunčiama
-  į serverį, niekada nerašoma į diską (palikus ekraną — MediaRecorder stabdomas, blob'as ir object
-  URL panaikinami, mikrofonas atlaisvinamas)
-- **Kalbos** — LT (default) ir EN, perjungiama nustatymuose
-
-**Psichologija (kur įausta, be dark patterns):**
-
-- _Pennebaker (ekspresyvusis rašymas)_ — hint'as rašymo ekrane: mokslas duoda „leidimą" rašyti
-- _Yalom universalumas_ („ne aš vienas") — Istorijų ekranas + emocijų filtrai
-- _Pripažinimas_ — „Tavo tekstus suprato X žmonių" banneris = grįžimo priežastis be push'ų
-- _Socialinis įrodymas_ — „šiandien paleisti X tekstų" (rodoma tik kai ≥5, kad tuštuma nesimatytų)
-- Jokių streak'ų, badge'ų ar FOMO — tai kirstųsi su saugios erdvės jausmu
-
-**Vėliau:**
-
-- Emocijų kalendorius su statistika (freemium ~2–3 €/mėn.)
-- Raminantys foniniai garsai, temos
-- „Palaikyk projektą" vienkartinis pirkinys
-- B2B: grupės erdvės mokykloms/darbovietėms
-- **Jokių reklamų. Niekada.** Bazinis išsiliejimas — visada nemokamas.
-
-## Kelias į Google Play
-
-PWA (manifest + service worker jau yra) →
-[Bubblewrap](https://github.com/GoogleChromeLabs/bubblewrap) → TWA → Play Console. Prieš pateikimą:
-
-- [ ] PNG ikonos 192/512 px (Play nepriima SVG) — sugeneruoti iš `public/icons/icon.svg`
-- [x] Privatumo politikos puslapis viešu URL — `https://nuogasiela.lt/privatumas.html` (LT),
-      `https://nuogasiela.lt/privacy.html` (EN)
-- [ ] Data safety forma: „no data collected linked to user" (turim tik anoniminius hash'us);
-      mikrofonas naudojamas Šauksmo kambaryje, bet garsas niekada nepalieka įrenginio — žymėti „not
-      collected"
-- [ ] Self-harm policy: SOS ekranas su linijomis jau yra — Play to reikalauja tokio tipo app'ams
+[MIT](LICENSE) © 2026 brutall100

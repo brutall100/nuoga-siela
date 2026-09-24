@@ -1,5 +1,17 @@
+# Priklausomybės (projektas jų neturi, bet dėl visa ko)
 node_modules/
+
+# Vietinė Deno KV duomenų bazė
 *.sqlite
 *.sqlite3
 *.db
+*.kv
+*.kv-shm
+*.kv-wal
+
+# Slapti nustatymai — niekada į git
 .env
+
+# OS / redaktorių šiukšlės
+.DS_Store
+Thumbs.db
