@@ -29,6 +29,8 @@
 
       const W = rect.width;
       const H = rect.height;
+      // Žarijų spalva — iš paletės (--burn-rgb main.css), kad tiktų abiem režimams.
+      const rgb = getComputedStyle(document.documentElement).getPropertyValue("--burn-rgb").trim();
 
       // Žarijos gimsta ten, kur maždaug buvo teksto eilutės.
       const lines = Math.max(textarea.value.split("\n").length, 3);
@@ -43,7 +45,6 @@
           r: 1 + Math.random() * 2.6,
           life: 1,
           decay: 0.008 + Math.random() * 0.014,
-          hue: 25 + Math.random() * 25, // gintaras -> oranžinė
         });
       }
 
@@ -61,8 +62,8 @@
         const glow = Math.max(0, 1 - t / 1.2);
         if (glow > 0) {
           const grad = ctx.createRadialGradient(W / 2, H * 0.7, 10, W / 2, H * 0.7, W * 0.7);
-          grad.addColorStop(0, `rgba(245, 158, 11, ${0.16 * glow})`);
-          grad.addColorStop(1, "rgba(245, 158, 11, 0)");
+          grad.addColorStop(0, `rgba(${rgb}, ${0.18 * glow})`);
+          grad.addColorStop(1, `rgba(${rgb}, 0)`);
           ctx.fillStyle = grad;
           ctx.fillRect(0, 0, W, H);
         }
@@ -78,8 +79,8 @@
           const a = Math.max(p.life, 0);
           ctx.beginPath();
           ctx.arc(p.x, p.y, p.r * a, 0, Math.PI * 2);
-          ctx.fillStyle = `hsla(${p.hue}, 95%, ${45 + a * 20}%, ${a})`;
-          ctx.shadowColor = `hsla(${p.hue}, 95%, 55%, ${a * 0.8})`;
+          ctx.fillStyle = `rgba(${rgb}, ${a})`;
+          ctx.shadowColor = `rgba(${rgb}, ${a * 0.8})`;
           ctx.shadowBlur = 8;
           ctx.fill();
         }

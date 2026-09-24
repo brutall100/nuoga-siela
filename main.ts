@@ -21,6 +21,7 @@ const MIME: Record<string, string> = {
   ".webmanifest": "application/manifest+json; charset=utf-8",
   ".svg": "image/svg+xml",
   ".png": "image/png",
+  ".webp": "image/webp",
   ".ico": "image/x-icon",
   ".woff2": "font/woff2",
   ".txt": "text/plain; charset=utf-8",
@@ -129,6 +130,10 @@ async function serveIndexHtml(routePath: string): Promise<Response> {
 
 // ---------- Istorijos permalink'as (SSR — tekstas matomas be JS) ----------
 
+const BRAND_FLAME_PATH =
+  "M16 3c.8 3.4-3.6 5.2-3.6 9.4a3.6 3.6 0 0 0 7.2 0c0-1.6-.8-2.6-.8-4.2 1.8.8 2.8 2.6 2.8 4.2" +
+  "a5.6 5.6 0 1 1-11.2 0C10.4 7.6 15.2 6.4 16 3Z";
+
 const STORY_PATH_RE = /^\/istorijos\/([\w-]+)$/;
 
 const EMOTION_LABELS_LT: Record<Emotion, string> = {
@@ -177,7 +182,7 @@ function renderStoryPage(
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <meta name="theme-color" content="#0F1420">
+    <meta name="theme-color" content="#08171C">
     <meta name="description" content="${description}">
     <title>${title}</title>
     <link rel="canonical" href="${url}">
@@ -187,22 +192,31 @@ function renderStoryPage(
     <meta property="og:description" content="${description}">
     <meta property="og:url" content="${url}">
     <meta property="og:locale" content="lt_LT">
-    <meta property="og:image" content="${SITE_URL}/icons/og-image.png">
+    <meta property="og:image" content="${SITE_URL}/images/og-image.webp">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="${title}">
     <meta name="twitter:description" content="${description}">
-    <meta name="twitter:image" content="${SITE_URL}/icons/og-image.png">
+    <meta name="twitter:image" content="${SITE_URL}/images/og-image.webp">
     <link rel="stylesheet" href="/css/main.css">
     <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+    <script src="/js/theme.js"></script>
+    <script src="/js/river.js" defer></script>
     ${jsonLd}
   </head>
   <body>
-    <div class="story-page">
+    <main class="story-page">
+      <a class="legal-brand" href="/">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+          <path class="mark-flame" d="${BRAND_FLAME_PATH}" />
+          <path class="mark-water" d="M5 23c2.2-1.6 4.4-1.6 6.6 0s4.4 1.6 6.6 0 4.4-1.6 6.6 0" />
+        </svg>
+        <span>Nuoga Siela</span>
+      </a>
       <p class="promise">Mes nežinome, kas tu. Ir nenorime žinoti.</p>
       <p class="story-meta">${emotionLabel} · 🤍 ${story.hugs}</p>
       <p class="story-text">${escapeHtml(story.text)}</p>
       <a class="back-link empty-link" href="/istorijos">← Grįžti į Nuogą Sielą</a>
-    </div>
+    </main>
   </body>
 </html>
 `;

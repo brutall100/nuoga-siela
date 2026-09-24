@@ -109,6 +109,15 @@
       "banner.one": "Tavo tekstą suprato dar 1 žmogus 🤍",
       "banner.many": "Tavo tekstus suprato dar {n} žmonės 🤍",
       "proof.line": 'Šiandien paleisti {p} tekstai · {h} kartų „suprantu"',
+      skip: "Pereiti prie turinio",
+      "theme.toggle": "Perjungti šviesų / tamsų režimą",
+      "hero.title": "Ką šiandien neši?",
+      "write.label": "Tavo tekstas",
+      "aria.sos": "Pagalba dabar",
+      "aria.refresh": "Atnaujinti",
+      "aria.emotions": "Kaip jautiesi?",
+      "aria.scream": "Rėkti",
+      "report.title": "Pranešti",
     },
     en: {
       promise: "We don't know who you are. And we don't want to.",
@@ -211,6 +220,15 @@
       "banner.one": "1 more person understood your text 🤍",
       "banner.many": "{n} more people understood your texts 🤍",
       "proof.line": 'Today: {p} texts released · {h} times "I understand"',
+      skip: "Skip to content",
+      "theme.toggle": "Toggle light / dark mode",
+      "hero.title": "What are you carrying today?",
+      "write.label": "Your text",
+      "aria.sos": "Help now",
+      "aria.refresh": "Refresh",
+      "aria.emotions": "How do you feel?",
+      "aria.scream": "Scream",
+      "report.title": "Report",
     },
   };
 
@@ -246,6 +264,9 @@
       });
       document.querySelectorAll("[data-i18n-aria]").forEach((el) => {
         el.setAttribute("aria-label", window.t(el.dataset.i18nAria));
+      });
+      document.querySelectorAll("[data-i18n-title]").forEach((el) => {
+        el.title = window.t(el.dataset.i18nTitle);
       });
     },
   };

@@ -45,7 +45,7 @@ atskiro build žingsnio, jokio bundler'io, jokių priklausomybių (`deno.json` n
 mapping'o į išorinius paketus). Klientas — vanilla JS, IIFE moduliai `public/js/*.js`, įkeliami
 tiesiogiai `<script>` tag'ais (žr. `public/index.html` tvarką) — ne ES modules, susitarimas yra
 `window.xxx` eksportai (`window.t`, `window.i18n`, `window.maskProfanity`, `window.burnText`,
-`window.breatheStart/Stop`, `window.scream*`).
+`window.ui`, `window.themeToggle`, `window.breatheStart/Stop`, `window.scream*`).
 
 ### Maršrutizacija: tikri URL keliai, ne hash
 
@@ -173,6 +173,18 @@ naudojami `data-i18n*` atributai (pritaikomi per `window.i18n.apply()`), dinamin
 kintamaisiais — `window.t(key, {var: value})` su `{var}` placeholder'iais stringe. Pridedant naują
 tekstą, visada įrašyk raktą į **abu** kalbos objektus — `window.t()` fallback'ina į `lt`, bet
 trūkstamas EN vertimas liktų nepastebėtas.
+
+### Dizainas, tema ir gyvas fonas
+
+Visa paletė — tik `public/css/main.css` viršuje: `:root` (tamsus, numatytas) ir
+`:root[data-theme="light"]`. Naujų spalvų kode nerašyk tiesiogiai — pridėk kintamąjį. `data-theme`
+**visada** nustato `public/js/theme.js`, įkeliamas sinchroniškai `<head>` (CSP neleidžia inline
+skripto, todėl tai atskiras failas) — taip puslapis nemirga. `window.themeToggle()` perjungia ir
+įsimena `ns_theme` localStorage. `public/js/river.js` kuria gyvą foną (`.river`, `position: fixed`,
+`pointer-events: none`) — animuojami tik `transform`/`opacity`, su `prefers-reduced-motion` dalelių
+nekuria. `public/js/ui.js` eksportuoja `window.ui.reveal(el)` ir `window.ui.countUp(el, to, fmt)`.
+Dinaminius parametrus dalelėms dėk per `el.style.setProperty()` (CSSOM) — `style=""` atributai
+HTML'e blokuojami CSP. Šriftai savi (`public/fonts/`), ne iš Google — dėl anonimiškumo.
 
 ### Saugumo header'iai
 

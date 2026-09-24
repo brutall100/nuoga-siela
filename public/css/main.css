@@ -1,31 +1,168 @@
-/* Nuoga Siela — dizaino sistema.
-   Nuotaika: naktis, kai niekas nemato. Gili mėlyna bazė, gintaras ugniai,
-   žalsva ramybei. Viskas rašyta ranka, be jokių bibliotekų. */
+/* Nuoga Siela — dizaino sistema „Paleisk upe".
+   Idėja: Joninių naktį žmonės paleidžia vainikus ir žiburius upe — tai, kas
+   sunku, nuplaukia. Gili naktinė upė (tamsus režimas) arba rūkas virš vandens
+   auštant (šviesus). Ugnis (gintaras) — deginimui, vanduo (žalsvai mėlyna) —
+   paleidimui. Visos spalvos gyvena TIK šiame :root bloke — norint pakeisti
+   paletę, keisk tik čia. */
 
+/* ---------- Šriftai (savi, ne iš Google — kad niekas nematytų lankytojų IP) ---------- */
+
+@font-face {
+  font-family: "Lora";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("/fonts/lora-latin-ext.woff2") format("woff2");
+  unicode-range:
+    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
+    U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F,
+    U+A720-A7FF;
+}
+@font-face {
+  font-family: "Lora";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("/fonts/lora-latin.woff2") format("woff2");
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Nunito Sans";
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url("/fonts/nunito-sans-latin-ext.woff2") format("woff2");
+  unicode-range:
+    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
+    U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F,
+    U+A720-A7FF;
+}
+@font-face {
+  font-family: "Nunito Sans";
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url("/fonts/nunito-sans-latin.woff2") format("woff2");
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* ---------- Paletė ---------- */
+/* Tamsus režimas — naktinė upė (numatytas). Kontrastas patikrintas (WCAG):
+   tekstas ≥ 4.5:1, UI elementai ≥ 3:1 ant --surface ir --bg. */
 :root {
-  --bg: #0f1420;
-  --bg-raised: #161d2e;
-  --bg-card: #1a2236;
-  --line: #232d45;
-  --text: #e8ecf4;
-  --text-dim: #8a94ab;
-  --amber: #f59e0b;
-  --amber-deep: #ef6c00;
-  --calm: #7fd1c1;
-  --calm-deep: #3fa796;
-  --danger: #e5484d;
+  color-scheme: dark;
 
-  --emo-pyktis: #e5484d;
-  --emo-liudesys: #5b8def;
-  --emo-nerimas: #b07ce8;
-  --emo-kalte: #c98a5b;
-  --emo-vienatve: #6b7a99;
-  --emo-viltis: #7fd1c1;
+  --bg: #08171c; /* upė naktį */
+  --surface: #0f242b; /* kortelės, laukeliai */
+  --surface-2: #14303a; /* pakeltas paviršius, aktyvūs chip'ai */
+  --line: #1c3940;
+  --line-strong: #2a5059;
+  --text: #e4f1ee;
+  --text-dim: #9dbdb7;
+  --text-faint: #7fa39c;
 
-  --radius: 16px;
-  --radius-sm: 10px;
-  --shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
-  --tabbar-h: 64px;
+  --accent: #4fd1bd; /* vanduo — paleidimas, pagrindinis veiksmas */
+  --accent-strong: #6fe0ce; /* vandens spalva tekstui */
+  --accent-deep: #2fae9b;
+  --on-accent: #062a24;
+  --ember: #ffb86b; /* žibintas / ugnis — deginimas */
+  --ember-strong: #ffb86b;
+  --ember-deep: #f08a3c;
+  --on-ember: #2b1600;
+  --danger: #ff8a8f;
+  --danger-bg: rgba(255, 138, 143, 0.12);
+  --danger-line: rgba(255, 138, 143, 0.5);
+
+  --emo-pyktis: #f0686d;
+  --emo-liudesys: #6f9cf2;
+  --emo-nerimas: #b98ceb;
+  --emo-kalte: #d39a6c;
+  --emo-vienatve: #8a9bbb;
+  --emo-viltis: #4fd1bd;
+
+  /* Gyvas fonas: švytėjimų ir dalelių ryškumas (tamsoje šviečia ryškiau). */
+  --glow-accent: rgba(79, 209, 189, 0.3);
+  --glow-ember: rgba(255, 184, 107, 0.22);
+  --ripple-line: rgba(111, 224, 206, 0.35);
+  --lantern: #ffc98a;
+  --lantern-halo: rgba(255, 184, 107, 0.55);
+  --water-lines: rgba(111, 224, 206, 0.05);
+
+  --glass: rgba(15, 36, 43, 0.82);
+  --tabbar-bg: rgba(8, 23, 28, 0.86);
+  --overlay: rgba(4, 12, 15, 0.72);
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  --shadow-lift: 0 16px 40px rgba(0, 0, 0, 0.45);
+  --btn-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  --focus: #ffd29e;
+
+  /* Deginimo animacijai (burn.js skaito šią reikšmę) */
+  --burn-rgb: 255, 184, 107;
+
+  --font-head: "Lora", Georgia, "Times New Roman", serif;
+  --font-body: "Nunito Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  /* Forma: „akmenukas upėje" — du kampai apvalūs, du beveik tiesūs. */
+  --radius: 8px 24px 8px 24px;
+  --radius-soft: 18px;
+  --radius-sm: 12px;
+  --tabbar-h: 66px;
+}
+
+/* Šviesus režimas — rūkas virš upės auštant. Tos pačios spalvos, tik
+   patamsintos tekstui (pvz. #0F8C7A → #0B7A6A mygtukui, kad baltas tekstas
+   pasiektų 5.2:1). */
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --bg: #eaf4f2;
+  --surface: #ffffff;
+  --surface-2: #f4faf9;
+  --line: #cfe3df;
+  --line-strong: #a9cbc5;
+  --text: #10292e;
+  --text-dim: #48656a;
+  --text-faint: #52706f;
+
+  --accent: #0b7a6a;
+  --accent-strong: #0b7465;
+  --accent-deep: #08604f;
+  --on-accent: #ffffff;
+  --ember: #e08a33;
+  --ember-strong: #9c5813;
+  --ember-deep: #b86a1f;
+  --on-ember: #2b1600;
+  --danger: #b42a31;
+  --danger-bg: rgba(180, 42, 49, 0.08);
+  --danger-line: rgba(180, 42, 49, 0.45);
+
+  --emo-pyktis: #c7353b;
+  --emo-liudesys: #3a6fd8;
+  --emo-nerimas: #8a55c7;
+  --emo-kalte: #a8683a;
+  --emo-vienatve: #5e6e8c;
+  --emo-viltis: #0f8c7a;
+
+  --glow-accent: rgba(15, 140, 122, 0.2);
+  --glow-ember: rgba(224, 138, 51, 0.2);
+  --ripple-line: rgba(11, 122, 106, 0.28);
+  --lantern: #f0a14e;
+  --lantern-halo: rgba(224, 138, 51, 0.4);
+  --water-lines: rgba(11, 122, 106, 0.05);
+
+  --glass: rgba(255, 255, 255, 0.86);
+  --tabbar-bg: rgba(234, 244, 242, 0.88);
+  --overlay: rgba(16, 41, 46, 0.45);
+  --shadow: 0 10px 30px rgba(16, 41, 46, 0.08);
+  --shadow-lift: 0 18px 40px rgba(16, 41, 46, 0.14);
+  --btn-shadow: 0 6px 18px rgba(16, 41, 46, 0.14);
+  --focus: #b86a1f;
+
+  --burn-rgb: 224, 138, 51;
 }
 
 * {
@@ -43,29 +180,197 @@
 
 html {
   height: 100%;
+  overflow-x: hidden;
 }
 
 body {
   min-height: 100%;
-  background:
-    radial-gradient(1200px 600px at 80% -10%, #182138 0%, transparent 60%),
-    radial-gradient(900px 500px at -10% 110%, #131b2c 0%, transparent 55%),
-    var(--bg);
+  background: var(--bg);
   color: var(--text);
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-family: var(--font-body);
   font-size: 16px;
-  line-height: 1.55;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  transition: background-color 0.4s ease, color 0.4s ease;
 }
 
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+.skip-link {
+  position: fixed;
+  left: 12px;
+  top: -60px;
+  z-index: 100;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: 700;
+  padding: 10px 16px;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  transition: top 0.2s ease;
+}
+.skip-link:focus {
+  top: 12px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ---------- Gyvas fonas: naktinė upė (river.js) ---------- */
+/* Sluoksniai: 1) du dideli neryškūs švytėjimai, 2) vandens ratilai,
+   3) kylantys žibintų žiburėliai, 4) statiška vandens linijų tekstūra.
+   Animuojama tik transform ir opacity. */
+
+.river {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.river-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  will-change: transform;
+}
+.river-glow-ember {
+  width: 46vmax;
+  height: 46vmax;
+  left: -14vmax;
+  top: -16vmax;
+  background: var(--glow-ember);
+  animation: glow-drift 26s ease-in-out infinite alternate;
+}
+.river-glow-water {
+  width: 60vmax;
+  height: 36vmax;
+  right: -18vmax;
+  bottom: -14vmax;
+  background: var(--glow-accent);
+  animation: glow-drift 32s ease-in-out -8s infinite alternate-reverse;
+}
+
+@keyframes glow-drift {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(6vmax, 4vmax, 0) scale(1.12);
+  }
+}
+
+/* Vandens paviršiaus tekstūra — plonos horizontalios linijos apatinėje dalyje. */
+.river::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 55%;
+  background: repeating-linear-gradient(
+    180deg,
+    transparent 0 13px,
+    var(--water-lines) 13px 14px
+  );
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 70%);
+  mask-image: linear-gradient(180deg, transparent, #000 70%);
+}
+
+/* Ratilas: elipsė, kuri plečiasi ir išblunka (dydis/trukmė — iš JS). */
+.ripple-ring {
+  position: absolute;
+  width: var(--size, 160px);
+  height: calc(var(--size, 160px) * 0.34);
+  margin: calc(var(--size, 160px) * -0.17) 0 0 calc(var(--size, 160px) * -0.5);
+  border: 1.5px solid var(--ripple-line);
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(0.1);
+  animation: ring-spread var(--dur, 9s) cubic-bezier(0.2, 0.6, 0.3, 1) var(--delay, 0s)
+    infinite;
+}
+
+@keyframes ring-spread {
+  0% {
+    opacity: 0;
+    transform: scale(0.1);
+  }
+  15% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+
+/* Žibintas: išorinis elementas kyla, vidinis svyruoja į šonus. */
+.lantern {
+  position: absolute;
+  bottom: -20px;
+  opacity: 0;
+  animation: lantern-rise var(--dur, 22s) linear var(--delay, 0s) infinite;
+}
+.lantern-light {
+  display: block;
+  width: var(--size, 5px);
+  height: var(--size, 5px);
+  border-radius: 50%;
+  background: var(--lantern);
+  box-shadow: 0 0 10px 3px var(--lantern-halo);
+  animation: lantern-sway var(--sway-dur, 6s) ease-in-out infinite alternate;
+}
+
+@keyframes lantern-rise {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0);
+  }
+  10% {
+    opacity: var(--alpha, 0.8);
+  }
+  80% {
+    opacity: var(--alpha, 0.8);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(0, calc(-100vh - 40px), 0);
+  }
+}
+@keyframes lantern-sway {
+  from {
+    transform: translateX(calc(var(--drift, 16px) * -1));
+  }
+  to {
+    transform: translateX(var(--drift, 16px));
+  }
+}
+
+/* ---------- Karkasas ---------- */
+
 .app {
+  position: relative;
+  z-index: 1;
   max-width: 640px;
   margin: 0 auto;
   min-height: 100vh;
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
-  padding: 0 16px calc(var(--tabbar-h) + 20px);
+  padding: 0 16px calc(var(--tabbar-h) + 24px);
 }
 
 /* ---------- Viršus ---------- */
@@ -74,42 +379,111 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 10px;
   padding: 18px 2px 10px;
 }
 
 .brand {
   display: flex;
   align-items: center;
-  gap: 9px;
+  gap: 10px;
   text-decoration: none;
   color: var(--text);
-  font-weight: 650;
-  letter-spacing: 0.4px;
-  font-size: 17px;
+  font-family: var(--font-head);
+  font-weight: 600;
+  font-size: 21px;
+  letter-spacing: 0.2px;
 }
 
-.brand-flame {
-  width: 22px;
-  height: 22px;
-  fill: var(--amber);
-  filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.45));
+.brand-mark {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+}
+.brand-mark .mark-flame {
+  fill: var(--ember);
+  transform-origin: 50% 70%;
+  animation: flame-flicker 3.2s ease-in-out infinite;
+}
+.brand-mark .mark-water {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+
+@keyframes flame-flicker {
+  0%,
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+  40% {
+    transform: scale(1.04, 0.97) rotate(-2deg);
+  }
+  70% {
+    transform: scale(0.97, 1.04) rotate(1.5deg);
+  }
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.theme-toggle {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid var(--line-strong);
+  background: var(--glass);
+  color: var(--text);
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+.theme-toggle:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+}
+.theme-toggle svg {
+  width: 19px;
+  height: 19px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  transition: transform 0.5s ease;
+}
+.theme-toggle:hover svg {
+  transform: rotate(-20deg);
+}
+.theme-toggle .icon-sun {
+  display: none;
+}
+:root[data-theme="light"] .theme-toggle .icon-sun {
+  display: block;
+}
+:root[data-theme="light"] .theme-toggle .icon-moon {
+  display: none;
 }
 
 .sos-btn {
-  color: var(--text);
+  color: var(--danger);
   text-decoration: none;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: 1px;
-  padding: 7px 14px;
-  border: 1px solid rgba(229, 72, 77, 0.55);
+  padding: 8px 15px;
+  border: 1px solid var(--danger-line);
   border-radius: 999px;
-  background: rgba(229, 72, 77, 0.10);
-  transition: background 0.2s, box-shadow 0.2s;
+  background: var(--danger-bg);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 .sos-btn:hover {
-  background: rgba(229, 72, 77, 0.22);
-  box-shadow: 0 0 14px rgba(229, 72, 77, 0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px var(--danger-bg);
 }
 
 /* ---------- Ekranai ---------- */
@@ -120,7 +494,7 @@ body {
   flex-direction: column;
 }
 .screen {
-  animation: screen-in 0.28s ease both;
+  animation: screen-in 0.4s ease both;
   padding-top: 8px;
 }
 .screen[hidden] {
@@ -130,7 +504,7 @@ body {
 @keyframes screen-in {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
@@ -139,29 +513,49 @@ body {
 }
 
 h1 {
-  font-size: 22px;
-  font-weight: 650;
+  font-family: var(--font-head);
+  font-size: 27px;
+  font-weight: 600;
+  line-height: 1.25;
 }
 h2 {
-  font-size: 16px;
+  font-family: var(--font-head);
+  font-size: 18px;
   font-weight: 600;
-  color: var(--text-dim);
+  color: var(--text);
   margin-bottom: 10px;
 }
 .muted {
   color: var(--text-dim);
-  font-size: 14px;
+  font-size: 14.5px;
 }
 
 /* ---------- Rašymo ekranas ---------- */
 
+.hero {
+  text-align: center;
+  margin: 14px 0 18px;
+}
+.hero-title {
+  font-size: 30px;
+  margin-bottom: 6px;
+}
 .promise {
   color: var(--text-dim);
-  font-size: 13.5px;
-  letter-spacing: 0.2px;
-  text-align: center;
-  margin: 6px 0 14px;
+  font-family: var(--font-head);
+  font-size: 15px;
   font-style: italic;
+  text-align: center;
+}
+
+.write-card {
+  background: var(--glass);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 14px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .write-area {
@@ -169,27 +563,29 @@ h2 {
 }
 
 #write-input {
+  display: block;
   width: 100%;
-  min-height: 34vh;
-  background: var(--bg-raised);
+  min-height: 32vh;
+  background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   color: var(--text);
   font: inherit;
   font-size: 17px;
-  line-height: 1.65;
-  padding: 18px;
+  line-height: 1.7;
+  padding: 16px;
   resize: none;
   outline: none;
-  caret-color: var(--amber);
+  caret-color: var(--ember);
   transition: border-color 0.25s, box-shadow 0.25s;
 }
-#write-input:focus {
-  border-color: rgba(245, 158, 11, 0.35);
-  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.08);
+#write-input:focus-visible {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--glow-accent);
+  outline: none;
 }
 #write-input::placeholder {
-  color: #55607a;
+  color: var(--text-faint);
 }
 
 #burn-canvas {
@@ -198,7 +594,7 @@ h2 {
   width: 100%;
   height: 100%;
   pointer-events: none;
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
 }
 
 .write-meta {
@@ -211,7 +607,7 @@ h2 {
 }
 
 .char-count {
-  color: #55607a;
+  color: var(--text-faint);
   font-size: 12.5px;
   font-variant-numeric: tabular-nums;
 }
@@ -227,54 +623,71 @@ h2 {
 .emo {
   --dot: var(--text-dim);
   font: inherit;
-  font-size: 12.5px;
+  font-size: 13px;
   color: var(--text-dim);
   background: transparent;
-  border: 1px solid var(--line);
+  border: 1px solid var(--line-strong);
   border-radius: 999px;
-  padding: 5px 11px 5px 22px;
+  padding: 5px 12px 5px 23px;
   cursor: pointer;
   position: relative;
-  transition: all 0.18s;
+  transition: transform 0.18s, color 0.18s, border-color 0.18s, box-shadow 0.18s;
 }
 .emo::before {
   content: "";
   position: absolute;
   left: 9px;
   top: 50%;
-  transform: translateY(-50%);
-  width: 7px;
-  height: 7px;
+  width: 8px;
+  height: 8px;
+  margin-top: -4px;
   border-radius: 50%;
   background: var(--dot);
-  opacity: 0.85;
 }
-.emo[data-emotion="pyktis"] {
+.emo:hover {
+  transform: translateY(-1px);
+  color: var(--text);
+}
+.emo[data-emotion="pyktis"],
+.card[data-emotion="pyktis"] {
   --dot: var(--emo-pyktis);
+  --emo: var(--emo-pyktis);
 }
-.emo[data-emotion="liudesys"] {
+.emo[data-emotion="liudesys"],
+.card[data-emotion="liudesys"] {
   --dot: var(--emo-liudesys);
+  --emo: var(--emo-liudesys);
 }
-.emo[data-emotion="nerimas"] {
+.emo[data-emotion="nerimas"],
+.card[data-emotion="nerimas"] {
   --dot: var(--emo-nerimas);
+  --emo: var(--emo-nerimas);
 }
-.emo[data-emotion="kalte"] {
+.emo[data-emotion="kalte"],
+.card[data-emotion="kalte"] {
   --dot: var(--emo-kalte);
+  --emo: var(--emo-kalte);
 }
-.emo[data-emotion="vienatve"] {
+.emo[data-emotion="vienatve"],
+.card[data-emotion="vienatve"] {
   --dot: var(--emo-vienatve);
+  --emo: var(--emo-vienatve);
 }
-.emo[data-emotion="viltis"] {
+.emo[data-emotion="viltis"],
+.card[data-emotion="viltis"] {
   --dot: var(--emo-viltis);
+  --emo: var(--emo-viltis);
 }
 
 .emo.is-active {
   color: var(--text);
   border-color: var(--dot);
-  box-shadow: 0 0 10px color-mix(in srgb, var(--dot) 35%, transparent);
+  background: color-mix(in srgb, var(--dot) 14%, transparent);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--dot) 30%, transparent);
 }
 
-/* Mygtukai */
+/* ---------- Mygtukai ---------- */
+/* Pakyla užvedus, nusileidžia paspaudus, bangelė (ripple) iš ui.js. */
 
 .write-actions {
   display: flex;
@@ -283,69 +696,117 @@ h2 {
 }
 
 .btn {
+  position: relative;
+  overflow: hidden;
   font: inherit;
-  font-size: 15px;
-  font-weight: 600;
+  font-size: 15.5px;
+  font-weight: 700;
   border: none;
-  border-radius: var(--radius-sm);
-  padding: 14px 18px;
+  border-radius: 999px;
+  padding: 14px 20px;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  transition: transform 0.12s, box-shadow 0.2s, opacity 0.2s;
+  gap: 9px;
+  text-decoration: none;
+  box-shadow: var(--btn-shadow);
+  transition: transform 0.18s ease, box-shadow 0.2s ease, opacity 0.2s, background-color 0.2s;
 }
-.btn:active {
-  transform: scale(0.97);
+.btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lift);
+}
+.btn:active:not(:disabled) {
+  transform: translateY(1px) scale(0.98);
+  box-shadow: none;
 }
 .btn:disabled {
-  opacity: 0.45;
+  opacity: 0.5;
   cursor: default;
 }
 .btn-icon {
+  display: inline-block;
   font-size: 17px;
+  line-height: 1;
 }
 
-.btn-burn {
-  flex: 1;
-  color: #1a0e00;
-  background: linear-gradient(135deg, var(--amber) 0%, var(--amber-deep) 100%);
-  box-shadow: 0 4px 18px rgba(239, 108, 0, 0.30);
+/* Bangelė — tas pats „ratilas" kaip fone, tik mygtuke. */
+.btn-wave {
+  position: absolute;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.28;
+  transform: scale(0);
+  pointer-events: none;
+  animation: btn-wave 0.65s ease-out forwards;
 }
-.btn-burn:hover:not(:disabled) {
-  box-shadow: 0 4px 26px rgba(239, 108, 0, 0.50);
+@keyframes btn-wave {
+  to {
+    transform: scale(1);
+    opacity: 0;
+  }
 }
 
+/* Paleisti: pagrindinis veiksmas — vanduo. Ikona (žiburys) nuplaukia. */
 .btn-release {
   flex: 1.4;
-  color: var(--text);
-  background: var(--bg-card);
-  border: 1px solid var(--line);
+  color: var(--on-accent);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-deep) 100%);
 }
-.btn-release:hover:not(:disabled) {
-  border-color: var(--calm-deep);
-  box-shadow: 0 0 14px rgba(127, 209, 193, 0.15);
+.btn-release:hover:not(:disabled) .btn-icon {
+  animation: float-away 1.2s ease-in-out infinite;
+}
+.btn-release.is-sending .btn-icon {
+  animation: sail-off 0.9s ease-in forwards;
+}
+@keyframes float-away {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0);
+  }
+  50% {
+    transform: translate(3px, -3px) rotate(6deg);
+  }
+}
+@keyframes sail-off {
+  to {
+    transform: translate(60px, -26px) rotate(14deg);
+    opacity: 0;
+  }
+}
+
+/* Sudeginti: antrinis — kontūras gintaro spalva, liepsnelė virpa. */
+.btn-burn {
+  flex: 1;
+  color: var(--ember-strong);
+  background: transparent;
+  border: 1.5px solid var(--ember-deep);
+  box-shadow: none;
+}
+.btn-burn:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--ember) 12%, transparent);
+}
+.btn-burn:hover:not(:disabled) .btn-icon {
+  animation: flame-flicker 0.8s ease-in-out infinite;
 }
 
 .btn-calm {
-  color: #062019;
-  background: linear-gradient(135deg, var(--calm) 0%, var(--calm-deep) 100%);
+  color: var(--on-accent);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-deep) 100%);
 }
 
 .btn-danger {
-  color: #fff;
-  background: rgba(229, 72, 77, 0.15);
-  border: 1px solid rgba(229, 72, 77, 0.5);
-}
-.btn-danger:hover {
-  background: rgba(229, 72, 77, 0.3);
+  color: var(--danger);
+  background: var(--danger-bg);
+  border: 1px solid var(--danger-line);
+  box-shadow: none;
 }
 
 .write-hint {
-  color: #55607a;
-  font-size: 12.5px;
-  margin: 14px 0 10px;
+  color: var(--text-faint);
+  font-size: 13px;
+  margin: 16px 0 8px;
   text-align: center;
 }
 
@@ -362,16 +823,16 @@ h2 {
   font: inherit;
   font-size: 18px;
   color: var(--text-dim);
-  background: var(--bg-raised);
-  border: 1px solid var(--line);
+  background: var(--glass);
+  border: 1px solid var(--line-strong);
   border-radius: 50%;
-  width: 38px;
-  height: 38px;
+  width: 40px;
+  height: 40px;
   cursor: pointer;
-  transition: transform 0.4s, color 0.2s;
+  transition: transform 0.45s ease, color 0.2s;
 }
 .refresh:hover {
-  color: var(--calm);
+  color: var(--accent-strong);
 }
 .refresh.is-spinning {
   transform: rotate(360deg);
@@ -381,7 +842,7 @@ h2 {
   display: flex;
   gap: 6px;
   overflow-x: auto;
-  padding-bottom: 10px;
+  padding: 2px 2px 10px;
   scrollbar-width: none;
 }
 .feed-filters::-webkit-scrollbar {
@@ -390,61 +851,99 @@ h2 {
 
 .chip {
   font: inherit;
-  font-size: 12.5px;
+  font-size: 13px;
   color: var(--text-dim);
-  background: transparent;
-  border: 1px solid var(--line);
+  background: var(--glass);
+  border: 1px solid var(--line-strong);
   border-radius: 999px;
-  padding: 5px 13px;
+  padding: 6px 14px;
   cursor: pointer;
   white-space: nowrap;
-  transition: all 0.18s;
+  transition: color 0.18s, border-color 0.18s, background-color 0.18s, transform 0.18s;
+}
+.chip:hover {
+  color: var(--text);
+  transform: translateY(-1px);
 }
 .chip.is-active {
-  color: var(--text);
-  background: var(--bg-card);
-  border-color: #35415f;
+  color: var(--accent-strong);
+  background: var(--surface-2);
+  border-color: var(--accent);
+  font-weight: 700;
 }
 
 .feed {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
 }
 
+/* Kortelė — „akmenukas": asimetriški kampai, emocijos spalvos ratilas kampe. */
 .card {
   --emo: var(--text-dim);
-  background: var(--bg-card);
+  position: relative;
+  background: var(--glass);
   border: 1px solid var(--line);
-  border-left: 3px solid var(--emo);
   border-radius: var(--radius);
-  padding: 16px 16px 12px;
+  padding: 18px 18px 12px 20px;
   box-shadow: var(--shadow);
-  animation: screen-in 0.3s ease both;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
 }
-.card[data-emotion="pyktis"] {
-  --emo: var(--emo-pyktis);
+.card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 14px;
+  bottom: 14px;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: var(--emo);
 }
-.card[data-emotion="liudesys"] {
-  --emo: var(--emo-liudesys);
+.card::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  right: -46px;
+  top: -46px;
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--emo) 45%, transparent);
+  box-shadow: 0 0 0 12px color-mix(in srgb, var(--emo) 7%, transparent);
+  pointer-events: none;
 }
-.card[data-emotion="nerimas"] {
-  --emo: var(--emo-nerimas);
+/* Turinys visada virš dekoratyvaus ratilo. */
+.card > * {
+  position: relative;
+  z-index: 1;
 }
-.card[data-emotion="kalte"] {
-  --emo: var(--emo-kalte);
+.card > .fuse {
+  position: static;
 }
-.card[data-emotion="vienatve"] {
-  --emo: var(--emo-vienatve);
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lift);
+  border-color: var(--line-strong);
 }
-.card[data-emotion="viltis"] {
-  --emo: var(--emo-viltis);
+
+/* Atsiradimas slenkant (ui.js prideda .reveal ir vėliau .is-in). */
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+}
+.reveal.is-in {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.6s ease, transform 0.6s ease;
 }
 
 .card-text {
   white-space: pre-wrap;
   overflow-wrap: break-word;
-  font-size: 15.5px;
+  font-size: 16px;
 }
 
 .card-foot {
@@ -458,24 +957,29 @@ h2 {
 .hug {
   font: inherit;
   font-size: 13.5px;
+  font-weight: 600;
   color: var(--text-dim);
   background: transparent;
-  border: 1px solid var(--line);
+  border: 1px solid var(--line-strong);
   border-radius: 999px;
   padding: 6px 14px;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  transition: all 0.2s;
+  transition: transform 0.18s, color 0.2s, border-color 0.2s, background-color 0.2s;
 }
 .hug:hover {
-  border-color: var(--calm-deep);
+  border-color: var(--accent);
   color: var(--text);
+  transform: translateY(-1px);
+}
+.hug:active {
+  transform: scale(0.96);
 }
 .hug.is-hugged {
-  color: #062019;
-  background: linear-gradient(135deg, var(--calm) 0%, var(--calm-deep) 100%);
+  color: var(--on-accent);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-deep) 100%);
   border-color: transparent;
 }
 .hug-count {
@@ -485,61 +989,55 @@ h2 {
 .card-right {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .time-left {
-  font-size: 11.5px;
-  color: #55607a;
+  font-size: 12px;
+  color: var(--text-faint);
   font-variant-numeric: tabular-nums;
 }
 
-.report {
+.report,
+.copy-link {
   font: inherit;
-  color: #55607a;
+  color: var(--text-faint);
   background: none;
   border: none;
   font-size: 17px;
   cursor: pointer;
-  padding: 4px 6px;
-  border-radius: 6px;
+  padding: 4px 7px;
+  border-radius: 8px;
+  transition: color 0.2s, background-color 0.2s;
 }
 .report:hover {
   color: var(--danger);
-  background: rgba(229, 72, 77, 0.08);
-}
-
-.copy-link {
-  font: inherit;
-  color: #55607a;
-  background: none;
-  border: none;
-  font-size: 17px;
-  cursor: pointer;
-  padding: 4px 6px;
-  border-radius: 6px;
+  background: var(--danger-bg);
 }
 .copy-link:hover {
-  color: var(--calm);
-  background: rgba(127, 209, 193, 0.1);
+  color: var(--accent-strong);
+  background: var(--glow-accent);
 }
 
-/* Likusio laiko juosta — "smilkstantis dagtis" kortelės apačioje */
+/* Likusio laiko juosta — žiburys, kuris nuplaukia (mažėja iki 24 val. pabaigos). */
 .fuse {
   height: 2px;
-  margin: 10px -16px -12px;
-  border-radius: 0 0 var(--radius) var(--radius);
-  background: linear-gradient(90deg, var(--amber-deep), var(--amber));
-  opacity: 0.55;
+  margin: 12px -18px -12px -20px;
+  background: linear-gradient(90deg, var(--accent), var(--ember));
+  opacity: 0.7;
   transform-origin: left;
 }
 
 .feed-empty {
   text-align: center;
-  padding: 60px 20px;
+  padding: 50px 22px;
+  background: var(--glass);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius);
 }
 .feed-empty p:first-child {
-  font-size: 17px;
+  font-family: var(--font-head);
+  font-size: 19px;
   margin-bottom: 6px;
 }
 
@@ -560,31 +1058,32 @@ h2 {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  background: var(--bg-card);
+  background: var(--glass);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  padding: 14px 16px;
+  padding: 14px 18px;
   text-decoration: none;
   color: var(--text);
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
 }
 .hotline:hover {
-  border-color: var(--calm-deep);
-  box-shadow: 0 0 16px rgba(127, 209, 193, 0.12);
+  transform: translateY(-2px);
+  border-color: var(--accent);
+  box-shadow: var(--shadow-lift);
 }
 .hotline-name {
-  font-size: 13px;
+  font-size: 13.5px;
   color: var(--text-dim);
 }
 .hotline-number {
-  font-size: 21px;
-  font-weight: 700;
+  font-size: 22px;
+  font-weight: 800;
   letter-spacing: 0.5px;
-  color: var(--calm);
+  color: var(--accent-strong);
 }
 .hotline-note {
-  font-size: 12px;
-  color: #55607a;
+  font-size: 12.5px;
+  color: var(--text-faint);
 }
 .hotline.compact {
   flex-direction: row;
@@ -595,7 +1094,7 @@ h2 {
   font-size: 17px;
 }
 
-/* Kvėpavimo ratas */
+/* Kvėpavimo ratas — ratilas, kuris plečiasi įkvepiant */
 
 .breathe-block {
   text-align: center;
@@ -618,11 +1117,11 @@ h2 {
   border-radius: 50%;
   background: radial-gradient(
     circle at 35% 30%,
-    rgba(127, 209, 193, 0.55),
-    rgba(63, 167, 150, 0.25) 65%
+    color-mix(in srgb, var(--accent) 55%, transparent),
+    color-mix(in srgb, var(--accent-deep) 22%, transparent) 65%
   );
-  border: 1px solid rgba(127, 209, 193, 0.4);
-  box-shadow: 0 0 40px rgba(127, 209, 193, 0.18);
+  border: 1px solid color-mix(in srgb, var(--accent) 50%, transparent);
+  box-shadow: 0 0 40px var(--glow-accent);
   transform: scale(0.8);
 }
 .breathe-circle.is-breathing-in {
@@ -636,7 +1135,8 @@ h2 {
 
 .breathe-label {
   position: relative;
-  font-size: 15px;
+  font-family: var(--font-head);
+  font-size: 16px;
   color: var(--text);
   z-index: 1;
 }
@@ -649,14 +1149,14 @@ h2 {
 .setting label {
   display: block;
   color: var(--text-dim);
-  font-size: 13.5px;
+  font-size: 14px;
   margin-bottom: 6px;
 }
 .setting select {
   font: inherit;
   color: var(--text);
-  background: var(--bg-raised);
-  border: 1px solid var(--line);
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
   border-radius: var(--radius-sm);
   padding: 10px 14px;
   width: 100%;
@@ -668,237 +1168,29 @@ h2 {
   margin-top: 8px;
 }
 
-.privacy {
+.privacy,
+.support {
   margin-top: 30px;
   border-top: 1px solid var(--line);
   padding-top: 20px;
 }
 .privacy p {
   color: var(--text-dim);
-  font-size: 14px;
+  font-size: 14.5px;
   margin-bottom: 10px;
 }
 .privacy .promise {
   text-align: left;
   margin: 14px 0 0;
-  color: var(--calm);
-}
-
-/* ---------- Apatinis meniu ---------- */
-
-.tabbar {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: calc(var(--tabbar-h) + env(safe-area-inset-bottom, 0px));
-  padding-bottom: env(safe-area-inset-bottom, 0px);
-  display: flex;
-  justify-content: center;
-  gap: 4px;
-  background: rgba(15, 20, 32, 0.88);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-top: 1px solid var(--line);
-  z-index: 10;
-}
-
-.tab {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 2px;
-  width: 92px;
-  color: #55607a;
-  text-decoration: none;
-  font-size: 11.5px;
-  transition: color 0.2s;
-}
-.tab-icon {
-  font-size: 19px;
-  line-height: 1;
-}
-.tab.is-active {
-  color: var(--amber);
-}
-.tab:hover {
-  color: var(--text);
-}
-
-/* ---------- Toast + SOS sheet ---------- */
-
-.toast {
-  position: fixed;
-  left: 50%;
-  bottom: calc(var(--tabbar-h) + 18px);
-  transform: translateX(-50%);
-  background: var(--bg-card);
-  border: 1px solid var(--line);
-  color: var(--text);
-  font-size: 14px;
-  padding: 11px 18px;
-  border-radius: 999px;
-  box-shadow: var(--shadow);
-  z-index: 30;
-  max-width: 90vw;
-  text-align: center;
-  animation: toast-in 0.25s ease;
-}
-.toast.toast-calm {
-  border-color: var(--calm-deep);
-}
-.toast.toast-warn {
-  border-color: rgba(229, 72, 77, 0.6);
-}
-
-@keyframes toast-in {
-  from {
-    opacity: 0;
-    transform: translate(-50%, 8px);
-  }
-  to {
-    opacity: 1;
-    transform: translate(-50%, 0);
-  }
-}
-
-.sos-sheet {
-  position: fixed;
-  inset: 0;
-  background: rgba(8, 11, 18, 0.72);
-  backdrop-filter: blur(4px);
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  z-index: 40;
-}
-.sos-sheet[hidden] {
-  display: none;
-}
-
-.sos-sheet-card {
-  background: var(--bg-raised);
-  border: 1px solid var(--line);
-  border-radius: var(--radius) var(--radius) 0 0;
-  padding: 22px 20px calc(22px + env(safe-area-inset-bottom, 0px));
-  max-width: 640px;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  animation: sheet-in 0.3s ease;
-}
-.sos-sheet-card p {
-  font-size: 14.5px;
-  color: var(--text-dim);
-}
-
-@keyframes sheet-in {
-  from {
-    transform: translateY(40px);
-    opacity: 0;
-  }
-  to {
-    transform: none;
-    opacity: 1;
-  }
-}
-
-/* ---------- v1.1: istorijos, banneris, parama ---------- */
-
-.social-proof {
-  text-align: center;
-  color: var(--calm);
-  font-size: 12.5px;
-  margin: -6px 0 12px;
-  opacity: 0.85;
-}
-
-.hug-banner {
-  display: block;
-  width: 100%;
-  font: inherit;
-  font-size: 14px;
-  color: var(--text);
-  text-align: center;
-  background: linear-gradient(135deg, rgba(127, 209, 193, 0.14), rgba(63, 167, 150, 0.08));
-  border: 1px solid rgba(127, 209, 193, 0.35);
-  border-radius: var(--radius-sm);
-  padding: 11px 14px;
-  margin-bottom: 12px;
-  cursor: pointer;
-  animation: screen-in 0.4s ease both;
-}
-.hug-banner:hover {
-  border-color: var(--calm);
-}
-
-.lifespan {
-  display: flex;
-  gap: 6px;
-  margin-top: 14px;
-}
-.lifespan .chip {
-  flex: 1;
-  padding: 8px 10px;
-  text-align: center;
-}
-.lifespan .chip.is-active {
-  color: var(--text);
-  border-color: var(--calm-deep);
-  background: rgba(127, 209, 193, 0.08);
-}
-
-.lifespan-hint {
-  color: #55607a;
-  font-size: 12px;
-  margin-top: 6px;
-}
-
-.screen-intro {
-  margin-bottom: 12px;
-}
-
-.expand {
-  font: inherit;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--calm);
-  background: none;
-  border: none;
-  padding: 8px 0 0;
-  cursor: pointer;
-}
-.expand:hover {
-  text-decoration: underline;
-}
-
-.empty-link {
-  display: inline-block;
-  margin-top: 14px;
-  color: var(--calm);
-  font-size: 14px;
-  text-decoration: none;
-}
-.empty-link:hover {
-  text-decoration: underline;
-}
-
-.support {
-  margin-top: 30px;
-  border-top: 1px solid var(--line);
-  padding-top: 20px;
+  color: var(--accent-strong);
 }
 .support .muted {
   margin-bottom: 12px;
 }
 
 .btn-support {
-  text-decoration: none;
-  color: #1a0e00;
-  background: linear-gradient(135deg, #ffd28a 0%, var(--amber) 100%);
-  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.2);
+  color: var(--on-ember);
+  background: linear-gradient(135deg, var(--lantern) 0%, var(--ember) 100%);
 }
 
 /* Jungiklis (switch) */
@@ -920,37 +1212,41 @@ h2 {
   opacity: 0;
   pointer-events: none;
 }
+.toggle input:focus-visible + .toggle-track {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
 
 .toggle-track {
-  width: 42px;
-  height: 24px;
+  width: 44px;
+  height: 26px;
   border-radius: 999px;
-  background: var(--bg-card);
-  border: 1px solid var(--line);
+  background: var(--surface-2);
+  border: 1px solid var(--line-strong);
   position: relative;
-  transition: background 0.2s, border-color 0.2s;
+  transition: background-color 0.2s, border-color 0.2s;
   flex-shrink: 0;
 }
 
 .toggle-thumb {
   position: absolute;
-  top: 2px;
-  left: 2px;
+  top: 3px;
+  left: 3px;
   width: 18px;
   height: 18px;
   border-radius: 50%;
   background: var(--text-dim);
-  transition: transform 0.2s, background 0.2s;
+  transition: transform 0.25s ease, background-color 0.2s;
 }
 
 .toggle input:checked + .toggle-track {
-  background: rgba(127, 209, 193, 0.2);
-  border-color: var(--calm-deep);
+  background: var(--glow-accent);
+  border-color: var(--accent);
 }
 
 .toggle input:checked + .toggle-track .toggle-thumb {
   transform: translateX(18px);
-  background: var(--calm);
+  background: var(--accent);
 }
 
 .toggle-text {
@@ -958,19 +1254,236 @@ h2 {
   color: var(--text);
 }
 
+/* ---------- Apatinis meniu ---------- */
+
+.tabbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: calc(var(--tabbar-h) + env(safe-area-inset-bottom, 0px));
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  display: flex;
+  justify-content: center;
+  gap: 2px;
+  background: var(--tabbar-bg);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-top: 1px solid var(--line);
+  z-index: 10;
+}
+
+.tab {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  width: 88px;
+  color: var(--text-faint);
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+.tab-icon {
+  font-size: 19px;
+  line-height: 1;
+  transition: transform 0.25s ease;
+}
+.tab:hover {
+  color: var(--text);
+}
+.tab:hover .tab-icon {
+  transform: translateY(-2px);
+}
+.tab.is-active {
+  color: var(--accent-strong);
+}
+.tab.is-active::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 28%;
+  right: 28%;
+  height: 3px;
+  border-radius: 0 0 3px 3px;
+  background: var(--accent);
+  box-shadow: 0 0 12px var(--accent);
+}
+
+/* ---------- Toast + SOS sheet ---------- */
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--tabbar-h) + 18px);
+  transform: translateX(-50%);
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  color: var(--text);
+  font-size: 14px;
+  padding: 11px 18px;
+  border-radius: 999px;
+  box-shadow: var(--shadow-lift);
+  z-index: 30;
+  max-width: 90vw;
+  text-align: center;
+  animation: toast-in 0.25s ease;
+}
+.toast.toast-calm {
+  border-color: var(--accent);
+}
+.toast.toast-warn {
+  border-color: var(--danger-line);
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 8px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+.sos-sheet {
+  position: fixed;
+  inset: 0;
+  background: var(--overlay);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 40;
+}
+.sos-sheet[hidden] {
+  display: none;
+}
+
+.sos-sheet-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 24px 24px 0 0;
+  padding: 22px 20px calc(22px + env(safe-area-inset-bottom, 0px));
+  max-width: 640px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  animation: sheet-in 0.3s ease;
+}
+.sos-sheet-card p {
+  font-size: 15px;
+  color: var(--text-dim);
+}
+
+@keyframes sheet-in {
+  from {
+    transform: translateY(40px);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+/* ---------- Istorijos, banneris, parama ---------- */
+
+.social-proof {
+  text-align: center;
+  color: var(--accent-strong);
+  font-size: 13px;
+  font-weight: 600;
+  margin: 10px 0 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.hug-banner {
+  display: block;
+  width: 100%;
+  font: inherit;
+  font-size: 14.5px;
+  color: var(--text);
+  text-align: center;
+  background: var(--glow-accent);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-sm);
+  padding: 11px 14px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  animation: screen-in 0.4s ease both;
+  transition: transform 0.2s;
+}
+.hug-banner:hover {
+  transform: translateY(-2px);
+}
+
+.lifespan {
+  display: flex;
+  gap: 6px;
+  margin-top: 14px;
+}
+.lifespan .chip {
+  flex: 1;
+  padding: 9px 10px;
+  text-align: center;
+  white-space: normal;
+}
+
+.lifespan-hint {
+  color: var(--text-faint);
+  font-size: 12.5px;
+  margin-top: 6px;
+}
+
+.screen-intro {
+  margin-bottom: 12px;
+}
+
+.expand {
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--accent-strong);
+  background: none;
+  border: none;
+  padding: 8px 0 0;
+  cursor: pointer;
+}
+.expand:hover {
+  text-decoration: underline;
+}
+
+.empty-link {
+  display: inline-block;
+  margin-top: 14px;
+  color: var(--accent-strong);
+  font-size: 14.5px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.empty-link:hover {
+  text-decoration: underline;
+}
+
 /* ---------- Šauksmo kambarys ---------- */
 
 .scream-link {
   display: block;
   text-align: center;
-  margin: 18px 0 4px;
+  margin: 14px 0 4px;
   color: var(--text-dim);
-  font-size: 13.5px;
+  font-size: 14px;
   text-decoration: none;
   transition: color 0.2s;
 }
 .scream-link:hover {
-  color: var(--amber);
+  color: var(--ember-strong);
 }
 
 .scream-stage {
@@ -985,18 +1498,21 @@ h2 {
   width: 160px;
   height: 160px;
   border-radius: 50%;
-  border: 1px solid rgba(245, 158, 11, 0.35);
+  border: 1px solid color-mix(in srgb, var(--ember) 45%, transparent);
   background: radial-gradient(
     circle at 35% 30%,
-    rgba(245, 158, 11, 0.35),
-    rgba(239, 108, 0, 0.15) 65%
+    color-mix(in srgb, var(--ember) 40%, transparent),
+    color-mix(in srgb, var(--ember-deep) 14%, transparent) 65%
   );
-  box-shadow: 0 0 50px rgba(239, 108, 0, 0.2);
+  box-shadow: 0 0 50px var(--glow-ember);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: transform 0.15s, box-shadow 0.3s;
+}
+.scream-orb:hover {
+  transform: translateY(-3px);
 }
 .scream-orb:active {
   transform: scale(0.96);
@@ -1010,31 +1526,31 @@ h2 {
   border-color: var(--danger);
   background: radial-gradient(
     circle at 35% 30%,
-    rgba(229, 72, 77, 0.5),
-    rgba(229, 72, 77, 0.15) 65%
+    color-mix(in srgb, var(--danger) 50%, transparent),
+    color-mix(in srgb, var(--danger) 15%, transparent) 65%
   );
   animation: scream-pulse 1.1s ease-in-out infinite;
 }
 
 .scream-orb.is-ready {
-  border-color: var(--calm-deep);
+  border-color: var(--accent);
   background: radial-gradient(
     circle at 35% 30%,
-    rgba(127, 209, 193, 0.35),
-    rgba(63, 167, 150, 0.12) 65%
+    color-mix(in srgb, var(--accent) 38%, transparent),
+    color-mix(in srgb, var(--accent-deep) 12%, transparent) 65%
   );
-  box-shadow: 0 0 40px rgba(127, 209, 193, 0.18);
+  box-shadow: 0 0 40px var(--glow-accent);
 }
 
 @keyframes scream-pulse {
   0%,
   100% {
-    box-shadow: 0 0 40px rgba(229, 72, 77, 0.25);
     transform: scale(1);
+    opacity: 0.9;
   }
   50% {
-    box-shadow: 0 0 70px rgba(229, 72, 77, 0.55);
     transform: scale(1.05);
+    opacity: 1;
   }
 }
 
@@ -1055,34 +1571,23 @@ h2 {
   max-width: 200px;
 }
 
-/* ---------- Judesio mažinimas ---------- */
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-
-@media (max-width: 420px) {
-  .write-actions {
-    flex-direction: column;
-  }
-  .btn-release {
-    flex: 1;
-  }
-}
-
 /* ---------- Statiniai teisiniai puslapiai (privacy.html, privatumas.html) ---------- */
 /* CSP style-src 'self' neleidžia inline <style>/style="" — visos šių puslapių
    taisyklės todėl gyvena čia, ne pačiuose HTML failuose. */
 
-.legal {
-  max-width: 640px;
-  margin: 0 auto;
-  padding: 32px 16px 64px;
+.legal,
+.story-page {
+  position: relative;
+  z-index: 1;
+  max-width: 680px;
+  margin: 24px auto 64px;
+  padding: 28px 22px 40px;
+  background: var(--glass);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 .legal h1 {
   margin-bottom: 6px;
@@ -1092,49 +1597,47 @@ h2 {
 }
 .legal h2 {
   margin-top: 28px;
-  color: var(--text);
 }
 .legal p,
 .legal li {
   color: var(--text-dim);
-  font-size: 14.5px;
-  line-height: 1.7;
+  font-size: 15px;
+  line-height: 1.75;
 }
 .legal ul {
   padding-left: 20px;
   margin: 8px 0;
 }
 .legal a {
-  color: var(--calm);
+  color: var(--accent-strong);
 }
 .legal .back {
   display: inline-block;
   margin-top: 32px;
-  font-size: 14px;
+  font-size: 14.5px;
 }
 .lang-switch {
   text-align: right;
-  font-size: 13px;
+  font-size: 13.5px;
   margin-bottom: 8px;
 }
 .legal-brand {
   text-decoration: none;
   color: var(--text);
+  font-family: var(--font-head);
+  font-weight: 600;
+  font-size: 20px;
   display: inline-flex;
-  gap: 9px;
+  gap: 10px;
   align-items: center;
   margin-bottom: 24px;
 }
 
 /* ---------- Istorijos SSR permalink'as (main.ts serveStoryPage) ---------- */
 
-.story-page {
-  max-width: 640px;
-  margin: 0 auto;
-  padding: 32px 16px 64px;
-}
 .story-page .story-text {
   white-space: pre-wrap;
+  font-size: 17px;
   margin: 20px 0;
 }
 .story-page .story-meta {
@@ -1144,4 +1647,45 @@ h2 {
 .story-page .back-link {
   display: inline-block;
   margin-top: 28px;
+}
+
+/* ---------- Telefonas ---------- */
+
+@media (max-width: 420px) {
+  .write-actions {
+    flex-direction: column-reverse;
+  }
+  .btn-release {
+    flex: 1;
+  }
+  .hero-title {
+    font-size: 26px;
+  }
+  .tab {
+    width: 25%;
+  }
+  .legal,
+  .story-page {
+    margin: 12px 12px 40px;
+    padding: 22px 16px 32px;
+  }
+}
+
+/* ---------- Judesio mažinimas ---------- */
+/* Dalelės (ratilai, žibintai) neberodomos — river.js jų nekuria; švytėjimai
+   lieka statiški. */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
 }

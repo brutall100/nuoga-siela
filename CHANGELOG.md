@@ -4,6 +4,33 @@ Visi pastebimi projekto pakeitimai bus fiksuojami šiame faile.
 
 Formatas paremtas [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [v2.0] — 2026-09-24
+
+Naujas dizainas „Paleisk upe“ ir repozitorijos sutvarkymas portfolio.
+
+- **Dizainas:** nauja paletė (naktinė upė + žibinto gintaras), visos spalvos `:root` CSS
+  kintamuosiuose `public/css/main.css` viršuje; WCAG kontrastas patikrintas (tekstas ≥ 4.5:1, UI ≥
+  3:1). Antraštės — Lora, tekstas — Nunito Sans, abu **savi** (`public/fonts/`, su OFL
+  licencijomis), kad Google nematytų lankytojų IP.
+- **Šviesus / tamsus režimas:** `public/js/theme.js` įkeliamas sinchroniškai `<head>`, įsimena
+  pasirinkimą (`ns_theme`), seka `prefers-color-scheme`, nemirga. Perjungimo mygtukas viršuje.
+- **Gyvas fonas:** `public/js/river.js` — du neryškūs švytėjimai, vandens ratilai ir kylantys
+  žibintų žiburėliai su atsitiktiniais parametrais; tik `transform`/`opacity`, telefone perpus
+  mažiau dalelių, `prefers-reduced-motion` — dalelių nėra.
+- **Mikro-sąveikos:** `public/js/ui.js` — bangelė (ripple) mygtukuose, kortelių atsiradimas
+  slenkant, „Suprantu tave“ ir dienos statistikos skaičiai suskaičiuoja. „Paleisti“ mygtuko žiburys
+  nuplaukia.
+- **Prieinamumas:** „Pereiti prie turinio“ nuoroda, matomas `:focus-visible`, `<label>` rašymo
+  laukeliui, išversti `aria-label`/`title` (nauji i18n raktai abiem kalbom).
+- Deginimo animacija (`burn.js`) spalvą ima iš paletės (`--burn-rgb`).
+- Nauji `icon.svg`/`icon-maskable.svg` (liepsna virš bangų), `og-image` pergeneruotas kaip WebP
+  (`public/images/og-image.webp`, 114 KB PNG → 20 KB). `main.ts` MIME lentelė papildyta `.webp`.
+- Istorijos SSR puslapis ir privatumo puslapiai naudoja tą patį dizainą (tema + fonas + logotipas).
+- Service worker cache → `v6` (nauji failai ir šriftai).
+- **Repo:** MIT `LICENSE`, README.md (EN) + README.lt.md (LT) su ekrano nuotraukomis `docs/`, senas
+  planas perkeltas į `docs/roadmap.lt.md`, išplėstas `.gitignore`, iš `.vscode/settings.json`
+  pašalintas asmeninis kompiuterio kelias.
+
 ## [Unreleased]
 
 - CLAUDE.md, CHANGELOG.md, GitHub Actions CI (fmt/lint/test), `.env.example`, `.gitattributes` (LF
