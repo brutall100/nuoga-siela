@@ -60,21 +60,23 @@ atskiro build žingsnio, jokio bundler'io, jokių priklausomybių (`deno.json` n
 mapping'o į išorinius paketus). Klientas — vanilla JS, IIFE moduliai `public/js/*.js`, įkeliami
 tiesiogiai `<script>` tag'ais (žr. `public/index.html` tvarką) — ne ES modules, susitarimas yra
 `window.xxx` eksportai (`window.t`, `window.i18n`, `window.maskProfanity`, `window.burnText`,
-`window.ui`, `window.themeToggle`, `window.breatheStart/Stop`, `window.scream*`).
+`window.ui`, `window.themeToggle`, `window.breatheStart/Stop`, `window.scream*`, `window.mood`,
+`window.ambient`).
 
 ### Maršrutizacija: tikri URL keliai, ne hash
 
-Ekranai (`rasyti`, `srautas`, `istorijos`, `sos`, `sauksmas`, `nustatymai`) turi tikrus kelius
-(`/rasyti`, `/srautas`, ...), ne `#/rasyti` — svarbu SEO, kad Google galėtų juos indeksuoti kaip
-atskirus puslapius. Klientas (`public/js/app.js`) naršo per `history.pushState`/`popstate`
-(`currentScreen()` skaito `location.pathname`, `navigate()` — bendra pagalbinė funkcija stumti naują
-kelią ir perpiešti); vidinių nuorodų paspaudimai perimami delegated click handler'iu, kad SPA
-neperkrautų viso puslapio. Be JS naršyklė tiesiog atlieka įprastą navigaciją — `main.ts`
-`serveStatic()` fallback'as (nežinomas kelias be taško → `index.html`) tai jau sprendžia serverio
-pusėje, tad tiesioginis atidarymas/perkrovimas ant `/srautas` ir pan. veikia visada. `main.ts`
-`applyRouteMeta()` kiekvienam iš šių šešių kelių prieš atiduodant `index.html` pakeičia
-`<title>`/`<meta description>`/OG/Twitter turinį paprastu string replace (`ROUTE_META` lentelė) —
-vis dar be jokio templating variklio, tik `.replace()` su regex'ais, apgaubiančiais žymos turinį.
+Ekranai (`rasyti`, `srautas`, `istorijos`, `sos`, `sauksmas`, `kalendorius`, `nustatymai`) turi
+tikrus kelius (`/rasyti`, `/srautas`, ...), ne `#/rasyti` — svarbu SEO, kad Google galėtų juos
+indeksuoti kaip atskirus puslapius. Klientas (`public/js/app.js`) naršo per
+`history.pushState`/`popstate` (`currentScreen()` skaito `location.pathname`, `navigate()` — bendra
+pagalbinė funkcija stumti naują kelią ir perpiešti); vidinių nuorodų paspaudimai perimami delegated
+click handler'iu, kad SPA neperkrautų viso puslapio. Be JS naršyklė tiesiog atlieka įprastą
+navigaciją — `main.ts` `serveStatic()` fallback'as (nežinomas kelias be taško → `index.html`) tai
+jau sprendžia serverio pusėje, tad tiesioginis atidarymas/perkrovimas ant `/srautas` ir pan. veikia
+visada. `main.ts` `applyRouteMeta()` kiekvienam iš šių septynių kelių prieš atiduodant `index.html`
+pakeičia `<title>`/`<meta description>`/OG/Twitter turinį paprastu string replace (`ROUTE_META`
+lentelė) — vis dar be jokio templating variklio, tik `.replace()` su regex'ais, apgaubiančiais žymos
+turinį.
 
 ### Istorijų SSR permalink'ai (`/istorijos/:id`)
 
@@ -152,7 +154,10 @@ ID formatą, ši savybė dings ir `listFeed`/`listStories` rūšiavimas suirs.
 Kiti raktų prefiksai: `["byDevice", deviceHash, postId]` (kam priklauso postas, naudojamas
 `/api/mine` ir trynimui), `["hug", postId, deviceHash]` / `["report", postId, deviceHash]`
 (idempotencijos žymės — vienas įrenginys = vienas balsas), `["rate", kind, deviceHash, timeBucket]`
-(rate limit), `["stats", dayKey, "posts"|"hugs"]` (dienos statistika socialiniam įrodymui).
+(rate limit), `["stats", dayKey, "posts"|"hugs"]` (dienos statistika socialiniam įrodymui),
+`["stats", dayKey, "emo", emotion]` (kiek kartų per dieną pažymėta emocija — `GET /api/mood` bendrai
+savaitės nuotaikai; `expireIn` 8 d.). Visi `stats` raktai — tik suminiai skaičiai: niekada nepridėk
+prie jų `deviceHash`, posto ID ar bet ko, kas leistų juos susieti su žmogumi.
 
 Testuose (`server_test.ts` failai) KV pakeičiamas `:memory:` egzemplioriumi per `setKvForTesting()`
 — niekada netestuok su realiu disko KV.
@@ -180,6 +185,20 @@ būti iškviestas trimis atvejais — visus tris reikia palaikyti keičiant šit
 ekraną (`app.js` `render()`, tikrina `prevScreen === "sauksmas"`), (2) `pagehide` event'e, (3) po
 „Ištrinti dabar" mygtuko. Kiekvienas iš jų sustabdo track'us, atlaisvina mikrofoną ir panaikina
 `blobUrl`.
+
+### Emocijų kalendorius ir raminantys garsai
+
+Asmeninis kalendorius (`public/js/mood.js`) gyvena **tik** `localStorage` (`ns_mood`, masyvas
+`[vietinė diena "YYYY-MM-DD", emocija]`) — niekada tekstas, niekada nesiunčiamas į serverį. Įrašas
+daromas `app.js` po sėkmingo paleidimo ir po deginimo (jei emocija pasirinkta — deginimas vis tiek
+nieko nesiunčia). „Ištrinti mano duomenis" jį išvalo (`window.mood.clear()`). Bendra savaitės
+nuotaika rodoma tik kai `total >= 5`, kaip ir socialinis įrodymas.
+
+Garsai (`public/js/sounds.js`) — failai `public/sounds/{upe,lietus,lauzas}.mp3`, grojami per Web
+Audio (`fetch` + `decodeAudioData`, kilpa, `GainNode` fade), ne per `<audio>`: iOS neleidžia keisti
+`<audio>` garsumo, o `serveStatic()` nepalaiko `Range` užklausų, kurių Safari reikalauja medijai.
+Atėjus į Šauksmo kambarį fono garsas sustabdomas (`render()`), kad nepatektų į įrašą. Failai turi
+būti su laisva licencija (CC0 ar pan.) — šaltinį ir licenciją užrašyk `CHANGELOG.md`.
 
 ### i18n susitarimas
 

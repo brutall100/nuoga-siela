@@ -4,6 +4,27 @@ Visi pastebimi projekto pakeitimai bus fiksuojami šiame faile.
 
 Formatas paremtas [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [v2.5] — 2026-10-27
+
+Premium nebus: Buy Me a Coffee lieka kaip vienintelis, savanoriškas padėkos būdas, o naujos
+funkcijos nemokamos visiems.
+
+- **Emocijų kalendorius** (`/kalendorius`, `public/js/mood.js`): „Tavo savaitė“ su judančiu
+  dažniausios emocijos emoji (kiekviena emocija juda savaip, tik `transform`/`opacity`), juostelėmis
+  ir mėnesio tinkleliu (12 mėn. atgal). Saugoma tik `localStorage` (`ns_mood`): diena ir emocija,
+  niekada tekstas; įrašoma paleidus ir sudeginus tekstą su emocija. Jei per savaitę pažymėtos ≥ 4
+  dienos ir nė karto „Viltis“, švelniai parodoma nuoroda į SOS.
+- **Kaip jaučiasi visi**: `GET /api/mood` — kiek kartų per 7 dienas pažymėta kiekviena emocija
+  (`["stats", diena, "emo", emocija]`, tik suminiai skaičiai, `expireIn` 8 d.). Rodoma, kai
+  savaitėje ≥ 5 tekstai.
+- **Raminantys garsai** (`public/js/sounds.js`): upė, lietus, laužas rašymo ir SOS ekranuose; Web
+  Audio kilpa su švelniu įsijungimu. Garso failai (`public/sounds/{upe,lietus,lauzas}.mp3`) dar
+  nepridėti — be jų mygtukas parodo „Nepavyko įjungti garso“. `main.ts` MIME lentelė papildyta
+  `.mp3`.
+- „Ištrinti mano duomenis“ išvalo ir emocijų kalendorių; privatumo politika (LT/EN) papildyta
+  skyriumi apie kalendorių ir bendrą statistiką.
+- `ROUTE_META` ir `sitemap.xml` papildyti `/kalendorius`; service worker cache → `v7`.
+
 ## [v2.4] — 2026-10-27
 
 - Claude Code debesies aplinka: SessionStart hook'as (`.claude/settings.json`,

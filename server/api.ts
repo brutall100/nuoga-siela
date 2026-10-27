@@ -8,6 +8,7 @@ import {
   createPost,
   deleteDeviceData,
   getStats,
+  getWeeklyMood,
   hashDevice,
   hugPost,
   listFeed,
@@ -78,6 +79,11 @@ export async function handleApi(req: Request, url: URL): Promise<Response> {
     if (method === "GET" && path === "/api/stats") {
       const stats = await getStats();
       return json({ ok: true, ...stats });
+    }
+
+    if (method === "GET" && path === "/api/mood") {
+      const mood = await getWeeklyMood();
+      return json({ ok: true, ...mood });
     }
 
     if (method === "GET" && path === "/api/mine") {

@@ -4,6 +4,7 @@ import {
   deleteDeviceData,
   getPublicStory,
   getStats,
+  getWeeklyMood,
   hashDevice,
   hugPost,
   listFeed,
@@ -191,6 +192,26 @@ Deno.test("statistika: skaičiuoja postus ir hugs", async () => {
   const stats = await getStats();
   assert(stats.postsToday === 1, "postai skaičiuojami");
   assert(stats.hugsToday === 1, "hugs skaičiuojami");
+
+  kv.close();
+});
+
+Deno.test("savaitės nuotaika: tik suminiai emocijų skaičiai", async () => {
+  const kv = await freshKv();
+  const dev = await hashDevice("d1");
+
+  await createPost(dev, "vienas", "nerimas");
+  await createPost(dev, "du", "nerimas");
+  await createPost(dev, "istorija", "viltis", "istorija");
+  // Ištrynus postus bendra statistika lieka — joje nėra nieko, kas susietų su įrenginiu.
+  await deleteDeviceData(dev);
+
+  const mood = await getWeeklyMood();
+  assert(mood.total === 3, "skaičiuojami ir srauto, ir istorijų postai");
+  assert(mood.counts.nerimas === 2, "nerimas suskaičiuotas");
+  assert(mood.counts.viltis === 1, "viltis suskaičiuota");
+  assert(mood.counts.pyktis === 0, "nepažymėtos emocijos — 0");
+  assert(!JSON.stringify(mood).includes(dev), "jokio įrenginio hash'o");
 
   kv.close();
 });

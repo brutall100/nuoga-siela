@@ -32,6 +32,10 @@ nuplaukia. Ugnis skirta deginimui, vanduo skirtas paleidimui.
 - 🆘 **SOS.** Pagalbos linijos ir kvėpavimo ratas. Jei tekste yra krizės žodžių, pagalba pasiūloma
   švelniai, bet tekstas neblokuojamas.
 - 🔊 **Šauksmo kambarys.** Garsas įrašomas tik į telefono atmintį ir niekur nesiunčiamas.
+- 📅 **Emocijų kalendorius.** Tavo pažymėtos emocijos pagal dienas ir judantis savaitės emoji.
+  Saugoma tik diena ir emocija, tik tavo įrenginyje. Šalia — kaip šią savaitę jaučiasi visi (tik
+  suminiai skaičiai, be jokio ryšio su žmonėmis).
+- 🎧 **Raminantys garsai.** Upė, lietus ar laužas rašant ir kvėpuojant.
 - 🌗 **Šviesus ir tamsus režimas.** Seka sistemos nustatymą, turi perjungimo mygtuką ir nemirga
   kraunantis.
 - 🌊 **Gyvas fonas.** Plečiasi vandens ratilai, kyla žibintų švieselės, lėtai plaukia švytėjimai.
@@ -123,6 +127,8 @@ public/js/ui.js      bangelė mygtukuose, atsiradimas slenkant, skaičiavimas
 public/js/app.js     maršrutai, rašymas, srautas, istorijos, nustatymai
 public/js/burn.js    deginimo animacija (Canvas)
 public/js/scream.js  Šauksmo kambarys (garsas tik RAM'e)
+public/js/mood.js    emocijų kalendorius (tik įrenginyje) ir bendra savaitės nuotaika
+public/js/sounds.js  raminantys garsai (Web Audio kilpa, failai public/sounds/)
 public/fonts/        Lora ir Nunito Sans (woff2 + OFL licencijos)
 public/images/       og-image.webp
 docs/                ekrano nuotraukos README failui
@@ -137,6 +143,7 @@ docs/                ekrano nuotraukos README failui
 | `GET`   | `/api/stories?emotion=&sort=` | istorijos (`suprastos` arba `naujausios`)                               |
 | `GET`   | `/api/mine`                   | mano tekstai su „suprantu“ skaičiais                                    |
 | `GET`   | `/api/stats`                  | `{postsToday, hugsToday}`                                               |
+| `GET`   | `/api/mood`                   | `{counts, total}`: kiek kartų per 7 dienas pažymėta kiekviena emocija   |
 | `POST`  | `/api/posts/:id/hug`          | „Suprantu tave“ (vieną kartą įrenginiui)                                |
 | `POST`  | `/api/posts/:id/report`       | pranešti; po 3 pranešimų įrašas paslepiamas automatiškai                |
 | `POST`  | `/api/mine/delete`            | ištrinti visus savo įrašus                                              |

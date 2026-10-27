@@ -34,6 +34,10 @@ go.
 - 🆘 **SOS.** Helplines and a breathing circle. If the text contains crisis words, help is offered
   gently and the post is never blocked.
 - 🔊 **Scream room.** Audio lives only in the phone's memory and is never uploaded.
+- 📅 **Mood calendar.** Your tagged emotions by day, with a moving emoji for your week. Only the day
+  and the emotion are saved, and only on your device. Next to it: how everyone feels this week
+  (plain totals, no link to anyone).
+- 🎧 **Calming sounds.** River, rain or campfire while you write or breathe.
 - 🌗 **Light and dark mode.** Follows the system setting, has a toggle, and doesn't flash while
   loading.
 - 🌊 **Living background.** Ripples spread on the water, lantern lights rise and soft glows drift.
@@ -125,6 +129,8 @@ public/js/ui.js      button ripple, reveal on scroll, count-up
 public/js/app.js     routing, writing, stream, stories, settings
 public/js/burn.js    burn animation (Canvas)
 public/js/scream.js  scream room (audio only in RAM)
+public/js/mood.js    mood calendar (local only) and the shared weekly mood
+public/js/sounds.js  calming sounds (Web Audio loop, files in public/sounds/)
 public/fonts/        Lora and Nunito Sans (woff2 + OFL licenses)
 public/images/       og-image.webp
 docs/                README screenshots
@@ -139,6 +145,7 @@ docs/                README screenshots
 | `GET`  | `/api/stories?emotion=&sort=` | stories (`suprastos` = most understood, `naujausios` = newest)            |
 | `GET`  | `/api/mine`                   | my texts with their hug counts                                            |
 | `GET`  | `/api/stats`                  | `{postsToday, hugsToday}`                                                 |
+| `GET`  | `/api/mood`                   | `{counts, total}`: how often each emotion was tagged in the last 7 days   |
 | `POST` | `/api/posts/:id/hug`          | "I understand you" (once per device)                                      |
 | `POST` | `/api/posts/:id/report`       | report; after 3 reports the post is hidden automatically                  |
 | `POST` | `/api/mine/delete`            | delete all my posts                                                       |

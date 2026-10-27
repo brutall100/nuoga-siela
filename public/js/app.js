@@ -66,7 +66,15 @@
 
   // ---------- Routing'as ----------
 
-  const SCREENS = ["rasyti", "srautas", "istorijos", "sos", "sauksmas", "nustatymai"];
+  const SCREENS = [
+    "rasyti",
+    "srautas",
+    "istorijos",
+    "sos",
+    "sauksmas",
+    "kalendorius",
+    "nustatymai",
+  ];
 
   let prevScreen = null;
 
@@ -93,11 +101,14 @@
     if (active === "srautas") loadFeed();
     if (active === "istorijos") loadStories();
     if (active === "rasyti") loadSocialProof();
+    if (active === "kalendorius") window.mood.render();
     if (active !== "sos") {
       window.breatheStop($("#breathe-circle"), $("#breathe-label"), $("#btn-breathe"));
     }
     // Palikus Šauksmo kambarį — viskas iš atminties dingsta.
     if (prevScreen === "sauksmas" && active !== "sauksmas") resetScream();
+    // Fono garsas neturi patekti į šauksmo įrašą.
+    if (active === "sauksmas") stopAmbient();
     prevScreen = active;
   }
 
@@ -170,6 +181,8 @@
     busy = true;
     btnBurn.disabled = btnRelease.disabled = true;
     await window.burnText(input, $("#burn-canvas"));
+    // Kalendoriui — tik emocija ir diena, tekstas sudega niekur neišėjęs.
+    if (selectedEmotion) window.mood.record(selectedEmotion);
     updateCounter();
     toast(window.t("toast.burned"), "calm");
     busy = false;
@@ -195,6 +208,7 @@
         input.value = "";
         updateCounter();
         rememberMine();
+        window.mood.record(selectedEmotion);
         // Žiburys „nuplaukia" nuo mygtuko prieš pereinant į srautą.
         btnRelease.classList.add("is-sending");
         setTimeout(() => btnRelease.classList.remove("is-sending"), 900);
@@ -270,6 +284,36 @@
       /* tyliai */
     }
   }
+
+  // ---------- Raminantys garsai (rašymo ir SOS ekranuose) ----------
+
+  function syncAmbient(loading) {
+    const current = window.ambient.current;
+    document.querySelectorAll(".ambient .chip").forEach((chip) => {
+      const on = chip.dataset.sound === current;
+      chip.classList.toggle("is-active", on);
+      chip.classList.toggle("is-loading", chip.dataset.sound === loading);
+      chip.setAttribute("aria-pressed", String(on));
+    });
+  }
+
+  function stopAmbient() {
+    window.ambient.stop();
+    syncAmbient();
+  }
+
+  document.addEventListener("click", async (e) => {
+    const chip = e.target.closest(".ambient .chip");
+    if (!chip) return;
+    const name = chip.dataset.sound;
+    if (window.ambient.current !== name) syncAmbient(name);
+    try {
+      await window.ambient.toggle(name);
+    } catch {
+      toast(window.t("sound.fail"), "warn");
+    }
+    syncAmbient();
+  });
 
   // ---------- Kortelės (srautui ir istorijoms) ----------
 
@@ -575,6 +619,7 @@
     const active = currentScreen();
     if (active === "srautas") loadFeed();
     if (active === "istorijos") loadStories();
+    if (active === "kalendorius") window.mood.render();
   });
 
   $("#btn-delete-data").addEventListener("click", async () => {
@@ -588,6 +633,7 @@
         localStorage.removeItem(HUGGED_KEY);
         localStorage.removeItem(MINE_KEY);
         localStorage.removeItem(SEEN_HUGS_KEY);
+        window.mood.clear();
         deviceId = crypto.randomUUID();
         localStorage.setItem(DEVICE_KEY, deviceId);
         hugged.clear();

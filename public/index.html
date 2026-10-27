@@ -175,11 +175,23 @@
               </button>
             </div>
           </div>
+          <div class="ambient" role="group" aria-label="Raminantys garsai"
+            data-i18n-aria="sound.aria">
+            <span class="ambient-label" data-i18n="sound.label">🎧 Fonas</span>
+            <button type="button" class="chip" data-sound="upe" aria-pressed="false"
+              data-i18n="sound.upe">🌊 Upė</button>
+            <button type="button" class="chip" data-sound="lietus" aria-pressed="false"
+              data-i18n="sound.lietus">🌧 Lietus</button>
+            <button type="button" class="chip" data-sound="lauzas" aria-pressed="false"
+              data-i18n="sound.lauzas">🔥 Laužas</button>
+          </div>
           <p class="write-hint" data-i18n="write.hint">
             Rašymas apie jausmus mažina jų intensyvumą — tai patvirtinta tyrimais. Sudegintas
             tekstas niekur nesiunčiamas.
           </p>
           <a class="scream-link" href="/sauksmas" data-i18n="scream.link">🔊 Šauksmo kambarys →</a>
+          <a class="scream-link" href="/kalendorius" data-i18n="mood.link"
+          >📅 Mano emocijų kalendorius →</a>
         </section>
 
         <!-- 2. Srautas -->
@@ -321,6 +333,16 @@
             <button type="button" class="btn btn-calm" id="btn-breathe" data-i18n="breathe.start">
               Pradėti kvėpavimą
             </button>
+            <div class="ambient ambient-center" role="group" aria-label="Raminantys garsai"
+              data-i18n-aria="sound.aria">
+              <span class="ambient-label" data-i18n="sound.label">🎧 Fonas</span>
+              <button type="button" class="chip" data-sound="upe" aria-pressed="false"
+                data-i18n="sound.upe">🌊 Upė</button>
+              <button type="button" class="chip" data-sound="lietus" aria-pressed="false"
+                data-i18n="sound.lietus">🌧 Lietus</button>
+              <button type="button" class="chip" data-sound="lauzas" aria-pressed="false"
+                data-i18n="sound.lauzas">🔥 Laužas</button>
+            </div>
           </div>
         </section>
 
@@ -360,6 +382,59 @@
           </div>
         </section>
 
+        <!-- 3c. Emocijų kalendorius (asmeninė dalis — tik šiame įrenginyje, žr. mood.js) -->
+        <section class="screen" id="screen-kalendorius" hidden>
+          <h1 data-i18n="mood.title">Emocijų kalendorius</h1>
+          <p class="muted screen-intro" data-i18n="mood.intro">
+            Čia atsiranda kiekviena emocija, kurią pažymi rašydama(s) — ir paleistame, ir
+            sudegintame tekste. Tik diena ir emocija, be teksto. Saugoma tik šiame įrenginyje.
+          </p>
+          <div class="mood-card">
+            <h2 data-i18n="mood.weekTitle">Tavo savaitė</h2>
+            <div class="mood-hero">
+              <span class="mood-face" id="mood-week-face" aria-hidden="true" hidden></span>
+              <p class="mood-line" id="mood-week-line"></p>
+            </div>
+            <div class="mood-bars" id="mood-week-bars"></div>
+            <a class="mood-sos" id="mood-week-sos" href="/sos" hidden data-i18n="mood.sos">
+              Jei sunku jau kelias dienas iš eilės — nebūk su tuo viena(s). Pagalba →
+            </a>
+          </div>
+          <div class="mood-card">
+            <div class="mood-month-head">
+              <button
+                type="button"
+                class="refresh"
+                id="mood-prev"
+                aria-label="Ankstesnis mėnuo"
+                data-i18n-aria="mood.prev"
+              >
+                ‹
+              </button>
+              <h2 id="mood-month-title"></h2>
+              <button
+                type="button"
+                class="refresh"
+                id="mood-next"
+                aria-label="Kitas mėnuo"
+                data-i18n-aria="mood.next"
+              >
+                ›
+              </button>
+            </div>
+            <div class="mood-grid" id="mood-grid"></div>
+          </div>
+          <div class="mood-card" id="mood-shared" hidden>
+            <h2 data-i18n="mood.sharedTitle">Kaip jaučiasi visi</h2>
+            <div class="mood-hero">
+              <span class="mood-face" id="mood-shared-face" aria-hidden="true"></span>
+              <p class="mood-line" id="mood-shared-line"></p>
+            </div>
+            <div class="mood-bars" id="mood-shared-bars"></div>
+            <p class="muted mood-note" id="mood-shared-note"></p>
+          </div>
+        </section>
+
         <!-- 4. Nustatymai -->
         <section class="screen" id="screen-nustatymai" hidden>
           <h1 data-i18n="set.title">Nustatymai</h1>
@@ -391,7 +466,7 @@
               Ištrinti mano duomenis
             </button>
             <p class="muted" data-i18n="set.deleteDesc">
-              Iškart ištrina visus tavo paleistus tekstus iš srauto ir tavo įrenginio žymę.
+              Iškart ištrina visus tavo paleistus tekstus, emocijų kalendorių ir įrenginio žymę.
             </p>
           </div>
           <div class="setting support">
@@ -473,6 +548,8 @@
     <script src="/js/scream.js"></script>
     <script src="/js/river.js"></script>
     <script src="/js/ui.js"></script>
+    <script src="/js/mood.js"></script>
+    <script src="/js/sounds.js"></script>
     <script src="/js/app.js"></script>
   </body>
 </html>

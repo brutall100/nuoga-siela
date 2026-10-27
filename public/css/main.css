@@ -649,32 +649,50 @@ h2 {
   color: var(--text);
 }
 .emo[data-emotion="pyktis"],
-.card[data-emotion="pyktis"] {
+.card[data-emotion="pyktis"],
+.mood-face[data-emotion="pyktis"],
+.mood-bar[data-emotion="pyktis"],
+.mood-day[data-emotion="pyktis"] {
   --dot: var(--emo-pyktis);
   --emo: var(--emo-pyktis);
 }
 .emo[data-emotion="liudesys"],
-.card[data-emotion="liudesys"] {
+.card[data-emotion="liudesys"],
+.mood-face[data-emotion="liudesys"],
+.mood-bar[data-emotion="liudesys"],
+.mood-day[data-emotion="liudesys"] {
   --dot: var(--emo-liudesys);
   --emo: var(--emo-liudesys);
 }
 .emo[data-emotion="nerimas"],
-.card[data-emotion="nerimas"] {
+.card[data-emotion="nerimas"],
+.mood-face[data-emotion="nerimas"],
+.mood-bar[data-emotion="nerimas"],
+.mood-day[data-emotion="nerimas"] {
   --dot: var(--emo-nerimas);
   --emo: var(--emo-nerimas);
 }
 .emo[data-emotion="kalte"],
-.card[data-emotion="kalte"] {
+.card[data-emotion="kalte"],
+.mood-face[data-emotion="kalte"],
+.mood-bar[data-emotion="kalte"],
+.mood-day[data-emotion="kalte"] {
   --dot: var(--emo-kalte);
   --emo: var(--emo-kalte);
 }
 .emo[data-emotion="vienatve"],
-.card[data-emotion="vienatve"] {
+.card[data-emotion="vienatve"],
+.mood-face[data-emotion="vienatve"],
+.mood-bar[data-emotion="vienatve"],
+.mood-day[data-emotion="vienatve"] {
   --dot: var(--emo-vienatve);
   --emo: var(--emo-vienatve);
 }
 .emo[data-emotion="viltis"],
-.card[data-emotion="viltis"] {
+.card[data-emotion="viltis"],
+.mood-face[data-emotion="viltis"],
+.mood-bar[data-emotion="viltis"],
+.mood-day[data-emotion="viltis"] {
   --dot: var(--emo-viltis);
   --emo: var(--emo-viltis);
 }
@@ -1469,6 +1487,283 @@ h2 {
 }
 .empty-link:hover {
   text-decoration: underline;
+}
+
+/* ---------- Raminantys garsai ---------- */
+
+.ambient {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 14px;
+}
+.ambient-center {
+  justify-content: center;
+  margin-top: 18px;
+}
+.ambient-label {
+  font-size: 13px;
+  color: var(--text-faint);
+  margin-right: 2px;
+}
+.chip.is-loading {
+  animation: chip-loading 0.8s ease-in-out infinite alternate;
+}
+
+@keyframes chip-loading {
+  to {
+    opacity: 0.5;
+  }
+}
+
+/* ---------- Emocijų kalendorius ---------- */
+
+.mood-card {
+  background: var(--glass);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 18px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.mood-hero {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+.mood-line {
+  font-family: var(--font-head);
+  font-size: 16px;
+  line-height: 1.4;
+  color: var(--text);
+}
+
+/* Judantis emoji: kiekviena emocija juda savaip, už jo — emocijos spalvos švytėjimas. */
+.mood-face {
+  --emo: var(--text-dim);
+  position: relative;
+  isolation: isolate;
+  flex: none;
+  width: 72px;
+  height: 72px;
+  display: grid;
+  place-items: center;
+  font-size: 44px;
+  line-height: 1;
+}
+.mood-face::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -4px;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--emo) 38%, transparent), transparent
+    70%);
+}
+.mood-face.is-alive::before {
+  animation: mood-halo 3.2s ease-in-out infinite;
+}
+.mood-face.is-alive[data-emotion="pyktis"] {
+  animation: mood-shake 2.6s ease-in-out infinite;
+}
+.mood-face.is-alive[data-emotion="liudesys"] {
+  animation: mood-droop 4.5s ease-in-out infinite;
+}
+.mood-face.is-alive[data-emotion="nerimas"] {
+  animation: mood-tremble 3s linear infinite;
+}
+.mood-face.is-alive[data-emotion="kalte"] {
+  animation: mood-bow 5s ease-in-out infinite;
+}
+.mood-face.is-alive[data-emotion="vienatve"] {
+  animation: mood-drift 7s ease-in-out infinite;
+}
+.mood-face.is-alive[data-emotion="viltis"] {
+  transform-origin: 50% 85%;
+  animation: mood-grow 3.6s ease-in-out infinite;
+}
+
+@keyframes mood-halo {
+  50% {
+    opacity: 0.45;
+  }
+}
+@keyframes mood-shake {
+  0%,
+  44%,
+  100% {
+    transform: none;
+  }
+  8%,
+  24% {
+    transform: translateX(-3px) rotate(-5deg);
+  }
+  16%,
+  32% {
+    transform: translateX(3px) rotate(5deg);
+  }
+  40% {
+    transform: scale(1.06);
+  }
+}
+@keyframes mood-droop {
+  50% {
+    transform: translateY(5px) rotate(-6deg);
+  }
+}
+@keyframes mood-tremble {
+  0%,
+  36%,
+  100% {
+    transform: none;
+  }
+  6%,
+  18%,
+  30% {
+    transform: rotate(-3deg);
+  }
+  12%,
+  24% {
+    transform: rotate(3deg);
+  }
+}
+@keyframes mood-bow {
+  50% {
+    transform: translateY(4px) rotate(10deg);
+  }
+}
+@keyframes mood-drift {
+  0%,
+  100% {
+    transform: translateX(-6px);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translateX(6px);
+    opacity: 1;
+  }
+}
+@keyframes mood-grow {
+  0%,
+  100% {
+    transform: scale(0.9);
+  }
+  50% {
+    transform: scale(1.08) translateY(-3px);
+  }
+}
+
+.mood-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.mood-bar {
+  --emo: var(--text-dim);
+  display: grid;
+  grid-template-columns: 84px 1fr 28px;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+.mood-bar-track {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  overflow: hidden;
+}
+.mood-bar-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--emo);
+  transform-origin: left;
+  transform: scaleX(var(--w, 0));
+  transition: transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.mood-bar-count {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.mood-sos {
+  display: block;
+  margin-top: 14px;
+  font-size: 13.5px;
+  color: var(--ember-strong);
+  text-decoration: none;
+}
+.mood-sos:hover {
+  text-decoration: underline;
+}
+.mood-note {
+  margin-top: 12px;
+}
+
+.mood-month-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.mood-month-head h2 {
+  margin: 0;
+}
+.mood-month-head .refresh:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.mood-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+}
+.mood-wd {
+  text-align: center;
+  font-size: 11.5px;
+  color: var(--text-faint);
+  text-transform: uppercase;
+}
+.mood-day {
+  --emo: transparent;
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--emo) 16%, var(--surface));
+  border: 1px solid var(--line);
+  font-size: 12px;
+  color: var(--text-faint);
+}
+.mood-day.is-pad {
+  background: none;
+  border: none;
+}
+.mood-day[data-emotion] {
+  border-color: color-mix(in srgb, var(--emo) 55%, transparent);
+  color: var(--text);
+}
+.mood-day.is-today {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+.mood-day-num {
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.mood-day-face {
+  font-size: 15px;
+  line-height: 1;
 }
 
 /* ---------- Šauksmo kambarys ---------- */

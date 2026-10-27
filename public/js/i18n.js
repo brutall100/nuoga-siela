@@ -66,7 +66,7 @@
       "set.softDesc": "Keiksmažodžiai sraute rodomi kaip b***. Tavo paties rašymo tai neriboja.",
       "set.deleteBtn": "Ištrinti mano duomenis",
       "set.deleteDesc":
-        "Iškart ištrina visus tavo paleistus tekstus iš srauto ir tavo įrenginio žymę.",
+        "Iškart ištrina visus tavo paleistus tekstus, emocijų kalendorių ir įrenginio žymę.",
       "set.supportTitle": "Palaikyk projektą",
       "set.supportDesc":
         "Jokių reklamų čia nebus niekada. Jei ši erdvė tau padėjo — gali pavaišinti kava.",
@@ -105,7 +105,7 @@
       "toast.serverFail": "Nepavyko susisiekti su serveriu.",
       "confirm.report": "Pranešti apie šį tekstą? Po kelių pranešimų jis dings.",
       "confirm.delete":
-        "Ištrinti visus tavo paleistus tekstus ir įrenginio žymę? To atšaukti nebus galima.",
+        "Ištrinti visus tavo paleistus tekstus, emocijų kalendorių ir įrenginio žymę? To atšaukti nebus galima.",
       "banner.one": "Tavo tekstą suprato dar 1 žmogus 🤍",
       "banner.many": "Tavo tekstus suprato dar {n} žmonės 🤍",
       "proof.line": 'Šiandien paleisti {p} tekstai · {h} kartų „suprantu"',
@@ -118,6 +118,26 @@
       "aria.emotions": "Kaip jautiesi?",
       "aria.scream": "Rėkti",
       "report.title": "Pranešti",
+      "mood.link": "📅 Mano emocijų kalendorius →",
+      "mood.title": "Emocijų kalendorius",
+      "mood.intro":
+        "Čia atsiranda kiekviena emocija, kurią pažymi rašydama(s) — ir paleistame, ir sudegintame tekste. Tik diena ir emocija, be teksto. Saugoma tik šiame įrenginyje.",
+      "mood.weekTitle": "Tavo savaitė",
+      "mood.weekLine": "Šią savaitę dažniausiai jautei: {emo}",
+      "mood.weekEmpty":
+        "Šią savaitę dar nieko nepažymėjai. Kai rašydama(s) pasirinksi emociją — ji atsiras čia.",
+      "mood.sos": "Jei sunku jau kelias dienas iš eilės — nebūk su tuo viena(s). Pagalba →",
+      "mood.prev": "Ankstesnis mėnuo",
+      "mood.next": "Kitas mėnuo",
+      "mood.sharedTitle": "Kaip jaučiasi visi",
+      "mood.sharedLine": "Šią savaitę dažniausiai jaučiama: {emo}",
+      "mood.sharedNote": "Per 7 dienas paleistų tekstų: {n}. Ką jauti tu — jaučia ir kiti.",
+      "sound.aria": "Raminantys garsai",
+      "sound.label": "🎧 Fonas",
+      "sound.upe": "🌊 Upė",
+      "sound.lietus": "🌧 Lietus",
+      "sound.lauzas": "🔥 Laužas",
+      "sound.fail": "Nepavyko įjungti garso.",
     },
     en: {
       promise: "We don't know who you are. And we don't want to.",
@@ -178,7 +198,8 @@
       "set.softDesc":
         "Profanity in the stream is shown as b***. Your own writing is never limited.",
       "set.deleteBtn": "Delete my data",
-      "set.deleteDesc": "Immediately deletes all your released texts and your device marker.",
+      "set.deleteDesc":
+        "Immediately deletes all your released texts, your mood calendar and your device marker.",
       "set.supportTitle": "Support the project",
       "set.supportDesc":
         "There will never be ads here. If this space helped you — buy us a coffee.",
@@ -216,7 +237,8 @@
       "toast.deleted": "Deleted. Your device is now a complete stranger.",
       "toast.serverFail": "Couldn't reach the server.",
       "confirm.report": "Report this text? After a few reports it will disappear.",
-      "confirm.delete": "Delete all your released texts and device marker? This cannot be undone.",
+      "confirm.delete":
+        "Delete all your released texts, your mood calendar and your device marker? This cannot be undone.",
       "banner.one": "1 more person understood your text 🤍",
       "banner.many": "{n} more people understood your texts 🤍",
       "proof.line": 'Today: {p} texts released · {h} times "I understand"',
@@ -229,6 +251,27 @@
       "aria.emotions": "How do you feel?",
       "aria.scream": "Scream",
       "report.title": "Report",
+      "mood.link": "📅 My mood calendar →",
+      "mood.title": "Mood calendar",
+      "mood.intro":
+        "Every emotion you tag while writing shows up here, whether you released the text or burned it. Only the day and the emotion, never the text. Stored only on this device.",
+      "mood.weekTitle": "Your week",
+      "mood.weekLine": "This week you mostly felt: {emo}",
+      "mood.weekEmpty":
+        "You haven't tagged anything this week yet. Pick an emotion while writing and it will show up here.",
+      "mood.sos":
+        "If it's been hard for several days in a row, you don't have to carry it alone. Help →",
+      "mood.prev": "Previous month",
+      "mood.next": "Next month",
+      "mood.sharedTitle": "How everyone feels",
+      "mood.sharedLine": "The most common feeling this week: {emo}",
+      "mood.sharedNote": "Texts released in the last 7 days: {n}. What you feel, others feel too.",
+      "sound.aria": "Calming sounds",
+      "sound.label": "🎧 Background",
+      "sound.upe": "🌊 River",
+      "sound.lietus": "🌧 Rain",
+      "sound.lauzas": "🔥 Campfire",
+      "sound.fail": "Couldn't play the sound.",
     },
   };
 

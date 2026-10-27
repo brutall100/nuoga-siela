@@ -24,6 +24,7 @@ const MIME: Record<string, string> = {
   ".webp": "image/webp",
   ".ico": "image/x-icon",
   ".woff2": "font/woff2",
+  ".mp3": "audio/mpeg",
   ".txt": "text/plain; charset=utf-8",
   ".xml": "application/xml; charset=utf-8",
 };
@@ -78,6 +79,11 @@ const ROUTE_META: Record<string, RouteMeta> = {
   "/sauksmas": {
     title: "Šauksmo kambarys — Nuoga Siela",
     description: "Išrėk. Garso įrašas gyvena tik tavo telefono atmintyje — niekur nesiunčiamas.",
+  },
+  "/kalendorius": {
+    title: "Emocijų kalendorius — Nuoga Siela",
+    description:
+      "Kaip jauteisi šią savaitę ir kaip jaučiasi visi. Tavo emocijos saugomos tik tavo įrenginyje.",
   },
   "/nustatymai": {
     title: "Nustatymai — Nuoga Siela",
@@ -248,7 +254,7 @@ interface SitemapEntry {
 
 // Ta pati data, kuri jau rodoma pačiuose puslapiuose ("Paskutinį kartą
 // atnaujinta:") — nekuriame naujos, tik pakartojame jau tikslią.
-const LEGAL_PAGES_UPDATED = "2026-07-04";
+const LEGAL_PAGES_UPDATED = "2026-10-27";
 
 const STATIC_SITEMAP_ENTRIES: SitemapEntry[] = [
   { path: "/", changefreq: "daily", priority: "1.0" },
@@ -257,6 +263,7 @@ const STATIC_SITEMAP_ENTRIES: SitemapEntry[] = [
   { path: "/istorijos", changefreq: "daily", priority: "0.8" },
   { path: "/sos", changefreq: "monthly", priority: "0.5" },
   { path: "/sauksmas", changefreq: "monthly", priority: "0.5" },
+  { path: "/kalendorius", changefreq: "weekly", priority: "0.4" },
   { path: "/nustatymai", changefreq: "monthly", priority: "0.4" },
   {
     path: "/privatumas.html",

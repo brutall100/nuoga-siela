@@ -4,7 +4,7 @@
 //    duomenis po 24 val. — ne slepia, o trina;
 //  - istorijos gyvena be termino, bet tik kol autorius jų neištrina.
 
-import type { Emotion } from "./filter.ts";
+import { type Emotion, EMOTIONS } from "./filter.ts";
 
 export const POST_TTL_MS = Number(Deno.env.get("POST_TTL_MS") ?? 24 * 60 * 60 * 1000);
 export const RATE_LIMIT_PER_HOUR = 5;
@@ -17,6 +17,9 @@ export const STORY_FEED_LIMIT = 50;
 // taptų nepasiekiamos paieškos sistemoms. Gerokai po sitemap protokolo
 // 50000 URL riba; jei kada pasiekiama, kitas žingsnis — sitemap index skaidymas.
 export const SITEMAP_STORY_LIMIT = 5000;
+// Bendros savaitės nuotaikos langas (Emocijų kalendoriaus ekranui).
+export const MOOD_WINDOW_DAYS = 7;
+const DAY_MS = 24 * 60 * 60 * 1000;
 
 export type PostKind = "srautas" | "istorija";
 
@@ -115,6 +118,7 @@ export async function createPost(
     .set(["byDevice", deviceHash, post.id], kind, ttl)
     .commit();
   await bumpStat("posts");
+  await bumpEmotionStat(emotion);
   return post;
 }
 
@@ -280,8 +284,8 @@ export async function checkRateLimit(deviceHash: string, kind: PostKind): Promis
 
 // ---- Dienos statistika (socialiniam įrodymui). Tik skaičiai, jokių sąsajų. ----
 
-function dayKey(): string {
-  return new Date().toISOString().slice(0, 10);
+function dayKey(at = Date.now()): string {
+  return new Date(at).toISOString().slice(0, 10);
 }
 
 async function bumpStat(name: "posts" | "hugs"): Promise<void> {
@@ -298,4 +302,36 @@ export async function getStats(): Promise<{ postsToday: number; hugsToday: numbe
     kv.get<number>(["stats", dayKey(), "hugs"]),
   ]);
   return { postsToday: posts.value ?? 0, hugsToday: hugs.value ?? 0 };
+}
+
+// Savaitės nuotaika: kiek kartų per dieną pažymėta kiekviena emocija. Tik
+// suminiai skaičiai be jokio ryšio su postu ar įrenginiu; raktai patys
+// išnyksta praėjus langui.
+async function bumpEmotionStat(emotion: Emotion): Promise<void> {
+  const kv = await getKv();
+  const key = ["stats", dayKey(), "emo", emotion];
+  const entry = await kv.get<number>(key);
+  await kv.set(key, (entry.value ?? 0) + 1, { expireIn: (MOOD_WINDOW_DAYS + 1) * DAY_MS });
+}
+
+export async function getWeeklyMood(): Promise<
+  { counts: Record<Emotion, number>; total: number }
+> {
+  const kv = await getKv();
+  const now = Date.now();
+  const days = Array.from({ length: MOOD_WINDOW_DAYS }, (_, i) => dayKey(now - i * DAY_MS));
+  // getMany priima iki 10 raktų — viena užklausa vienai dienai (6 emocijos).
+  const perDay = await Promise.all(
+    days.map((day) => kv.getMany<number[]>(EMOTIONS.map((e) => ["stats", day, "emo", e]))),
+  );
+  const counts = Object.fromEntries(EMOTIONS.map((e) => [e, 0])) as Record<Emotion, number>;
+  let total = 0;
+  for (const entries of perDay) {
+    entries.forEach((entry, i) => {
+      const n = entry.value ?? 0;
+      counts[EMOTIONS[i]] += n;
+      total += n;
+    });
+  }
+  return { counts, total };
 }
