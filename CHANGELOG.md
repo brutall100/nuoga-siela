@@ -4,6 +4,12 @@ Visi pastebimi projekto pakeitimai bus fiksuojami šiame faile.
 
 Formatas paremtas [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [v2.2] — 2026-10-27
+
+- PNG piktogramos (`public/icons/icon-512.png`, `icon-maskable-512.png`, 512×512, sugeneruotos iš
+  v2.0 SVG) pridėtos į `manifest.webmanifest` — Bubblewrap/TWA (Google Play programėlei) SVG
+  piktogramų nepriima.
+
 ## [v2.1] — 2026-09-24
 
 - Licencija pakeista iš MIT į **AGPL-3.0** (`LICENSE`): pakeistą versiją paleidęs kaip svetainę
