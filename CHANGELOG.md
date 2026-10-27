@@ -4,6 +4,30 @@ Visi pastebimi projekto pakeitimai bus fiksuojami šiame faile.
 
 Formatas paremtas [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [v2.6] — 2026-10-27
+
+- **Raminančių garsų failai** (`public/sounds/`): garso mygtukai rašymo ir SOS ekranuose dabar groja
+  (iki šiol rodė „Nepavyko įjungti garso“). Visi trys garsai paimti iš
+  [Freesound](https://freesound.org) ir išleisti pagal licenciją
+  **[CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/)** (viešoji nuosavybė: nurodyti
+  autoriaus nebūtina, bet nurodome):
+  - `upe.mp3`: [„Murmuring Stream“](https://freesound.org/people/borralbi/sounds/337614/), autorius
+    borralbi (#337614).
+  - `lietus.mp3`: [„Rain light 2 (rural)“](https://freesound.org/people/jmbphilmes/sounds/200273/),
+    autorius jmbphilmes (#200273).
+  - `lauzas.mp3`:
+    [„campfire in a forest at night“](https://freesound.org/people/Duophonic/sounds/248303/),
+    autorius Duophonic (#248303): laužas miške naktį, girdėti svirpliai ir vėjas.
+- Apdorojimas: šaltinis yra Freesound HQ peržiūros MP3, apdorota su ffmpeg. Iš kiekvieno įrašo
+  paimta 94 s ištrauka (upės 2–96 s, lietaus 1–94,7 s, laužo 10–104 s) ir paversta lygiai 90 s
+  kilpa: paskutinės 4 s (lietaus 3,7 s) sulietos su pradžia (equal-power crossfade), todėl sandūra
+  negirdima. Garsumas suvienodintas iki −20 LUFS, viršūnės ≤ −1 dBTP; limiteris suveikia tik retoms
+  viršūnėms. Lietus įrašytas mono: dešinysis kanalas yra ta pati kilpa, pastumta 45 s, todėl
+  ausinėse lietus skamba erdviai, o telefono garsiakalbyje nesikeičia.
+- Formatas: MP3 128 kbps CBR, stereo, 44,1 kHz, po ~1,4 MB. LAME antraštėje įrašyti encoder
+  delay/padding duomenys, todėl `decodeAudioData` grąžina lygiai 90,000 s be tylos galuose ir Web
+  Audio kilpa skamba be tarpo (patikrinta Chromium).
+
 ## [v2.5] — 2026-10-27
 
 Premium nebus: Buy Me a Coffee lieka kaip vienintelis, savanoriškas padėkos būdas, o naujos

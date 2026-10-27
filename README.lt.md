@@ -130,6 +130,7 @@ public/js/scream.js  Šauksmo kambarys (garsas tik RAM'e)
 public/js/mood.js    emocijų kalendorius (tik įrenginyje) ir bendra savaitės nuotaika
 public/js/sounds.js  raminantys garsai (Web Audio kilpa, failai public/sounds/)
 public/fonts/        Lora ir Nunito Sans (woff2 + OFL licencijos)
+public/sounds/       upės, lietaus ir laužo kilpos (Freesound, CC0)
 public/images/       og-image.webp
 docs/                ekrano nuotraukos README failui
 ```
@@ -154,6 +155,12 @@ docs/                ekrano nuotraukos README failui
   [Nunito Sans](https://github.com/Fonthausen/NunitoSans) (The Nunito Sans Project Authors), abu
   pagal [SIL Open Font License 1.1](https://openfontlicense.org). Licencijų tekstai yra
   `public/fonts/`.
+- Garsai iš [Freesound](https://freesound.org), visi
+  [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/):
+  [Murmuring Stream](https://freesound.org/people/borralbi/sounds/337614/) (borralbi),
+  [Rain light 2 (rural)](https://freesound.org/people/jmbphilmes/sounds/200273/) (jmbphilmes),
+  [campfire in a forest at night](https://freesound.org/people/Duophonic/sounds/248303/)
+  (Duophonic). Sukarpyti į 90 s kilpas, plačiau `CHANGELOG.md` (v2.6).
 - Pagalbos linijos: [Vilties linija](https://www.viltieslinija.lt) 116 123,
   [Jaunimo linija](https://www.jaunimolinija.lt) 8 800 28888.
 - Idėjos: Vent, 7 Cups, Jodel. Psichologinis pagrindas: J. Pennebaker (ekspresyvusis rašymas).

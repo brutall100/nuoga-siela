@@ -132,6 +132,7 @@ public/js/scream.js  scream room (audio only in RAM)
 public/js/mood.js    mood calendar (local only) and the shared weekly mood
 public/js/sounds.js  calming sounds (Web Audio loop, files in public/sounds/)
 public/fonts/        Lora and Nunito Sans (woff2 + OFL licenses)
+public/sounds/       river, rain and campfire loops (Freesound, CC0)
 public/images/       og-image.webp
 docs/                README screenshots
 ```
@@ -156,6 +157,12 @@ docs/                README screenshots
   [Nunito Sans](https://github.com/Fonthausen/NunitoSans) (The Nunito Sans Project Authors), both
   under the [SIL Open Font License 1.1](https://openfontlicense.org). The license texts are in
   `public/fonts/`.
+- Sounds from [Freesound](https://freesound.org), all
+  [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/):
+  [Murmuring Stream](https://freesound.org/people/borralbi/sounds/337614/) (borralbi),
+  [Rain light 2 (rural)](https://freesound.org/people/jmbphilmes/sounds/200273/) (jmbphilmes),
+  [campfire in a forest at night](https://freesound.org/people/Duophonic/sounds/248303/)
+  (Duophonic). Cut into 90 s loops; see `CHANGELOG.md` (v2.6).
 - Helplines: [Vilties linija](https://www.viltieslinija.lt) 116 123,
   [Jaunimo linija](https://www.jaunimolinija.lt) 8 800 28888.
 - Inspiration: Vent, 7 Cups, Jodel. Psychology: J. Pennebaker (expressive writing).
