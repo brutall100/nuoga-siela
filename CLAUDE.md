@@ -38,6 +38,21 @@ naršyklės kodui, todėl `public/` išskirtas `deno.json` → `lint.exclude` �
 `deno task
 lint`, ne grynas `deno lint`.
 
+## Debesies aplinka (Claude Code cloud)
+
+Deno debesies sesijose iš anksto neįdiegtas, o „Trusted“ tinkle `dl.deno.land` ir `deno.land`
+užblokuoti (403), todėl oficialus `install.sh` neveikia. Deno diegiamas per oficialų npm paketą
+`deno@2` (naujausia 2.x, kaip CI `v2.x`; jo `postinstall` pakeičia Node apvalkalą tikru binariniu
+failu) su `NODE_OPTIONS=--use-openssl-ca` — tinklo šliuzas perima TLS savo CA, kurį turi tik
+sistemos saugykla, ne Node įmontuotas sąrašas. Du sluoksniai:
+
+- **Aplinkos setup script'as** (claude.ai aplinkos nustatymuose, ne repozitorijoje) įdiegia Deno
+  prieš sesiją; failų sistemos snapshot'as kešuojamas ~7 d., todėl įprastai Deno jau būna.
+- **SessionStart hook'as** (`.claude/settings.json` → `.claude/hooks/session-start.sh`) — atsarginis
+  kelias kitoms aplinkoms: tik kai `CLAUDE_CODE_REMOTE=true` ir `deno` nerastas, įdiegia tą patį
+  `deno@2`. Lokaliai nieko nedaro. Jo diegimo eilutės tinka ir setup script'ui, jei aplinką reikės
+  sukurti iš naujo.
+
 ## Architektūra
 
 Vienas Deno procesas (`main.ts`) tarnauja ir statiką iš `/public`, ir JSON API iš `/api/*` — jokio

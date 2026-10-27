@@ -4,6 +4,15 @@ Visi pastebimi projekto pakeitimai bus fiksuojami šiame faile.
 
 Formatas paremtas [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [v2.4] — 2026-10-27
+
+- Claude Code debesies aplinka: SessionStart hook'as (`.claude/settings.json`,
+  `.claude/hooks/session-start.sh`) debesies sesijoje įdiegia Deno 2.x per npm (`deno@2`), jei jo
+  nėra — „Trusted“ tinkle `dl.deno.land` užblokuotas. Įprastai Deno jau įdiegia (ir kešuoja)
+  aplinkos setup script'as, hook'as — atsarginis kelias. Lokaliai nieko nedaro.
+- CLAUDE.md: naujas skyrius „Debesies aplinka“ — kodėl Deno diegiamas per npm ir kaip veikia abu
+  sluoksniai.
+
 ## [v2.3] — 2026-10-27
 
 - `public/.well-known/assetlinks.json` — Digital Asset Links Google Play programėlei
