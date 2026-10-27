@@ -55,6 +55,9 @@ Formatas paremtas [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   `i18n.js`) — grįžtantys naudotojai su jau įdiegtu PWA cache'u būtų toliau matę seną, hash
   maršrutizacijos versiją. `CACHE` pakelta į `nuoga-siela-v5`, kad `activate` handler'is išvalytų
   senus cache'us.
+- PNG piktogramos (`public/icons/icon-512.png`, `icon-maskable-512.png`, 512×512, sugeneruotos iš
+  esamų SVG) pridėtos į `manifest.webmanifest` — Bubblewrap/TWA (Google Play programėlei) SVG
+  piktogramų nepriima.
 
 ## [1.5] — Šauksmo kambarys + LT/EN kalbos
 
