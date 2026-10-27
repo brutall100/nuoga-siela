@@ -192,24 +192,18 @@
   const btnBurn = $("#btn-burn");
   const btnRelease = $("#btn-release");
   const btnStory = $("#btn-story");
-  const releaseDesc = $("#release-desc");
   const actionBtns = [btnBurn, btnRelease, btnStory];
   let selectedEmotion = null;
 
   // Laukelis priima istorijos ilgį; srautui per ilgas tekstas tiesiog
-  // nukreipiamas į istoriją (serveris vis tiek tikrina abi ribas).
+  // nukreipiamas į istoriją (serveris vis tiek tikrina abi ribas). Paspaudus
+  // pritemdytą „Į srautą" plytelę, pranešimas paaiškina kodėl (release()).
   function updateCounter() {
     const len = input.value.length;
     const tooLong = len > MAX_LEN.srautas;
     charCount.textContent = len + " / " + (tooLong ? MAX_LEN.istorija : MAX_LEN.srautas);
     btnRelease.classList.toggle("is-unavailable", tooLong);
     btnRelease.setAttribute("aria-disabled", String(tooLong));
-    // Keičiam patį i18n raktą, kad kalbos perjungimas paliktų teisingą tekstą.
-    const key = tooLong ? "path.releaseTooLong" : "path.releaseDesc";
-    if (releaseDesc.dataset.i18n !== key) {
-      releaseDesc.dataset.i18n = key;
-      releaseDesc.textContent = window.t(key);
-    }
   }
 
   input.addEventListener("input", updateCounter);

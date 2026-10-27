@@ -206,17 +206,27 @@ būti su laisva licencija (CC0 ar pan.) — šaltinį ir licenciją užrašyk `C
 
 Visa programa seka vieną kelią, ir nauji ekranai ar tekstai turi jį palaikyti, ne kurti šalutinį:
 **emocija → žodžiai → ką su jais daryti**. Rašymo kortelėje tvarka fiksuota: „Kaip jautiesi?“ (emoji
-chip'ai) → laukelis → „Ką darysi su tuo?“ — trys kortelės `.path` (🔥 Sudeginti / 🏮 Paleisti į
-Srautą / 📖 Palikti istoriją), kiekviena su viena paaiškinimo eilute. Srauto ir istorijos skirtumas
-(24 val. ir 1000 ženklų / lieka ir 5000 ženklų) turi būti matomas pačiame UI: kortelių aprašuose ir
-abiejų ekranų `screen-intro` tekstuose. Laukelis priima 5000 ženklų; viršijus 1000, „Paleisti“
-kortelė tampa `aria-disabled` ir nukreipia į istoriją (serveris vis tiek tikrina abi ribas).
+plytelės 3×2) → laukelis → „Ką darysi su tuo?“ — trys plytelės `.path` vienoje eilėje (🔥 Sudeginti
+/ 🏮 Į srautą / 📖 Į istorijas), be aprašų; paspaudimas iškart atlieka veiksmą. Emoji visada pilnos
+spalvos (jokio pilkinimo) — pažymėtą emociją rodo tik plytelės fonas ir rėmelis, kitaip 🌱 atrodo
+pažymėta nuo pradžių. Srauto ir istorijos skirtumas (24 val. ir 1000 ženklų / lieka ir 5000 ženklų)
+aiškinamas „Kaip tai veikia“ kortelėje, abiejų ekranų `screen-intro` tekstuose ir pranešime po
+veiksmo. Po plytelėmis lieka viena eilutė „Istorijas gali rasti ir Google“ — tai privatumo
+atskleidimas prieš paskelbiant amžiną viešą tekstą, neišimk jos. Laukelis priima 5000 ženklų;
+viršijus 1000, „Į srautą“ plytelė tampa `aria-disabled` (pritemdyta), o paspaudus pranešimas
+nukreipia į istorijas (serveris vis tiek tikrina abi ribas).
+
+`:hover` stilius plytelėms ir chip'ams rašyk tik `@media (hover: hover)` viduje — telefone `:hover`
+„prilimpa“ po paspaudimo, ir atžymėta plytelė atrodo vis dar pažymėta.
+
+Šauksmo kambarys pasiekiamas iš SOS ekrano (`.tool-card` po kvėpavimo), ne iš rašymo ekrano — rašymo
+ekrane lieka tik emocija, laukelis, trys keliai ir fono garsai.
 
 Apatinis meniu: Rašyti · Srautas · Istorijos · Kalendorius. Nustatymai — ⚙ (`#settings-btn`)
 viršuje, šalia temos ir SOS; nustatymų ekrane „Ištrinti mano duomenis“ visada paskutinis.
 
 Emocijų kalba visur ta pati: emoji + pavadinimas + spalva (`--emo-*`). Vienintelis emoji šaltinis JS
-pusėje — `window.mood.faces` (`mood.js` `FACES`); statiniame HTML (chip'ai, filtrai) ir `main.ts`
+pusėje — `window.mood.faces` (`mood.js` `FACES`); statiniame HTML (plytelės, filtrai) ir `main.ts`
 `EMOTION_LABELS_LT` (SSR istorija) tie patys emoji įrašyti ranka — keičiant vieną, keisk visus.
 
 „Kaip tai veikia“ kortelė rašymo ekrane rodoma, kol žmogus jos neuždaro (`ns_intro` localStorage);
