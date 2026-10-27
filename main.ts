@@ -87,7 +87,7 @@ const ROUTE_META: Record<string, RouteMeta> = {
   },
   "/nustatymai": {
     title: "Nustatymai — Nuoga Siela",
-    description: "Kalba, švelnus srautas, duomenų trynimas ir privatumo politika.",
+    description: "Kalba, švelnus srautas, apie projektą, privatumas ir duomenų trynimas.",
   },
 };
 
@@ -142,13 +142,14 @@ const BRAND_FLAME_PATH =
 
 const STORY_PATH_RE = /^\/istorijos\/([\w-]+)$/;
 
+// Emoji — tas pats kaip rašant, sraute ir kalendoriuje (public/js/mood.js FACES).
 const EMOTION_LABELS_LT: Record<Emotion, string> = {
-  pyktis: "Pyktis",
-  liudesys: "Liūdesys",
-  nerimas: "Nerimas",
-  kalte: "Kaltė",
-  vienatve: "Vienatvė",
-  viltis: "Viltis",
+  pyktis: "😠 Pyktis",
+  liudesys: "😢 Liūdesys",
+  nerimas: "😰 Nerimas",
+  kalte: "😔 Kaltė",
+  vienatve: "😶 Vienatvė",
+  viltis: "🌱 Viltis",
 };
 
 function excerpt(text: string, max: number): string {

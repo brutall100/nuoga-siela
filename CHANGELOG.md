@@ -4,6 +4,37 @@ Visi pastebimi projekto pakeitimai bus fiksuojami šiame faile.
 
 Formatas paremtas [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [v2.7] — 2026-10-27
+
+Nuoseklumas: visa programa dabar seka vieną kelią — **emocija → žodžiai → ką su jais daryti**, o
+emocija visada nukeliauja į kalendorių.
+
+- **Rašymo ekranas pertvarkytas:** nauja antraštė „Kas guli ant širdies?“ (EN „What's on your
+  heart?“); kortelėje pirma „Kaip jautiesi?“ (emocijos dabar su emoji, kaip kalendoriuje), tada
+  laukelis, tada „Ką darysi su tuo?“ — trys aiškios kortelės su paaiškinimu: 🔥 Sudeginti (niekas
+  nepamatys), 🏮 Paleisti (į Srautą, po 24 val. išnyks), 📖 Palikti istoriją (lieka, kol ištrinsi).
+  Jungikliai „24 val. / istorija“ ir du mygtukai pašalinti. Laukelis priima iki 5000 ženklų;
+  viršijus 1000, „Paleisti“ pasiūlo palikti istoriją.
+- **„Kaip tai veikia“:** trijų žingsnių kortelė rašymo ekrane, kol ją uždarai (`ns_intro`
+  localStorage). Nustatymuose — nauja skiltis „Apie Nuogą Sielą“ su misija ir tais pačiais
+  žingsniais.
+- **Meniu:** apačioje Rašyti · Srautas · Istorijos · **Kalendorius**; nustatymai perkelti į ⚙
+  mygtuką viršuje. Tab'ų ikonos — vieno stiliaus SVG vietoj skirtingai atrodančių simbolių.
+- **Nustatymai:** sugrupuoti į skydelius; „Ištrinti mano duomenis“ nukeltas į patį apačią (atskira
+  „Tavo duomenys“ zona).
+- **Srautas ir Istorijos:** abu ekranai viršuje paaiškina, kiek gyvena tekstai; filtruose ir
+  kortelėse rodoma emocija su emoji. SSR istorijos puslapyje — irgi emoji.
+- **Animacijos** (tik `transform`/`opacity`, gerbia `prefers-reduced-motion`): pasirinkta emocija
+  „atgyja“ (iššoka ir sujuda savaip); sudeginus ar paleidus emoji nuskrenda lanku į Kalendoriaus
+  tab'ą, o šis pašoka; meniu švytinti juostelė nuslenka prie aktyvaus tab'o; trūkstant teksto ar
+  emocijos, tas elementas švelniai sujuda; bangelė (ripple) ir kelių kortelėse.
+- „Sudeginti“ pranešimas dabar „Sudegė. Niekas to nematė.“; privatumo politikoje (LT/EN) atnaujinti
+  mygtukų pavadinimai. Nenaudojami i18n raktai (`life.*`, `btn.burn`, `btn.release`,
+  `write.storyPlaceholder`, `mood.link`, `tab.settings`, `aria.emotions`) pašalinti.
+- `ROUTE_META` `/nustatymai` aprašas atnaujintas; service worker cache → `v8`; README (LT/EN) ir
+  CLAUDE.md papildyti skyriumi apie produkto kelią; README ekrano nuotraukos (`docs/*.webp`)
+  pergeneruotos su nauju dizainu.
+
 ## [v2.6] — 2026-10-27
 
 - **Raminančių garsų failai** (`public/sounds/`): garso mygtukai rašymo ir SOS ekranuose dabar groja

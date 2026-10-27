@@ -11,7 +11,7 @@
 
   document.addEventListener("pointerdown", (e) => {
     if (REDUCED) return;
-    const btn = e.target.closest(".btn");
+    const btn = e.target.closest(".btn, .path");
     if (!btn || btn.disabled) return;
     const rect = btn.getBoundingClientRect();
     const size = Math.max(rect.width, rect.height) * 2;
