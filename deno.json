@@ -1,6 +1,6 @@
 {
   "tasks": {
-    "dev": "deno run --watch --unstable-kv --allow-net --allow-read --allow-write --allow-env main.ts",
+    "dev": "deno run --watch=public/ --unstable-kv --allow-net --allow-read --allow-write --allow-env main.ts",
     "start": "deno run --unstable-kv --allow-net --allow-read --allow-write --allow-env main.ts",
     "test": "deno test --unstable-kv --allow-read --allow-env server/",
     "lint": "deno lint main.ts server/"
