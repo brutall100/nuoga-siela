@@ -190,15 +190,37 @@ ekraną (`app.js` `render()`, tikrina `prevScreen === "sauksmas"`), (2) `pagehid
 
 Asmeninis kalendorius (`public/js/mood.js`) gyvena **tik** `localStorage` (`ns_mood`, masyvas
 `[vietinė diena "YYYY-MM-DD", emocija]`) — niekada tekstas, niekada nesiunčiamas į serverį. Įrašas
-daromas `app.js` po sėkmingo paleidimo ir po deginimo (jei emocija pasirinkta — deginimas vis tiek
-nieko nesiunčia). „Ištrinti mano duomenis" jį išvalo (`window.mood.clear()`). Bendra savaitės
-nuotaika rodoma tik kai `total >= 5`, kaip ir socialinis įrodymas.
+daromas `app.js` `sendEmotionToCalendar()` po sėkmingo paleidimo ir po deginimo (jei emocija
+pasirinkta — deginimas vis tiek nieko nesiunčia); ta pati funkcija paleidžia `flyToCalendar()`
+animaciją (emoji nuskrenda į Kalendoriaus tab'ą). „Ištrinti mano duomenis" jį išvalo
+(`window.mood.clear()`). Bendra savaitės nuotaika rodoma tik kai `total >= 5`, kaip ir socialinis
+įrodymas.
 
 Garsai (`public/js/sounds.js`) — failai `public/sounds/{upe,lietus,lauzas}.mp3`, grojami per Web
 Audio (`fetch` + `decodeAudioData`, kilpa, `GainNode` fade), ne per `<audio>`: iOS neleidžia keisti
 `<audio>` garsumo, o `serveStatic()` nepalaiko `Range` užklausų, kurių Safari reikalauja medijai.
 Atėjus į Šauksmo kambarį fono garsas sustabdomas (`render()`), kad nepatektų į įrašą. Failai turi
 būti su laisva licencija (CC0 ar pan.) — šaltinį ir licenciją užrašyk `CHANGELOG.md`.
+
+### Produkto kelias — nuoseklumas
+
+Visa programa seka vieną kelią, ir nauji ekranai ar tekstai turi jį palaikyti, ne kurti šalutinį:
+**emocija → žodžiai → ką su jais daryti**. Rašymo kortelėje tvarka fiksuota: „Kaip jautiesi?“ (emoji
+chip'ai) → laukelis → „Ką darysi su tuo?“ — trys kortelės `.path` (🔥 Sudeginti / 🏮 Paleisti į
+Srautą / 📖 Palikti istoriją), kiekviena su viena paaiškinimo eilute. Srauto ir istorijos skirtumas
+(24 val. ir 1000 ženklų / lieka ir 5000 ženklų) turi būti matomas pačiame UI: kortelių aprašuose ir
+abiejų ekranų `screen-intro` tekstuose. Laukelis priima 5000 ženklų; viršijus 1000, „Paleisti“
+kortelė tampa `aria-disabled` ir nukreipia į istoriją (serveris vis tiek tikrina abi ribas).
+
+Apatinis meniu: Rašyti · Srautas · Istorijos · Kalendorius. Nustatymai — ⚙ (`#settings-btn`)
+viršuje, šalia temos ir SOS; nustatymų ekrane „Ištrinti mano duomenis“ visada paskutinis.
+
+Emocijų kalba visur ta pati: emoji + pavadinimas + spalva (`--emo-*`). Vienintelis emoji šaltinis JS
+pusėje — `window.mood.faces` (`mood.js` `FACES`); statiniame HTML (chip'ai, filtrai) ir `main.ts`
+`EMOTION_LABELS_LT` (SSR istorija) tie patys emoji įrašyti ranka — keičiant vieną, keisk visus.
+
+„Kaip tai veikia“ kortelė rašymo ekrane rodoma, kol žmogus jos neuždaro (`ns_intro` localStorage);
+tie patys trys žingsniai ir misijos tekstas nuolat yra nustatymų „Apie“ skiltyje.
 
 ### i18n susitarimas
 

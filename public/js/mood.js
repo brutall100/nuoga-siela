@@ -2,7 +2,8 @@
 // "ns_mood"): saugoma tik diena ir emocija, niekada tekstas, ir niekur
 // nesiunčiama. Bendra savaitės nuotaika imama iš /api/mood — ten tik suminiai
 // skaičiai be jokio ryšio su žmogumi.
-// Eksportai: window.mood.record(emotion), window.mood.render(), window.mood.clear().
+// Eksportai: window.mood.record(emotion), window.mood.render(), window.mood.clear(),
+// window.mood.faces (emocija → emoji; ta pati emocijų kalba rašant, sraute ir kalendoriuje).
 
 (function () {
   "use strict";
@@ -259,5 +260,5 @@
     renderMonth(load());
   });
 
-  window.mood = { record, render, clear };
+  window.mood = { record, render, clear, faces: FACES };
 })();

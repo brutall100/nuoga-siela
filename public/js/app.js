@@ -1,5 +1,7 @@
 // Nuoga Siela — pagrindinis kliento kodas: routing'as (tikri URL keliai), rašymas,
 // srautas, istorijos, SOS, nustatymai. Tekstas visada per textContent — niekada innerHTML.
+// Nuoseklus kelias: emocija → žodžiai → sudeginti / paleisti / palikti istoriją, o
+// emocija visais atvejais nukeliauja į kalendorių (tik šiame įrenginyje, žr. mood.js).
 
 (function () {
   "use strict";
@@ -41,6 +43,7 @@
   // ---------- Pagalbinės ----------
 
   const $ = (sel) => document.querySelector(sel);
+  const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   async function api(path, options = {}) {
     const res = await fetch(path, {
@@ -84,9 +87,31 @@
   }
 
   function navigate(path) {
-    history.pushState(null, "", path);
+    if (location.pathname !== path) history.pushState(null, "", path);
     render();
+    scrollTo(0, 0);
   }
+
+  // Švytinti juostelė virš aktyvaus tab'o nuslenka prie naujo (tik transform).
+  const tabGlow = $("#tab-glow");
+  let tabGlowPlaced = false;
+  function placeTabGlow() {
+    const tab = document.querySelector(".tab.is-active");
+    tabGlow.classList.toggle("is-hidden", !tab);
+    if (!tab) return;
+    if (!tabGlowPlaced) tabGlow.classList.add("no-anim");
+    tabGlow.style.setProperty("--x", tab.offsetLeft + "px");
+    tabGlow.style.setProperty("--w", tab.offsetWidth + "px");
+    if (!tabGlowPlaced) {
+      void tabGlow.offsetWidth;
+      tabGlow.classList.remove("no-anim");
+      tabGlowPlaced = true;
+    }
+  }
+  addEventListener("resize", () => {
+    tabGlowPlaced = false;
+    placeTabGlow();
+  });
 
   function render() {
     const active = currentScreen();
@@ -94,10 +119,18 @@
       $("#screen-" + name).hidden = name !== active;
     }
     // Tab'ai sekami tik tiems ekranams, kurie turi tab'ą; kiti (sos, sauksmas)
-    // pasiekiami per nuorodas, tad meniu paryškinimo nekeičia.
+    // pasiekiami per nuorodas, nustatymai — per ⚙ viršuje.
     document.querySelectorAll(".tab").forEach((tab) => {
-      tab.classList.toggle("is-active", tab.dataset.screen === active);
+      const on = tab.dataset.screen === active;
+      tab.classList.toggle("is-active", on);
+      if (on) tab.setAttribute("aria-current", "page");
+      else tab.removeAttribute("aria-current");
     });
+    const settingsBtn = $("#settings-btn");
+    settingsBtn.classList.toggle("is-active", active === "nustatymai");
+    if (active === "nustatymai") settingsBtn.setAttribute("aria-current", "page");
+    else settingsBtn.removeAttribute("aria-current");
+    placeTabGlow();
     if (active === "srautas") loadFeed();
     if (active === "istorijos") loadStories();
     if (active === "rasyti") loadSocialProof();
@@ -134,104 +167,183 @@
     history.replaceState(null, "", path);
   }
 
+  // ---------- „Kaip tai veikia" (kol žmogus jo neuždaro) ----------
+
+  const INTRO_KEY = "ns_intro";
+  const intro = $("#intro-card");
+  intro.hidden = localStorage.getItem(INTRO_KEY) === "1";
+
+  function closeIntro() {
+    localStorage.setItem(INTRO_KEY, "1");
+    if (REDUCED) {
+      intro.hidden = true;
+      return;
+    }
+    intro.classList.add("is-leaving");
+    intro.addEventListener("animationend", () => (intro.hidden = true), { once: true });
+  }
+  $("#intro-close").addEventListener("click", closeIntro);
+  $("#intro-ok").addEventListener("click", closeIntro);
+
   // ---------- Rašymo ekranas ----------
 
   const input = $("#write-input");
   const charCount = $("#char-count");
   const btnBurn = $("#btn-burn");
   const btnRelease = $("#btn-release");
+  const btnStory = $("#btn-story");
+  const releaseDesc = $("#release-desc");
+  const actionBtns = [btnBurn, btnRelease, btnStory];
   let selectedEmotion = null;
-  let selectedKind = "srautas";
 
+  // Laukelis priima istorijos ilgį; srautui per ilgas tekstas tiesiog
+  // nukreipiamas į istoriją (serveris vis tiek tikrina abi ribas).
   function updateCounter() {
-    charCount.textContent = input.value.length + " / " + MAX_LEN[selectedKind];
+    const len = input.value.length;
+    const tooLong = len > MAX_LEN.srautas;
+    charCount.textContent = len + " / " + (tooLong ? MAX_LEN.istorija : MAX_LEN.srautas);
+    btnRelease.classList.toggle("is-unavailable", tooLong);
+    btnRelease.setAttribute("aria-disabled", String(tooLong));
+    // Keičiam patį i18n raktą, kad kalbos perjungimas paliktų teisingą tekstą.
+    const key = tooLong ? "path.releaseTooLong" : "path.releaseDesc";
+    if (releaseDesc.dataset.i18n !== key) {
+      releaseDesc.dataset.i18n = key;
+      releaseDesc.textContent = window.t(key);
+    }
   }
 
   input.addEventListener("input", updateCounter);
 
+  function selectEmotion(emotion) {
+    selectedEmotion = emotion;
+    document.querySelectorAll(".emo").forEach((el) => {
+      const on = el.dataset.emotion === selectedEmotion;
+      el.classList.toggle("is-active", on);
+      el.setAttribute("aria-pressed", String(on));
+    });
+  }
+
   $("#emotion-picker").addEventListener("click", (e) => {
     const btn = e.target.closest(".emo");
     if (!btn) return;
-    const emotion = btn.dataset.emotion;
-    selectedEmotion = selectedEmotion === emotion ? null : emotion;
-    document.querySelectorAll(".emo").forEach((el) => {
-      el.classList.toggle("is-active", el.dataset.emotion === selectedEmotion);
-    });
+    selectEmotion(selectedEmotion === btn.dataset.emotion ? null : btn.dataset.emotion);
   });
 
-  $("#lifespan-picker").addEventListener("click", (e) => {
-    const chip = e.target.closest(".chip");
-    if (!chip) return;
-    selectedKind = chip.dataset.kind;
-    document.querySelectorAll("#lifespan-picker .chip").forEach((el) => {
-      el.classList.toggle("is-active", el.dataset.kind === selectedKind);
+  // Švelnus „pažiūrėk čia" — kai ko nors trūksta, elementas trumpai sujuda.
+  function nudge(el) {
+    el.classList.remove("is-nudged");
+    void el.offsetWidth;
+    el.classList.add("is-nudged");
+  }
+
+  // Emocija „nuskrenda" į Kalendoriaus tab'ą — matosi, kur ji nukeliavo.
+  function flyToCalendar(emotion) {
+    const target = $(".tab[data-screen='kalendorius']");
+    const pulse = () => {
+      target.classList.remove("is-receiving");
+      void target.offsetWidth;
+      target.classList.add("is-receiving");
+    };
+    const source = $(`.emo[data-emotion="${emotion}"] .emo-face`);
+    if (REDUCED || !source || !source.animate) return pulse();
+    const from = source.getBoundingClientRect();
+    const to = target.querySelector(".tab-icon").getBoundingClientRect();
+    const dx = to.left + to.width / 2 - (from.left + from.width / 2);
+    const dy = to.top + to.height / 2 - (from.top + from.height / 2);
+    const fly = document.createElement("span");
+    fly.className = "emo-fly";
+    fly.setAttribute("aria-hidden", "true");
+    fly.textContent = window.mood.faces[emotion];
+    fly.style.left = from.left + from.width / 2 + "px";
+    fly.style.top = from.top + from.height / 2 + "px";
+    document.body.append(fly);
+    // Lankas: pirma pakyla (ease-out), tada krenta į tab'ą (ease-in).
+    const at = (x, y, scale) =>
+      `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) scale(${scale})`;
+    fly.animate([
+      { transform: at(0, 0, 1), easing: "cubic-bezier(0.2, 0.7, 0.4, 1)" },
+      { transform: at(dx * 0.3, -70, 1.7), offset: 0.38, easing: "cubic-bezier(0.6, 0, 0.9, 0.5)" },
+      { transform: at(dx, dy, 0.45), opacity: 0.4 },
+    ], { duration: 1000 }).finished.then(() => {
+      fly.remove();
+      pulse();
     });
-    input.maxLength = MAX_LEN[selectedKind];
-    input.placeholder = selectedKind === "istorija"
-      ? window.t("write.storyPlaceholder")
-      : window.t("write.placeholder");
-    $("#lifespan-hint").hidden = selectedKind !== "istorija";
-    updateCounter();
-  });
+  }
 
   let busy = false;
 
+  function setBusy(on) {
+    busy = on;
+    for (const btn of actionBtns) btn.disabled = on;
+  }
+
+  // Kai vienas iš kelių baigtas: emocija — į kalendorių, žymė nuimama naujam tekstui.
+  function sendEmotionToCalendar() {
+    if (!selectedEmotion) return;
+    window.mood.record(selectedEmotion);
+    flyToCalendar(selectedEmotion);
+    selectEmotion(null);
+  }
+
   btnBurn.addEventListener("click", async () => {
-    if (busy || !input.value.trim()) return;
-    busy = true;
-    btnBurn.disabled = btnRelease.disabled = true;
+    if (busy) return;
+    if (!input.value.trim()) return nudge(input);
+    setBusy(true);
     await window.burnText(input, $("#burn-canvas"));
     // Kalendoriui — tik emocija ir diena, tekstas sudega niekur neišėjęs.
-    if (selectedEmotion) window.mood.record(selectedEmotion);
+    sendEmotionToCalendar();
     updateCounter();
     toast(window.t("toast.burned"), "calm");
-    busy = false;
-    btnBurn.disabled = btnRelease.disabled = false;
+    setBusy(false);
   });
 
-  btnRelease.addEventListener("click", async () => {
+  btnRelease.addEventListener("click", () => release("srautas", btnRelease));
+  btnStory.addEventListener("click", () => release("istorija", btnStory));
+
+  async function release(kind, btn) {
     if (busy) return;
     const text = input.value.trim();
-    if (!text) return;
+    if (!text) return nudge(input);
+    if (text.length > MAX_LEN[kind]) {
+      toast(window.t("path.releaseTooLong"), "warn");
+      return nudge(btnStory);
+    }
     if (!selectedEmotion) {
       toast(window.t("toast.pickEmotion"));
-      return;
+      return nudge($("#emotion-picker"));
     }
-    busy = true;
-    btnBurn.disabled = btnRelease.disabled = true;
+    setBusy(true);
     try {
       const data = await api("/api/posts", {
         method: "POST",
-        body: JSON.stringify({ text, emotion: selectedEmotion, kind: selectedKind }),
+        body: JSON.stringify({ text, emotion: selectedEmotion, kind }),
       });
       if (data.ok) {
         input.value = "";
-        updateCounter();
         rememberMine();
-        window.mood.record(selectedEmotion);
-        // Žiburys „nuplaukia" nuo mygtuko prieš pereinant į srautą.
-        btnRelease.classList.add("is-sending");
-        setTimeout(() => btnRelease.classList.remove("is-sending"), 900);
+        sendEmotionToCalendar();
+        updateCounter();
+        // Žiburys „nuplaukia" nuo mygtuko prieš pereinant į srautą / istorijas.
+        btn.classList.add("is-sending");
+        setTimeout(() => btn.classList.remove("is-sending"), 900);
         if (data.sos) {
           $("#sos-sheet").hidden = false;
-        } else if (selectedKind === "istorija") {
+        } else if (kind === "istorija") {
           toast(window.t("toast.storyReleased"), "calm");
         } else {
           toast(window.t("toast.released"), "calm");
         }
-        // Trumpa pauzė, kad spėtų pamatyti nuplaukiantį žiburį.
-        const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-        await new Promise((r) => setTimeout(r, reduced ? 0 : 450));
-        navigate(selectedKind === "istorija" ? "/istorijos" : "/srautas");
+        // Trumpa pauzė, kad spėtų pamatyti nuplaukiantį žiburį ir emociją.
+        await new Promise((r) => setTimeout(r, REDUCED ? 0 : 650));
+        navigate(kind === "istorija" ? "/istorijos" : "/srautas");
       } else {
         toast(data.reason || window.t("toast.releaseFail"), "warn");
       }
     } catch {
       toast(window.t("toast.noConnection"), "warn");
     }
-    busy = false;
-    btnBurn.disabled = btnRelease.disabled = false;
-  });
+    setBusy(false);
+  }
 
   $("#sos-sheet-close").addEventListener("click", () => {
     $("#sos-sheet").hidden = true;
@@ -331,6 +443,13 @@
     const card = document.createElement("article");
     card.className = "card";
     card.dataset.emotion = post.emotion;
+
+    // Ta pati emocijos kalba kaip rašant ir kalendoriuje: emoji + pavadinimas.
+    const emo = document.createElement("span");
+    emo.className = "card-emo";
+    emo.textContent = (window.mood.faces[post.emotion] ?? "") + " " +
+      window.t("emo." + post.emotion);
+    card.append(emo);
 
     const text = document.createElement("p");
     text.className = "card-text";
@@ -613,9 +732,6 @@
   langSelect.value = window.i18n.lang;
   langSelect.addEventListener("change", () => {
     window.i18n.set(langSelect.value);
-    input.placeholder = selectedKind === "istorija"
-      ? window.t("write.storyPlaceholder")
-      : window.t("write.placeholder");
     const active = currentScreen();
     if (active === "srautas") loadFeed();
     if (active === "istorijos") loadStories();

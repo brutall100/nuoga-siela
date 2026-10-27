@@ -431,7 +431,8 @@ body {
   gap: 8px;
 }
 
-.theme-toggle {
+/* Apvalūs ikonų mygtukai viršuje: nustatymai (⚙) ir tema. */
+.icon-btn {
   width: 40px;
   height: 40px;
   display: grid;
@@ -441,13 +442,13 @@ body {
   background: var(--glass);
   color: var(--text);
   cursor: pointer;
-  transition: transform 0.2s ease, border-color 0.2s ease;
+  transition: transform 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
-.theme-toggle:hover {
+.icon-btn:hover {
   transform: translateY(-2px);
   border-color: var(--accent);
 }
-.theme-toggle svg {
+.icon-btn svg {
   width: 19px;
   height: 19px;
   fill: none;
@@ -456,8 +457,13 @@ body {
   stroke-linecap: round;
   transition: transform 0.5s ease;
 }
-.theme-toggle:hover svg {
+.icon-btn:hover svg {
   transform: rotate(-20deg);
+}
+.icon-btn.is-active {
+  color: var(--accent-strong);
+  border-color: var(--accent);
+  box-shadow: 0 0 12px var(--glow-accent);
 }
 .theme-toggle .icon-sun {
   display: none;
@@ -562,6 +568,18 @@ h2 {
   position: relative;
 }
 
+/* Žingsnių antraštės kortelėje: „Kaip jautiesi?" → laukelis → „Ką darysi su tuo?" */
+.step-label {
+  font-family: var(--font-head);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 2px 2px 10px;
+}
+.step-label + .paths {
+  margin-top: 0;
+}
+
 #write-input {
   display: block;
   width: 100%;
@@ -597,56 +615,56 @@ h2 {
   border-radius: var(--radius-sm);
 }
 
-.write-meta {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  margin-top: 12px;
-  flex-wrap: wrap;
-}
-
 .char-count {
+  display: block;
+  text-align: right;
   color: var(--text-faint);
   font-size: 12.5px;
   font-variant-numeric: tabular-nums;
+  margin: 6px 4px 14px;
 }
 
 /* Emocijos */
 
 .emotions {
   display: flex;
-  gap: 6px;
+  gap: 7px;
   flex-wrap: wrap;
+  margin-bottom: 12px;
 }
 
+/* Emocija = emoji + pavadinimas. Tas pats emoji vėliau atsiranda kalendoriuje. */
 .emo {
   --dot: var(--text-dim);
   font: inherit;
-  font-size: 13px;
+  font-size: 13.5px;
   color: var(--text-dim);
   background: transparent;
   border: 1px solid var(--line-strong);
   border-radius: 999px;
-  padding: 5px 12px 5px 23px;
+  padding: 5px 13px 5px 8px;
   cursor: pointer;
-  position: relative;
-  transition: transform 0.18s, color 0.18s, border-color 0.18s, box-shadow 0.18s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: transform 0.18s, color 0.18s, border-color 0.18s, box-shadow 0.18s,
+    background-color 0.18s;
 }
-.emo::before {
-  content: "";
-  position: absolute;
-  left: 9px;
-  top: 50%;
-  width: 8px;
-  height: 8px;
-  margin-top: -4px;
-  border-radius: 50%;
-  background: var(--dot);
+.emo-face {
+  display: inline-block;
+  font-size: 17px;
+  line-height: 1;
+  filter: grayscale(0.55);
+  opacity: 0.8;
+  transition: filter 0.25s, opacity 0.25s;
 }
 .emo:hover {
   transform: translateY(-1px);
   color: var(--text);
+}
+.emo:hover .emo-face {
+  filter: none;
+  opacity: 1;
 }
 .emo[data-emotion="pyktis"],
 .card[data-emotion="pyktis"],
@@ -703,15 +721,204 @@ h2 {
   background: color-mix(in srgb, var(--dot) 14%, transparent);
   box-shadow: 0 0 12px color-mix(in srgb, var(--dot) 30%, transparent);
 }
+/* Pasirinkus emoji „atgyja": iššoka ir vieną kartą sujuda savaip (kaip kalendoriuje). */
+.emo.is-active .emo-face {
+  filter: none;
+  opacity: 1;
+  animation: emo-pop 0.45s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+.emo.is-active[data-emotion="pyktis"] .emo-face {
+  animation: emo-pop 0.45s cubic-bezier(0.3, 1.6, 0.5, 1), mood-shake 2.6s ease-in-out 0.45s;
+}
+.emo.is-active[data-emotion="liudesys"] .emo-face {
+  animation: emo-pop 0.45s cubic-bezier(0.3, 1.6, 0.5, 1), mood-droop 2.4s ease-in-out 0.45s;
+}
+.emo.is-active[data-emotion="nerimas"] .emo-face {
+  animation: emo-pop 0.45s cubic-bezier(0.3, 1.6, 0.5, 1), mood-tremble 2s linear 0.45s;
+}
+.emo.is-active[data-emotion="kalte"] .emo-face {
+  animation: emo-pop 0.45s cubic-bezier(0.3, 1.6, 0.5, 1), mood-bow 2.4s ease-in-out 0.45s;
+}
+.emo.is-active[data-emotion="vienatve"] .emo-face {
+  animation: emo-pop 0.45s cubic-bezier(0.3, 1.6, 0.5, 1), mood-drift 3s ease-in-out 0.45s;
+}
+.emo.is-active[data-emotion="viltis"] .emo-face {
+  transform-origin: 50% 85%;
+  animation: emo-pop 0.45s cubic-bezier(0.3, 1.6, 0.5, 1), mood-grow 2.4s ease-in-out 0.45s;
+}
+
+@keyframes emo-pop {
+  0% {
+    transform: scale(0.6);
+  }
+  60% {
+    transform: scale(1.35) rotate(-8deg);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+/* „Pažiūrėk čia" — kai trūksta teksto ar emocijos (app.js nudge()). */
+.is-nudged {
+  animation: nudge 0.5s ease;
+}
+@keyframes nudge {
+  20%,
+  60% {
+    transform: translateX(-5px);
+  }
+  40%,
+  80% {
+    transform: translateX(5px);
+  }
+}
+
+/* ---------- Trys keliai: sudeginti / paleisti / palikti istoriją ---------- */
+/* Kiekvienas kelias — kortelė su viena eilute paaiškinimo, kad skirtumas tarp
+   Srauto ir Istorijų būtų matomas dar prieš paspaudžiant. Telefone — eilutės,
+   platesniame ekrane — trys stulpeliai. */
+
+.paths {
+  display: grid;
+  gap: 8px;
+}
+
+.path {
+  --path: var(--accent);
+  position: relative;
+  overflow: hidden;
+  font: inherit;
+  text-align: left;
+  color: var(--text);
+  background: var(--surface);
+  border: 1.5px solid color-mix(in srgb, var(--path) 55%, transparent);
+  border-radius: var(--radius-soft);
+  padding: 12px 16px 12px 14px;
+  cursor: pointer;
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  column-gap: 10px;
+  align-items: center;
+  transition: transform 0.18s ease, box-shadow 0.2s ease, border-color 0.2s, opacity 0.2s,
+    background-color 0.2s;
+}
+.path:hover:not(:disabled) {
+  transform: translateY(-2px);
+  border-color: var(--path);
+  box-shadow: var(--shadow-lift);
+}
+.path:active:not(:disabled) {
+  transform: translateY(1px) scale(0.985);
+  box-shadow: none;
+}
+.path:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.path-icon {
+  grid-row: span 2;
+  display: inline-block;
+  font-size: 24px;
+  line-height: 1;
+  text-align: center;
+}
+.path-title {
+  font-weight: 800;
+  font-size: 15.5px;
+  line-height: 1.3;
+}
+.path-desc {
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--text-dim);
+}
+
+/* Sudeginti — ugnis (gintaras), liepsnelė virpa. */
+.path-burn {
+  --path: var(--ember-deep);
+}
+.path-burn .path-title {
+  color: var(--ember-strong);
+}
+.path-burn:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--ember) 9%, var(--surface));
+}
+.path-burn:hover:not(:disabled) .path-icon {
+  animation: flame-flicker 0.8s ease-in-out infinite;
+}
+
+/* Paleisti — pagrindinis veiksmas: vanduo, užpildyta. Žiburys nuplaukia. */
+.path-release {
+  color: var(--on-accent);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-deep) 100%);
+  border-color: transparent;
+  box-shadow: var(--btn-shadow);
+}
+.path-release .path-desc {
+  color: color-mix(in srgb, var(--on-accent) 78%, transparent);
+}
+.path-release:hover:not(:disabled) {
+  border-color: transparent;
+}
+.path-release.is-unavailable {
+  opacity: 0.55;
+}
+.path-release:hover:not(:disabled):not(.is-unavailable) .path-icon {
+  animation: float-away 1.2s ease-in-out infinite;
+}
+
+/* Palikti istoriją — vanduo, bet ramus: kontūras, knyga lieka. */
+.path-story .path-title {
+  color: var(--accent-strong);
+}
+.path-story:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--accent) 7%, var(--surface));
+}
+.path-story:hover:not(:disabled) .path-icon {
+  animation: book-open 1.4s ease-in-out infinite;
+}
+
+.path.is-sending .path-icon {
+  animation: sail-off 0.9s ease-in forwards;
+}
+
+.paths-note {
+  color: var(--text-faint);
+  font-size: 12.5px;
+  margin: 10px 4px 2px;
+}
+
+@media (min-width: 560px) {
+  .paths {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .path {
+    grid-template-columns: 1fr;
+    align-content: start;
+    justify-items: center;
+    text-align: center;
+    row-gap: 4px;
+    padding: 16px 12px 14px;
+  }
+  .path-icon {
+    grid-row: auto;
+    margin-bottom: 4px;
+  }
+}
+
+@keyframes book-open {
+  0%,
+  100% {
+    transform: none;
+  }
+  50% {
+    transform: translateY(-3px) scale(1.08);
+  }
+}
 
 /* ---------- Mygtukai ---------- */
 /* Pakyla užvedus, nusileidžia paspaudus, bangelė (ripple) iš ui.js. */
-
-.write-actions {
-  display: flex;
-  gap: 10px;
-  margin-top: 16px;
-}
 
 .btn {
   position: relative;
@@ -743,10 +950,9 @@ h2 {
   opacity: 0.5;
   cursor: default;
 }
-.btn-icon {
-  display: inline-block;
-  font-size: 17px;
-  line-height: 1;
+.btn-small {
+  font-size: 14px;
+  padding: 10px 18px;
 }
 
 /* Bangelė — tas pats „ratilas" kaip fone, tik mygtuke. */
@@ -766,18 +972,7 @@ h2 {
   }
 }
 
-/* Paleisti: pagrindinis veiksmas — vanduo. Ikona (žiburys) nuplaukia. */
-.btn-release {
-  flex: 1.4;
-  color: var(--on-accent);
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-deep) 100%);
-}
-.btn-release:hover:not(:disabled) .btn-icon {
-  animation: float-away 1.2s ease-in-out infinite;
-}
-.btn-release.is-sending .btn-icon {
-  animation: sail-off 0.9s ease-in forwards;
-}
+/* Paleidimo žiburys (.path-release): siūbuoja užvedus, nuplaukia paleidus. */
 @keyframes float-away {
   0%,
   100% {
@@ -792,21 +987,6 @@ h2 {
     transform: translate(60px, -26px) rotate(14deg);
     opacity: 0;
   }
-}
-
-/* Sudeginti: antrinis — kontūras gintaro spalva, liepsnelė virpa. */
-.btn-burn {
-  flex: 1;
-  color: var(--ember-strong);
-  background: transparent;
-  border: 1.5px solid var(--ember-deep);
-  box-shadow: none;
-}
-.btn-burn:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--ember) 12%, transparent);
-}
-.btn-burn:hover:not(:disabled) .btn-icon {
-  animation: flame-flicker 0.8s ease-in-out infinite;
 }
 
 .btn-calm {
@@ -956,6 +1136,14 @@ h2 {
   opacity: 1;
   transform: none;
   transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.card-emo {
+  display: inline-block;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: color-mix(in srgb, var(--emo) 70%, var(--text));
+  margin-bottom: 6px;
 }
 
 .card-text {
@@ -1162,7 +1350,10 @@ h2 {
 /* ---------- Nustatymai ---------- */
 
 .setting {
-  margin: 18px 0;
+  margin: 4px 0 18px;
+}
+.setting:last-child {
+  margin-bottom: 4px;
 }
 .setting label {
   display: block;
@@ -1179,23 +1370,29 @@ h2 {
   padding: 10px 14px;
   width: 100%;
 }
+/* Pavojinga zona — pačioje apačioje, atskirta nuo kitų nustatymų. */
 .setting-danger {
-  margin-top: 30px;
+  margin: 30px 0 10px;
+  padding: 18px;
+  border: 1px dashed var(--danger-line);
+  border-radius: var(--radius);
 }
 .setting-danger .muted {
-  margin-top: 8px;
+  margin-bottom: 12px;
 }
 
-.privacy,
-.support {
-  margin-top: 30px;
-  border-top: 1px solid var(--line);
-  padding-top: 20px;
+h1 + .panel {
+  margin-top: 14px;
 }
+
+.about p,
 .privacy p {
   color: var(--text-dim);
   font-size: 14.5px;
   margin-bottom: 10px;
+}
+.about .steps {
+  margin-top: 14px;
 }
 .privacy .promise {
   text-align: left;
@@ -1297,17 +1494,23 @@ h2 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
-  width: 88px;
+  gap: 3px;
+  width: 92px;
   color: var(--text-faint);
   text-decoration: none;
   font-size: 12px;
   font-weight: 600;
   transition: color 0.2s;
 }
+/* Ikonos — vieno stiliaus linijiniai SVG (ne emoji), kad visur atrodytų vienodai. */
 .tab-icon {
-  font-size: 19px;
-  line-height: 1;
+  width: 23px;
+  height: 23px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
   transition: transform 0.25s ease;
 }
 .tab:hover {
@@ -1319,16 +1522,84 @@ h2 {
 .tab.is-active {
   color: var(--accent-strong);
 }
-.tab.is-active::before {
-  content: "";
+.tab.is-active .tab-icon {
+  animation: tab-pick 0.4s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+
+/* Švytinti juostelė nuslenka prie aktyvaus tab'o (app.js placeTabGlow()). */
+.tab-glow {
   position: absolute;
   top: 0;
-  left: 28%;
-  right: 28%;
+  left: 0;
+  width: var(--w, 92px);
   height: 3px;
+  transform: translateX(var(--x, 0));
+  transition: transform 0.45s cubic-bezier(0.3, 1.25, 0.5, 1), opacity 0.25s ease;
+  pointer-events: none;
+}
+.tab-glow::before {
+  content: "";
+  position: absolute;
+  inset: 0 28%;
   border-radius: 0 0 3px 3px;
   background: var(--accent);
   box-shadow: 0 0 12px var(--accent);
+}
+.tab-glow.is-hidden {
+  opacity: 0;
+}
+.tab-glow.no-anim {
+  transition: none;
+}
+
+/* Kalendorius „priima" emociją: ikona pašoka, aplink — švelnus ratilas. */
+.tab.is-receiving .tab-icon {
+  animation: tab-receive 0.6s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+.tab.is-receiving::after {
+  content: "";
+  position: absolute;
+  top: 9px;
+  left: 50%;
+  width: 34px;
+  height: 34px;
+  margin-left: -17px;
+  border-radius: 50%;
+  border: 1.5px solid var(--accent);
+  pointer-events: none;
+  animation: tab-ring 0.8s ease-out forwards;
+}
+
+@keyframes tab-pick {
+  50% {
+    transform: translateY(-3px) scale(1.12);
+  }
+}
+@keyframes tab-receive {
+  40% {
+    transform: scale(1.35) rotate(-6deg);
+  }
+}
+@keyframes tab-ring {
+  from {
+    transform: scale(0.5);
+    opacity: 0.9;
+  }
+  to {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+/* Skrendantis emoji: iš pasirinktos emocijos į Kalendoriaus tab'ą (app.js flyToCalendar()). */
+.emo-fly {
+  position: fixed;
+  z-index: 50;
+  font-size: 24px;
+  line-height: 1;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.35));
 }
 
 /* ---------- Toast + SOS sheet ---------- */
@@ -1441,26 +1712,114 @@ h2 {
   transform: translateY(-2px);
 }
 
-.lifespan {
+/* „Kaip tai veikia" — rašymo ekrane, kol žmogus jo neuždaro. */
+.intro-card {
+  position: relative;
+  background: var(--glass);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  padding: 16px 18px 18px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  animation: screen-in 0.5s ease 0.15s both;
+}
+.intro-card.is-leaving {
+  animation: intro-out 0.35s ease forwards;
+}
+.intro-head {
   display: flex;
-  gap: 6px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.intro-head h2 {
+  margin: 0;
+}
+.intro-close {
+  font: inherit;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--text-faint);
+  background: none;
+  border: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: color 0.2s, background-color 0.2s;
+}
+.intro-close:hover {
+  color: var(--text);
+  background: var(--surface-2);
+}
+.intro-card .btn {
   margin-top: 14px;
 }
-.lifespan .chip {
-  flex: 1;
-  padding: 9px 10px;
-  text-align: center;
-  white-space: normal;
+
+@keyframes intro-out {
+  to {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+  }
 }
 
-.lifespan-hint {
-  color: var(--text-faint);
-  font-size: 12.5px;
-  margin-top: 6px;
+/* Trys žingsniai: tas pats sąrašas rašymo ekrane ir „Apie" skiltyje. */
+.steps {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.steps li {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 10px;
+  align-items: start;
+}
+.step-num {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 13.5px;
+  font-weight: 800;
+  color: var(--accent-strong);
+  border: 1px solid color-mix(in srgb, var(--accent) 60%, transparent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+.steps p {
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--text-dim);
+  margin: 0;
+}
+.steps strong {
+  display: block;
+  color: var(--text);
+  font-size: 15px;
+}
+/* Žingsniai atsiranda vienas po kito. */
+.intro-card .steps li {
+  animation: screen-in 0.45s ease both;
+}
+.intro-card .steps li:nth-child(1) {
+  animation-delay: 0.3s;
+}
+.intro-card .steps li:nth-child(2) {
+  animation-delay: 0.42s;
+}
+.intro-card .steps li:nth-child(3) {
+  animation-delay: 0.54s;
 }
 
 .screen-intro {
   margin-bottom: 12px;
+}
+h1 + .screen-intro {
+  margin-top: 6px;
 }
 
 .expand {
@@ -1519,6 +1878,7 @@ h2 {
 
 /* ---------- Emocijų kalendorius ---------- */
 
+.panel,
 .mood-card {
   background: var(--glass);
   border: 1px solid var(--line);
@@ -1947,12 +2307,6 @@ h2 {
 /* ---------- Telefonas ---------- */
 
 @media (max-width: 420px) {
-  .write-actions {
-    flex-direction: column-reverse;
-  }
-  .btn-release {
-    flex: 1;
-  }
   .hero-title {
     font-size: 26px;
   }

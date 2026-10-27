@@ -1,5 +1,5 @@
 // Service worker: statinis karkasas iš cache, API visada iš tinklo.
-const CACHE = "nuoga-siela-v7";
+const CACHE = "nuoga-siela-v8";
 const SHELL = [
   "/",
   "/css/main.css",

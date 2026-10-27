@@ -72,9 +72,22 @@
           <span>Nuoga Siela</span>
         </a>
         <div class="topbar-actions">
+          <a
+            class="icon-btn"
+            id="settings-btn"
+            href="/nustatymai"
+            aria-label="Nustatymai"
+            data-i18n-aria="set.title"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 7h9M17 7h3M4 17h3M11 17h9" />
+              <circle cx="15" cy="7" r="2.2" />
+              <circle cx="9" cy="17" r="2.2" />
+            </svg>
+          </a>
           <button
             type="button"
-            class="theme-toggle"
+            class="icon-btn theme-toggle"
             id="theme-toggle"
             aria-label="Perjungti šviesų / tamsų režimą"
             data-i18n-aria="theme.toggle"
@@ -96,21 +109,106 @@
       </header>
 
       <main class="screens" id="main" tabindex="-1">
-        <!-- 1. Rašymo ekranas -->
+        <!-- 1. Rašymo ekranas: emocija → žodžiai → ką su jais daryti -->
         <section class="screen" id="screen-rasyti" hidden>
           <div class="hero">
-            <h1 class="hero-title" data-i18n="hero.title">Ką šiandien neši?</h1>
+            <h1 class="hero-title" data-i18n="hero.title">Kas guli ant širdies?</h1>
             <p class="promise" data-i18n="promise">Mes nežinome, kas tu. Ir nenorime žinoti.</p>
             <p class="social-proof" id="social-proof" hidden></p>
           </div>
+
+          <!-- „Kaip tai veikia" — rodoma, kol žmogus jo neuždaro (ns_intro, tik localStorage). -->
+          <aside class="intro-card" id="intro-card" hidden aria-labelledby="intro-title">
+            <div class="intro-head">
+              <h2 id="intro-title" data-i18n="intro.title">Kaip tai veikia</h2>
+              <button
+                type="button"
+                class="intro-close"
+                id="intro-close"
+                aria-label="Uždaryti"
+                data-i18n-aria="intro.close"
+              >
+                ×
+              </button>
+            </div>
+            <ol class="steps">
+              <li>
+                <span class="step-num" aria-hidden="true">1</span>
+                <p>
+                  <strong data-i18n="step1.title">Pažymėk, kaip jautiesi</strong>
+                  <span data-i18n="step1.text">Emocija atsiras tavo kalendoriuje — tik šiame
+                    įrenginyje.</span>
+                </p>
+              </li>
+              <li>
+                <span class="step-num" aria-hidden="true">2</span>
+                <p>
+                  <strong data-i18n="step2.title">Išliek žodžius</strong>
+                  <span data-i18n="step2.text">Be vardo ir be registracijos.</span>
+                </p>
+              </li>
+              <li>
+                <span class="step-num" aria-hidden="true">3</span>
+                <p>
+                  <strong data-i18n="step3.title">Nuspręsk, ką su jais daryti</strong>
+                  <span data-i18n="step3.text">Sudeginti, paleisti 24 valandoms arba palikti
+                    istoriją kitiems.</span>
+                </p>
+              </li>
+            </ol>
+            <button type="button" class="btn btn-calm btn-small" id="intro-ok" data-i18n="intro.ok">
+              Supratau
+            </button>
+          </aside>
+
           <button type="button" class="hug-banner" id="hug-banner" hidden></button>
+
           <div class="write-card">
+            <p class="step-label" id="emotion-label" data-i18n="write.emoLabel">Kaip jautiesi?</p>
+            <div
+              class="emotions"
+              id="emotion-picker"
+              role="group"
+              aria-labelledby="emotion-label"
+            >
+              <button type="button" class="emo" data-emotion="pyktis" aria-pressed="false">
+                <span class="emo-face" aria-hidden="true">😠</span><span
+                  data-i18n="emo.pyktis"
+                >Pyktis</span>
+              </button>
+              <button type="button" class="emo" data-emotion="liudesys" aria-pressed="false">
+                <span class="emo-face" aria-hidden="true">😢</span><span
+                  data-i18n="emo.liudesys"
+                >Liūdesys</span>
+              </button>
+              <button type="button" class="emo" data-emotion="nerimas" aria-pressed="false">
+                <span class="emo-face" aria-hidden="true">😰</span><span
+                  data-i18n="emo.nerimas"
+                >Nerimas</span>
+              </button>
+              <button type="button" class="emo" data-emotion="kalte" aria-pressed="false">
+                <span class="emo-face" aria-hidden="true">😔</span><span
+                  data-i18n="emo.kalte"
+                >Kaltė</span>
+              </button>
+              <button type="button" class="emo" data-emotion="vienatve" aria-pressed="false">
+                <span class="emo-face" aria-hidden="true">😶</span><span
+                  data-i18n="emo.vienatve"
+                >Vienatvė</span>
+              </button>
+              <button type="button" class="emo" data-emotion="viltis" aria-pressed="false">
+                <span class="emo-face" aria-hidden="true">🌱</span><span
+                  data-i18n="emo.viltis"
+                >Viltis</span>
+              </button>
+            </div>
+
             <div class="write-area">
               <label class="visually-hidden" for="write-input"
                 data-i18n="write.label">Tavo tekstas</label>
               <textarea
                 id="write-input"
-                maxlength="1000"
+                maxlength="5000"
                 rows="6"
                 placeholder="Išliek viską…"
                 data-i18n-placeholder="write.placeholder"
@@ -119,62 +217,34 @@
               ></textarea>
               <canvas id="burn-canvas" aria-hidden="true"></canvas>
             </div>
-            <div class="write-meta">
-              <div
-                class="emotions"
-                id="emotion-picker"
-                role="group"
-                aria-label="Kaip jautiesi?"
-                data-i18n-aria="aria.emotions"
-              >
-                <button type="button" class="emo" data-emotion="pyktis" data-i18n="emo.pyktis">
-                Pyktis
+            <span class="char-count" id="char-count">0 / 1000</span>
+
+            <p class="step-label" id="path-label" data-i18n="write.pathLabel">Ką darysi su tuo?</p>
+            <div class="paths" role="group" aria-labelledby="path-label">
+              <button type="button" class="path path-burn" id="btn-burn">
+                <span class="path-icon" aria-hidden="true">🔥</span>
+                <span class="path-title" data-i18n="path.burn">Sudeginti</span>
+                <span class="path-desc" data-i18n="path.burnDesc">Niekas nepamatys. Niekur
+                  nesiunčiama.</span>
               </button>
-                <button type="button" class="emo" data-emotion="liudesys" data-i18n="emo.liudesys">
-                Liūdesys
+              <button type="button" class="path path-release" id="btn-release">
+                <span class="path-icon" aria-hidden="true">🏮</span>
+                <span class="path-title" data-i18n="path.release">Paleisti</span>
+                <span class="path-desc" id="release-desc" data-i18n="path.releaseDesc">Į Srautą. Po
+                  24 val. išnyks.</span>
               </button>
-                <button type="button" class="emo" data-emotion="nerimas" data-i18n="emo.nerimas">
-                Nerimas
-              </button>
-                <button type="button" class="emo" data-emotion="kalte" data-i18n="emo.kalte">
-                Kaltė
-              </button>
-                <button type="button" class="emo" data-emotion="vienatve" data-i18n="emo.vienatve">
-                Vienatvė
-              </button>
-                <button type="button" class="emo" data-emotion="viltis" data-i18n="emo.viltis">
-                Viltis
-              </button>
-              </div>
-              <span class="char-count" id="char-count">0 / 1000</span>
-            </div>
-            <div class="lifespan" id="lifespan-picker">
-              <button
-                type="button"
-                class="chip is-active"
-                data-kind="srautas"
-                data-i18n="life.srautas"
-              >
-              ⏳ Išnyks po 24 val.
-            </button>
-              <button type="button" class="chip" data-kind="istorija" data-i18n="life.istorija">
-              📖 Palikti kaip istoriją
-            </button>
-            </div>
-            <p class="lifespan-hint" id="lifespan-hint" hidden data-i18n="life.istorijaHint">
-            Vieša neribotai, kol pati(s) ištrini. Gali rasti ir Google paieška.
-          </p>
-            <div class="write-actions">
-              <button type="button" class="btn btn-burn" id="btn-burn">
-                <span class="btn-icon" aria-hidden="true">🔥</span>
-                <span data-i18n="btn.burn">Sudeginti</span>
-              </button>
-              <button type="button" class="btn btn-release" id="btn-release">
-                <span class="btn-icon" aria-hidden="true">🏮</span>
-                <span data-i18n="btn.release">Paleisti anonimiškai</span>
+              <button type="button" class="path path-story" id="btn-story">
+                <span class="path-icon" aria-hidden="true">📖</span>
+                <span class="path-title" data-i18n="path.story">Palikti istoriją</span>
+                <span class="path-desc" data-i18n="path.storyDesc">Į Istorijas. Lieka, kol
+                  ištrinsi.</span>
               </button>
             </div>
+            <p class="paths-note" data-i18n="path.note">
+              Paleidžiama anonimiškai. Istorijas gali rasti ir Google paieška.
+            </p>
           </div>
+
           <div class="ambient" role="group" aria-label="Raminantys garsai"
             data-i18n-aria="sound.aria">
             <span class="ambient-label" data-i18n="sound.label">🎧 Fonas</span>
@@ -186,12 +256,11 @@
               data-i18n="sound.lauzas">🔥 Laužas</button>
           </div>
           <p class="write-hint" data-i18n="write.hint">
-            Rašymas apie jausmus mažina jų intensyvumą — tai patvirtinta tyrimais. Sudegintas
-            tekstas niekur nesiunčiamas.
+            Rašymas apie jausmus mažina jų intensyvumą — tai patvirtinta tyrimais.
           </p>
-          <a class="scream-link" href="/sauksmas" data-i18n="scream.link">🔊 Šauksmo kambarys →</a>
-          <a class="scream-link" href="/kalendorius" data-i18n="mood.link"
-          >📅 Mano emocijų kalendorius →</a>
+          <a class="scream-link" href="/sauksmas" data-i18n="scream.link">
+            🔊 Nori išrėkti, ne parašyti? Šauksmo kambarys →
+          </a>
         </section>
 
         <!-- 2. Srautas -->
@@ -208,27 +277,31 @@
               ↻
             </button>
           </div>
+          <p class="muted screen-intro" data-i18n="feed.intro">
+            Ką žmonės paleido per pastarąją parą. Po 24 val. kiekvienas tekstas išnyksta visam
+            laikui.
+          </p>
           <div class="feed-filters" id="feed-filters">
             <button type="button" class="chip is-active" data-filter="" data-i18n="feed.all">
               Visi
             </button>
-            <button type="button" class="chip" data-filter="pyktis" data-i18n="emo.pyktis">
-              Pyktis
+            <button type="button" class="chip" data-filter="pyktis">
+              <span aria-hidden="true">😠</span> <span data-i18n="emo.pyktis">Pyktis</span>
             </button>
-            <button type="button" class="chip" data-filter="liudesys" data-i18n="emo.liudesys">
-              Liūdesys
+            <button type="button" class="chip" data-filter="liudesys">
+              <span aria-hidden="true">😢</span> <span data-i18n="emo.liudesys">Liūdesys</span>
             </button>
-            <button type="button" class="chip" data-filter="nerimas" data-i18n="emo.nerimas">
-              Nerimas
+            <button type="button" class="chip" data-filter="nerimas">
+              <span aria-hidden="true">😰</span> <span data-i18n="emo.nerimas">Nerimas</span>
             </button>
-            <button type="button" class="chip" data-filter="kalte" data-i18n="emo.kalte">
-              Kaltė
+            <button type="button" class="chip" data-filter="kalte">
+              <span aria-hidden="true">😔</span> <span data-i18n="emo.kalte">Kaltė</span>
             </button>
-            <button type="button" class="chip" data-filter="vienatve" data-i18n="emo.vienatve">
-              Vienatvė
+            <button type="button" class="chip" data-filter="vienatve">
+              <span aria-hidden="true">😶</span> <span data-i18n="emo.vienatve">Vienatvė</span>
             </button>
-            <button type="button" class="chip" data-filter="viltis" data-i18n="emo.viltis">
-              Viltis
+            <button type="button" class="chip" data-filter="viltis">
+              <span aria-hidden="true">🌱</span> <span data-i18n="emo.viltis">Viltis</span>
             </button>
           </div>
           <div class="feed" id="feed"></div>
@@ -258,7 +331,8 @@
             </button>
           </div>
           <p class="muted screen-intro" data-i18n="stories.intro">
-            Tekstai, kuriuos žmonės paliko ilgam. Gal tarp jų — ir tavo istorija.
+            Tekstai, kuriuos žmonės paliko ilgam: jie lieka, kol autorius pats ištrina. Gal tarp
+            jų rasi ir savo.
           </p>
           <div class="feed-filters" id="story-sort">
             <button
@@ -277,23 +351,23 @@
             <button type="button" class="chip is-active" data-filter="" data-i18n="stories.all">
               Visos
             </button>
-            <button type="button" class="chip" data-filter="pyktis" data-i18n="emo.pyktis">
-              Pyktis
+            <button type="button" class="chip" data-filter="pyktis">
+              <span aria-hidden="true">😠</span> <span data-i18n="emo.pyktis">Pyktis</span>
             </button>
-            <button type="button" class="chip" data-filter="liudesys" data-i18n="emo.liudesys">
-              Liūdesys
+            <button type="button" class="chip" data-filter="liudesys">
+              <span aria-hidden="true">😢</span> <span data-i18n="emo.liudesys">Liūdesys</span>
             </button>
-            <button type="button" class="chip" data-filter="nerimas" data-i18n="emo.nerimas">
-              Nerimas
+            <button type="button" class="chip" data-filter="nerimas">
+              <span aria-hidden="true">😰</span> <span data-i18n="emo.nerimas">Nerimas</span>
             </button>
-            <button type="button" class="chip" data-filter="kalte" data-i18n="emo.kalte">
-              Kaltė
+            <button type="button" class="chip" data-filter="kalte">
+              <span aria-hidden="true">😔</span> <span data-i18n="emo.kalte">Kaltė</span>
             </button>
-            <button type="button" class="chip" data-filter="vienatve" data-i18n="emo.vienatve">
-              Vienatvė
+            <button type="button" class="chip" data-filter="vienatve">
+              <span aria-hidden="true">😶</span> <span data-i18n="emo.vienatve">Vienatvė</span>
             </button>
-            <button type="button" class="chip" data-filter="viltis" data-i18n="emo.viltis">
-              Viltis
+            <button type="button" class="chip" data-filter="viltis">
+              <span aria-hidden="true">🌱</span> <span data-i18n="emo.viltis">Viltis</span>
             </button>
           </div>
           <div class="feed" id="story-feed"></div>
@@ -435,55 +509,69 @@
           </div>
         </section>
 
-        <!-- 4. Nustatymai -->
+        <!-- 4. Nustatymai (atidaromi ⚙ mygtuku viršuje). Pavojinga zona — pačioje apačioje. -->
         <section class="screen" id="screen-nustatymai" hidden>
           <h1 data-i18n="set.title">Nustatymai</h1>
-          <div class="setting">
-            <label for="lang-select" data-i18n="set.lang">Kalba</label>
-            <select id="lang-select">
-              <option value="lt">Lietuvių</option>
-              <option value="en">English</option>
-            </select>
+          <div class="panel">
+            <div class="setting">
+              <label for="lang-select" data-i18n="set.lang">Kalba</label>
+              <select id="lang-select">
+                <option value="lt">Lietuvių</option>
+                <option value="en">English</option>
+              </select>
+            </div>
+            <div class="setting setting-toggle">
+              <label class="toggle">
+                <input type="checkbox" id="soft-toggle" checked>
+                <span class="toggle-track"
+                  aria-hidden="true"><span class="toggle-thumb"></span></span>
+                <span class="toggle-text" data-i18n="set.soft">Švelnus srautas</span>
+              </label>
+              <p class="muted" data-i18n="set.softDesc">
+                Keiksmažodžiai sraute rodomi kaip b***. Tavo paties rašymo tai neriboja.
+              </p>
+            </div>
           </div>
-          <div class="setting setting-toggle">
-            <label class="toggle">
-              <input type="checkbox" id="soft-toggle" checked>
-              <span class="toggle-track"
-                aria-hidden="true"><span class="toggle-thumb"></span></span>
-              <span class="toggle-text" data-i18n="set.soft">Švelnus srautas</span>
-            </label>
-            <p class="muted" data-i18n="set.softDesc">
-              Keiksmažodžiai sraute rodomi kaip b***. Tavo paties rašymo tai neriboja.
+
+          <div class="panel about">
+            <h2 data-i18n="about.title">Apie Nuogą Sielą</h2>
+            <p data-i18n="about.mission1">
+              Nuoga Siela — vieta padėti tai, ką neši. Čia gali išsakyti, kas slegia, ir niekas
+              nesužinos, kad tai tu: jokios registracijos, jokių vardų, jokių komentarų. Kiti gali
+              tik paspausti „Suprantu tave".
             </p>
-          </div>
-          <div class="setting setting-danger">
-            <button
-              type="button"
-              class="btn btn-danger"
-              id="btn-delete-data"
-              data-i18n="set.deleteBtn"
-            >
-              Ištrinti mano duomenis
-            </button>
-            <p class="muted" data-i18n="set.deleteDesc">
-              Iškart ištrina visus tavo paleistus tekstus, emocijų kalendorių ir įrenginio žymę.
+            <p data-i18n="about.mission2">
+              Tikslas paprastas — kad būtų lengviau. Rašymas apie jausmus mažina jų intensyvumą, o
+              kalendorius padeda pamatyti, kaip jie keičiasi laikui bėgant.
             </p>
+            <ol class="steps">
+              <li>
+                <span class="step-num" aria-hidden="true">1</span>
+                <p>
+                  <strong data-i18n="step1.title">Pažymėk, kaip jautiesi</strong>
+                  <span data-i18n="step1.text">Emocija atsiras tavo kalendoriuje — tik šiame
+                    įrenginyje.</span>
+                </p>
+              </li>
+              <li>
+                <span class="step-num" aria-hidden="true">2</span>
+                <p>
+                  <strong data-i18n="step2.title">Išliek žodžius</strong>
+                  <span data-i18n="step2.text">Be vardo ir be registracijos.</span>
+                </p>
+              </li>
+              <li>
+                <span class="step-num" aria-hidden="true">3</span>
+                <p>
+                  <strong data-i18n="step3.title">Nuspręsk, ką su jais daryti</strong>
+                  <span data-i18n="step3.text">Sudeginti, paleisti 24 valandoms arba palikti
+                    istoriją kitiems.</span>
+                </p>
+              </li>
+            </ol>
           </div>
-          <div class="setting support">
-            <h2 data-i18n="set.supportTitle">Palaikyk projektą</h2>
-            <p class="muted" data-i18n="set.supportDesc">
-              Jokių reklamų čia nebus niekada. Jei ši erdvė tau padėjo — gali pavaišinti kava.
-            </p>
-            <a
-              class="btn btn-support"
-              id="btn-support"
-              href="https://buymeacoffee.com/nuogasiela"
-              target="_blank"
-              rel="noopener"
-              data-i18n="set.supportBtn"
-            >☕ Pavaišinti kava</a>
-          </div>
-          <div class="privacy">
+
+          <div class="panel privacy">
             <h2 data-i18n="set.privacyTitle">Privatumas</h2>
             <p data-i18n="set.privacy1">
               Jokios registracijos. Jokių vardų, el. paštų ar telefonų. Tavo įrenginys gauna
@@ -499,21 +587,72 @@
               Visa privatumo politika →
             </a>
           </div>
+
+          <div class="panel support">
+            <h2 data-i18n="set.supportTitle">Palaikyk projektą</h2>
+            <p class="muted" data-i18n="set.supportDesc">
+              Jokių reklamų čia nebus niekada. Jei ši erdvė tau padėjo — gali pavaišinti kava.
+            </p>
+            <a
+              class="btn btn-support"
+              id="btn-support"
+              href="https://buymeacoffee.com/nuogasiela"
+              target="_blank"
+              rel="noopener"
+              data-i18n="set.supportBtn"
+            >☕ Pavaišinti kava</a>
+          </div>
+
+          <div class="setting-danger">
+            <h2 data-i18n="set.dataTitle">Tavo duomenys</h2>
+            <p class="muted" data-i18n="set.deleteDesc">
+              Iškart ištrina visus tavo paleistus tekstus, emocijų kalendorių ir įrenginio žymę.
+            </p>
+            <button
+              type="button"
+              class="btn btn-danger"
+              id="btn-delete-data"
+              data-i18n="set.deleteBtn"
+            >
+              Ištrinti mano duomenis
+            </button>
+          </div>
         </section>
       </main>
 
-      <nav class="tabbar">
+      <!-- Apatinis meniu: kelias „rašai → skaitai → matai save laike". Nustatymai — ⚙ viršuje. -->
+      <nav class="tabbar" id="tabbar">
+        <span class="tab-glow" id="tab-glow" aria-hidden="true"></span>
         <a href="/rasyti" data-screen="rasyti" class="tab">
-          <span class="tab-icon" aria-hidden="true">✎</span><span data-i18n="tab.write">Rašyti</span>
+          <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4.5 19.5l1-4.2L15.6 5.2a2.1 2.1 0 0 1 3 3L8.5 18.4l-4 1.1Z" />
+            <path d="M13.6 7.2l3 3" />
+          </svg>
+          <span data-i18n="tab.write">Rašyti</span>
         </a>
         <a href="/srautas" data-screen="srautas" class="tab">
-          <span class="tab-icon" aria-hidden="true">☽</span><span data-i18n="tab.feed">Srautas</span>
+          <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 8c2-1.6 4-1.6 6 0s4 1.6 6 0 4-1.6 6 0" />
+            <path d="M3 13c2-1.6 4-1.6 6 0s4 1.6 6 0 4-1.6 6 0" />
+            <path d="M3 18c2-1.6 4-1.6 6 0s4 1.6 6 0 4-1.6 6 0" opacity="0.5" />
+          </svg>
+          <span data-i18n="tab.feed">Srautas</span>
         </a>
         <a href="/istorijos" data-screen="istorijos" class="tab">
-          <span class="tab-icon" aria-hidden="true">❝</span><span data-i18n="tab.stories">Istorijos</span>
+          <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M12 6.6C10 5.1 7.4 4.6 4 5v13c3.4-.4 6 .1 8 1.6 2-1.5 4.6-2 8-1.6V5c-3.4-.4-6 .1-8 1.6Z" />
+            <path d="M12 6.6v13" />
+          </svg>
+          <span data-i18n="tab.stories">Istorijos</span>
         </a>
-        <a href="/nustatymai" data-screen="nustatymai" class="tab">
-          <span class="tab-icon" aria-hidden="true">⚙</span><span data-i18n="tab.settings">Nustatymai</span>
+        <a href="/kalendorius" data-screen="kalendorius" class="tab">
+          <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="4" y="5.5" width="16" height="14.5" rx="3" />
+            <path d="M4 10.5h16M9 3.5v4M15 3.5v4" />
+            <circle cx="12" cy="15.2" r="1.7" fill="currentColor" stroke="none" />
+          </svg>
+          <span data-i18n="tab.calendar">Kalendorius</span>
         </a>
       </nav>
 

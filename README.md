@@ -24,19 +24,32 @@ The design comes from the Lithuanian midsummer (Joninės) tradition of floating 
 down a river at night, so whatever is heavy drifts away. Fire is for burning, water is for letting
 go.
 
+### How it works
+
+1. **Tag how you feel.** The emotion (with its emoji) goes to your calendar, on this device only.
+2. **Pour out the words.** No name, no sign-up.
+3. **Decide what to do with them:** 🔥 burn them (no one will see), 🏮 release them to the
+   **Stream** (gone in 24 h), or 📖 keep them as a **story** (stays until you delete it).
+
+The bottom menu follows the same path: **Write → Stream → Stories → Calendar**. Settings live behind
+the ⚙ button at the top.
+
 ## Features
 
-- ✍️ **Write freely.** Tag an emotion (anger, sadness, anxiety, guilt, loneliness, hope).
+- ✍️ **Write freely.** Tag an emotion: 😠 anger, 😢 sadness, 😰 anxiety, 😔 guilt, 😶 loneliness, 🌱
+  hope. The same emoji show up in the stream, the stories and the calendar.
 - 🔥 **Burn it.** The text turns into embers and disappears. It is never sent to the server.
-- 🏮 **Release it.** Choose the **stream**, which is physically deleted after 24 h, or a **story**,
-  which stays until you delete it.
+- 🏮 **Release it** to the **Stream**: the text is physically deleted after 24 h.
+- 📖 **Keep it as a story**: a longer text (up to 5000 characters) that stays until you delete it
+  and gets its own page.
 - 🤍 **"I understand you".** Support without comments, one vote per device.
 - 🆘 **SOS.** Helplines and a breathing circle. If the text contains crisis words, help is offered
   gently and the post is never blocked.
 - 🔊 **Scream room.** Audio lives only in the phone's memory and is never uploaded.
-- 📅 **Mood calendar.** Your tagged emotions by day, with a moving emoji for your week. Only the day
-  and the emotion are saved, and only on your device. Next to it: how everyone feels this week
-  (plain totals, no link to anyone).
+- 📅 **Mood calendar** (in the bottom menu). Your tagged emotions by day, with a moving emoji for
+  your week; when you release or burn a text, its emoji flies into the calendar. Only the day and
+  the emotion are saved, and only on your device. Next to it: how everyone feels this week (plain
+  totals, no link to anyone).
 - 🎧 **Calming sounds.** River, rain or campfire while you write or breathe.
 - 🌗 **Light and dark mode.** Follows the system setting, has a toggle, and doesn't flash while
   loading.

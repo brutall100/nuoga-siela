@@ -22,19 +22,32 @@ Nereikia registruotis, nėra vardų ir nėra komentarų. Kiti gali tik paspausti
 Dizainą įkvėpė Joninių tradicija: naktį žmonės paleidžia upe vainikus ir žiburius, ir kas sunku,
 nuplaukia. Ugnis skirta deginimui, vanduo skirtas paleidimui.
 
+### Kaip tai veikia
+
+1. **Pažymėk, kaip jautiesi.** Emocija (su emoji) atsiras tavo kalendoriuje, tik šiame įrenginyje.
+2. **Išliek žodžius.** Be vardo ir be registracijos.
+3. **Nuspręsk, ką su jais daryti:** 🔥 sudeginti (niekas nepamatys), 🏮 paleisti į **Srautą** (po 24
+   val. išnyks) arba 📖 palikti **istoriją** (lieka, kol pats ištrini).
+
+Apatinis meniu seka tą patį kelią: **Rašyti → Srautas → Istorijos → Kalendorius**. Nustatymai
+pasiekiami ⚙ mygtuku viršuje.
+
 ## Funkcijos
 
-- ✍️ **Rašyk laisvai.** Pasirink emociją (pyktis, liūdesys, nerimas, kaltė, vienatvė, viltis).
+- ✍️ **Rašyk laisvai.** Pasirink emociją: 😠 pyktis, 😢 liūdesys, 😰 nerimas, 😔 kaltė, 😶 vienatvė,
+  🌱 viltis. Tie patys emoji rodomi sraute, istorijose ir kalendoriuje.
 - 🔥 **Sudegink.** Tekstas virsta žarijomis ir išnyksta. Į serverį jis niekada nesiunčiamas.
-- 🏮 **Paleisk.** Gali pasirinkti **srautą**, kuris po 24 val. fiziškai ištrinamas, arba
-  **istoriją**, kuri lieka, kol pats ištrini.
+- 🏮 **Paleisk** į **Srautą**: po 24 val. tekstas fiziškai ištrinamas.
+- 📖 **Palik istoriją**: ilgesnis tekstas (iki 5000 ženklų) lieka, kol pats ištrini, ir turi savo
+  puslapį.
 - 🤍 **„Suprantu tave“.** Palaikymas be komentarų, vienas balsas vienam įrenginiui.
 - 🆘 **SOS.** Pagalbos linijos ir kvėpavimo ratas. Jei tekste yra krizės žodžių, pagalba pasiūloma
   švelniai, bet tekstas neblokuojamas.
 - 🔊 **Šauksmo kambarys.** Garsas įrašomas tik į telefono atmintį ir niekur nesiunčiamas.
-- 📅 **Emocijų kalendorius.** Tavo pažymėtos emocijos pagal dienas ir judantis savaitės emoji.
-  Saugoma tik diena ir emocija, tik tavo įrenginyje. Šalia — kaip šią savaitę jaučiasi visi (tik
-  suminiai skaičiai, be jokio ryšio su žmonėmis).
+- 📅 **Emocijų kalendorius** (apatiniame meniu). Tavo pažymėtos emocijos pagal dienas ir judantis
+  savaitės emoji; paleidus ar sudeginus tekstą, emoji nuskrenda į kalendorių. Saugoma tik diena ir
+  emocija, tik tavo įrenginyje. Šalia — kaip šią savaitę jaučiasi visi (tik suminiai skaičiai, be
+  jokio ryšio su žmonėmis).
 - 🎧 **Raminantys garsai.** Upė, lietus ar laužas rašant ir kvėpuojant.
 - 🌗 **Šviesus ir tamsus režimas.** Seka sistemos nustatymą, turi perjungimo mygtuką ir nemirga
   kraunantis.
