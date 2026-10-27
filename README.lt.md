@@ -43,7 +43,8 @@ pasiekiami ⚙ mygtuku viršuje.
 - 🤍 **„Suprantu tave“.** Palaikymas be komentarų, vienas balsas vienam įrenginiui.
 - 🆘 **SOS.** Pagalbos linijos ir kvėpavimo ratas. Jei tekste yra krizės žodžių, pagalba pasiūloma
   švelniai, bet tekstas neblokuojamas.
-- 🔊 **Šauksmo kambarys.** Garsas įrašomas tik į telefono atmintį ir niekur nesiunčiamas.
+- 🔊 **Šauksmo kambarys** (SOS ekrane). Garsas įrašomas tik į telefono atmintį ir niekur
+  nesiunčiamas.
 - 📅 **Emocijų kalendorius** (apatiniame meniu). Tavo pažymėtos emocijos pagal dienas ir judantis
   savaitės emoji; paleidus ar sudeginus tekstą, emoji nuskrenda į kalendorių. Saugoma tik diena ir
   emocija, tik tavo įrenginyje. Šalia — kaip šią savaitę jaučiasi visi (tik suminiai skaičiai, be

@@ -45,7 +45,8 @@ the ⚙ button at the top.
 - 🤍 **"I understand you".** Support without comments, one vote per device.
 - 🆘 **SOS.** Helplines and a breathing circle. If the text contains crisis words, help is offered
   gently and the post is never blocked.
-- 🔊 **Scream room.** Audio lives only in the phone's memory and is never uploaded.
+- 🔊 **Scream room** (on the SOS screen). Audio lives only in the phone's memory and is never
+  uploaded.
 - 📅 **Mood calendar** (in the bottom menu). Your tagged emotions by day, with a moving emoji for
   your week; when you release or burn a text, its emoji flies into the calendar. Only the day and
   the emotion are saved, and only on your device. Next to it: how everyone feels this week (plain

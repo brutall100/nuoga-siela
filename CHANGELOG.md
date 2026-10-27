@@ -4,6 +4,21 @@ Visi pastebimi projekto pakeitimai bus fiksuojami šiame faile.
 
 Formatas paremtas [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [v2.8] — 2026-10-27
+
+Rašymo ekrano išdėstymas pagal atsiliepimą į v2.7.
+
+- **Emocijos — plytelės 3×2:** didelis emoji, po juo pavadinimas; pažymėta plytelė nusidažo emocijos
+  spalva. Emoji visada pilnos spalvos: v2.7 nepažymėtus pilkino, todėl veidukai atrodė blankūs, o
+  žalias 🌱 „Viltis“ — tarsi pažymėtas nuo pradžių.
+- **Klaida:** telefone paspaudus ir atžymėjus emociją ji likdavo paryškinta (prilipęs `:hover`).
+  Užvedimo stiliai emocijoms, veiksmų plytelėms ir chip'ams dabar tik `@media (hover: hover)`.
+- **Veiksmai — trys mažos plytelės vienoje eilėje:** 🔥 Sudeginti · 🏮 Į srautą · 📖 Į istorijas, be
+  aprašų. Skirtumą paaiškina „Kaip tai veikia“ (3 žingsnio tekstas papildytas), Srauto/Istorijų
+  įžangos ir pranešimas po veiksmo; po plytelėmis lieka trumpa eilutė apie anonimiškumą ir Google.
+- **Šauksmo kambarys** perkeltas iš rašymo ekrano į SOS ekraną (kortelė po kvėpavimu).
+- README nuotrauka (`docs/screenshot-dark.webp`) pergeneruota; CLAUDE.md atnaujintas.
+
 ## [v2.7] — 2026-10-27
 
 Nuoseklumas: visa programa dabar seka vieną kelią — **emocija → žodžiai → ką su jais daryti**, o
