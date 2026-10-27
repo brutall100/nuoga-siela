@@ -4,6 +4,12 @@ Visi pastebimi projekto pakeitimai bus fiksuojami šiame faile.
 
 Formatas paremtas [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [v2.3] — 2026-10-27
+
+- `public/.well-known/assetlinks.json` — Digital Asset Links Google Play programėlei
+  `lt.nuogasiela.app` (Google Play pasirašymo + įkėlimo rakto SHA-256). Be jo TWA rodytų naršyklės
+  adreso juostą.
+
 ## [v2.2] — 2026-10-27
 
 - PNG piktogramos (`public/icons/icon-512.png`, `icon-maskable-512.png`, 512×512, sugeneruotos iš

@@ -1,0 +1,13 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "lt.nuogasiela.app",
+      "sha256_cert_fingerprints": [
+        "3C:FF:61:5E:78:01:22:97:07:1E:C6:91:9E:44:55:B6:36:60:F8:64:0F:F6:89:6F:D7:0E:2F:67:98:20:DF:AF",
+        "5B:2D:DA:90:04:59:31:AC:A2:DC:62:93:32:0A:D9:BA:F3:B2:2F:69:8C:0D:90:AD:69:08:CF:A8:47:3F:71:75"
+      ]
+    }
+  }
+]
