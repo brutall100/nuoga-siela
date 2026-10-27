@@ -193,7 +193,9 @@
   const btnRelease = $("#btn-release");
   const btnStory = $("#btn-story");
   const actionBtns = [btnBurn, btnRelease, btnStory];
-  let selectedEmotion = null;
+  // Viena emocija visada pažymėta; numatyta — „Viltis" (ir atidarius, ir po kiekvieno teksto).
+  const DEFAULT_EMOTION = "viltis";
+  let selectedEmotion = DEFAULT_EMOTION;
 
   // Laukelis priima istorijos ilgį; srautui per ilgas tekstas tiesiog
   // nukreipiamas į istoriją (serveris vis tiek tikrina abi ribas). Paspaudus
@@ -217,10 +219,11 @@
     });
   }
 
+  selectEmotion(DEFAULT_EMOTION);
+
   $("#emotion-picker").addEventListener("click", (e) => {
     const btn = e.target.closest(".emo");
-    if (!btn) return;
-    selectEmotion(selectedEmotion === btn.dataset.emotion ? null : btn.dataset.emotion);
+    if (btn) selectEmotion(btn.dataset.emotion);
   });
 
   // Švelnus „pažiūrėk čia" — kai ko nors trūksta, elementas trumpai sujuda.
@@ -271,12 +274,11 @@
     for (const btn of actionBtns) btn.disabled = on;
   }
 
-  // Kai vienas iš kelių baigtas: emocija — į kalendorių, žymė nuimama naujam tekstui.
+  // Kai vienas iš kelių baigtas: emocija — į kalendorių, naujam tekstui vėl „Viltis".
   function sendEmotionToCalendar() {
-    if (!selectedEmotion) return;
     window.mood.record(selectedEmotion);
     flyToCalendar(selectedEmotion);
-    selectEmotion(null);
+    selectEmotion(DEFAULT_EMOTION);
   }
 
   btnBurn.addEventListener("click", async () => {
@@ -301,10 +303,6 @@
     if (text.length > MAX_LEN[kind]) {
       toast(window.t("path.releaseTooLong"), "warn");
       return nudge(btnStory);
-    }
-    if (!selectedEmotion) {
-      toast(window.t("toast.pickEmotion"));
-      return nudge($("#emotion-picker"));
     }
     setBusy(true);
     try {

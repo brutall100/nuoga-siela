@@ -26,7 +26,8 @@ go.
 
 ### How it works
 
-1. **Tag how you feel.** The emotion (with its emoji) goes to your calendar, on this device only.
+1. **Tag how you feel** (🌱 hope is preselected). The emotion (with its emoji) goes to your
+   calendar, on this device only.
 2. **Pour out the words.** No name, no sign-up.
 3. **Decide what to do with them:** 🔥 burn them (no one will see), 🏮 release them to the
    **Stream** (gone in 24 h), or 📖 keep them as a **story** (stays until you delete it).

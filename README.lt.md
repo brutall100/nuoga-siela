@@ -24,7 +24,8 @@ nuplaukia. Ugnis skirta deginimui, vanduo skirtas paleidimui.
 
 ### Kaip tai veikia
 
-1. **Pažymėk, kaip jautiesi.** Emocija (su emoji) atsiras tavo kalendoriuje, tik šiame įrenginyje.
+1. **Pažymėk, kaip jautiesi** (iš anksto pažymėta 🌱 viltis). Emocija (su emoji) atsiras tavo
+   kalendoriuje, tik šiame įrenginyje.
 2. **Išliek žodžius.** Be vardo ir be registracijos.
 3. **Nuspręsk, ką su jais daryti:** 🔥 sudeginti (niekas nepamatys), 🏮 paleisti į **Srautą** (po 24
    val. išnyks) arba 📖 palikti **istoriją** (lieka, kol pats ištrini).

@@ -4,6 +4,14 @@ Visi pastebimi projekto pakeitimai bus fiksuojami šiame faile.
 
 Formatas paremtas [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [v2.9] — 2026-10-27
+
+- **„Viltis“ visada pažymėta iš anksto:** atidarius rašymo ekraną ir po kiekvieno paleidimo ar
+  sudeginimo pažymėta 🌱 „Viltis“; galima pasirinkti kitą emociją, bet viena visada lieka pažymėta
+  (paspaudus pažymėtą dar kartą ji nebenuimama). Jei emocijos nepakeiti, į kalendorių ir bendrą
+  savaitės nuotaiką keliauja „Viltis“.
+- Pranešimas „Pasirink, kaip jautiesi“ (`toast.pickEmotion`) pašalintas — emocija visada yra.
+
 ## [v2.8] — 2026-10-27
 
 Rašymo ekrano išdėstymas pagal atsiliepimą į v2.7.
