@@ -1164,6 +1164,17 @@ h2 {
   }
 }
 
+/* Atidarius rašymo ekraną trys keliai vieną kartą sujuda (app.js greetWriteScreen()). */
+.paths.is-greeting .path-burn .path-icon {
+  animation: flame-flicker 0.8s ease-in-out 2;
+}
+.paths.is-greeting .path-release .path-icon {
+  animation: float-away 1.2s ease-in-out 0.15s;
+}
+.paths.is-greeting .path-story .path-icon {
+  animation: book-open 1.4s ease-in-out 0.3s;
+}
+
 .path.is-sending .path-icon {
   animation: sail-off 0.9s ease-in forwards;
 }

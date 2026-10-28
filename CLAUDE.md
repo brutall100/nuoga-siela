@@ -224,12 +224,14 @@ veiksmą. Viena emocija visada pažymėta (`app.js` `DEFAULT_EMOTION`): numatyta
 ekraną ir po kiekvieno paleidimo ar deginimo; paspaudus pažymėtą dar kartą ji nenuimama, tik
 pakeičiama kita. Todėl nepakeitus emocijos į kalendorių ir `stats` keliauja „Viltis“ — tai
 sąmoningas produkto sprendimas. Simboliai visada pilnos spalvos (jokio pilkinimo) — pažymėtą rodo
-plytelės fonas ir rėmelis, o pažymėtos emocijos simbolis juda. Srauto ir istorijos skirtumas (24
-val. ir 1000 ženklų / lieka ir 5000 ženklų) aiškinamas „Kaip tai veikia“ lape, Srauto ir Istorijų
-info lapuose ir pranešime po veiksmo. Po plytelėmis lieka viena eilutė „Istorijas gali rasti ir
-Google“ — tai privatumo atskleidimas prieš paskelbiant amžiną viešą tekstą, neišimk jos. Laukelis
-priima 5000 ženklų; viršijus 1000, „Į srautą“ plytelė tampa `aria-disabled` (pritemdyta), o
-paspaudus pranešimas nukreipia į istorijas (serveris vis tiek tikrina abi ribas).
+plytelės fonas ir rėmelis, o pažymėtos emocijos simbolis juda. Atidarius rašymo ekraną visi
+simboliai ir trijų kelių ikonos vieną kartą sujuda (`app.js` `greetWriteScreen()`,
+`icons.playOnce()`), paskui juda tik pažymėtas. Srauto ir istorijos skirtumas (24 val. ir 1000
+ženklų / lieka ir 5000 ženklų) aiškinamas „Kaip tai veikia“ lape, Srauto ir Istorijų info lapuose ir
+pranešime po veiksmo. Po plytelėmis lieka viena eilutė „Istorijas gali rasti ir Google“ — tai
+privatumo atskleidimas prieš paskelbiant amžiną viešą tekstą, neišimk jos. Laukelis priima 5000
+ženklų; viršijus 1000, „Į srautą“ plytelė tampa `aria-disabled` (pritemdyta), o paspaudus pranešimas
+nukreipia į istorijas (serveris vis tiek tikrina abi ribas).
 
 `:hover` stilius plytelėms ir chip'ams rašyk tik `@media (hover: hover)` viduje — telefone `:hover`
 „prilimpa“ po paspaudimo, ir atžymėta plytelė atrodo vis dar pažymėta.

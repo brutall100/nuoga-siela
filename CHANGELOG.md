@@ -4,6 +4,12 @@ Visi pastebimi projekto pakeitimai bus fiksuojami šiame faile.
 
 Formatas paremtas [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [v3.1] — 2026-10-28
+
+- Atidarius rašymo ekraną **visi emocijų simboliai vieną kartą sujuda** (kiekvienas savo judesiu), o
+  tada nurimsta — toliau juda tik pažymėta emocija. Kartu sujuda ir trijų kelių ikonos (ugnis
+  suplazda, bangos pasisupa, knyga atsiveria). Su „mažinti judesį“ — viskas ramu.
+
 ## [v3.0] — 2026-10-28
 
 **Naujas dizainas — „kompaktiškas išdėstymas“** (pagal claude.ai dizaino drobę).

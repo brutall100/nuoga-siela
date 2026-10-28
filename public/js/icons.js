@@ -7,7 +7,8 @@
 // Pažymėta emocija „gyva" (SMIL animacija SVG viduje); su prefers-reduced-motion —
 // visada rami versija.
 // Eksportai: window.icons.emo(kind, live) → <svg>, window.icons.line(name) → <svg>,
-// window.icons.fill(root) — užpildo [data-emo-icon] vietas statiniame HTML.
+// window.icons.fill(root) — užpildo [data-emo-icon] vietas statiniame HTML,
+// window.icons.setLive(el, live), window.icons.playOnce(el) — vienas gyvas ciklas.
 
 (function () {
   "use strict";
@@ -198,6 +199,34 @@
     el.replaceChildren(emo(el.dataset.emoIcon || el.dataset.emo, live));
   }
 
+  // Vienas „gyvas" ciklas, tada vėl ramus (pvz. atidarius rašymo ekraną). Laikas parinktas
+  // taip, kad animacija baigtųsi ramios versijos padėtyje — be šuolio keičiant SVG.
+  const ONCE_MS = {
+    pyktis: 850,
+    liudesys: 1900,
+    nerimas: 1800,
+    kalte: 1800,
+    vienatve: 1700,
+    viltis: 2800,
+  };
+  const onceTimers = new WeakMap();
+
+  function playOnce(el) {
+    const kind = el.dataset.emoIcon || el.dataset.emo;
+    if (REDUCED || el.dataset.live === "1" || !EMO[kind]) return;
+    const svg = emo(kind, true);
+    el.replaceChildren(svg);
+    svg.setCurrentTime?.(0);
+    clearTimeout(onceTimers.get(el));
+    onceTimers.set(
+      el,
+      setTimeout(() => {
+        // Jei per tą laiką emocija pažymėta — ji lieka gyva.
+        if (el.dataset.live !== "1") el.replaceChildren(emo(kind, false));
+      }, ONCE_MS[kind]),
+    );
+  }
+
   // Naujas elementas JS kodui (kortelėms, kalendoriui).
   function emoSpan(kind, live) {
     const span = document.createElement("span");
@@ -209,6 +238,6 @@
     return span;
   }
 
-  window.icons = { EMOTIONS, emo, emoSpan, line, fill, setLive };
+  window.icons = { EMOTIONS, emo, emoSpan, line, fill, setLive, playOnce };
   fill(document);
 })();
