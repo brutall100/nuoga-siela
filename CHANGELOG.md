@@ -4,6 +4,21 @@ Visi pastebimi projekto pakeitimai bus fiksuojami šiame faile.
 
 Formatas paremtas [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [v2.10] — 2026-10-27
+
+- **Pataisyta: programėlė neatsinaujindavo po diegimo.** Service worker'is (`public/sw.js`) viską
+  imdavo iš savo talpyklos (cache-first) ir atnaujindavo tik pakeitus `CACHE` versiją — v2.8 ir v2.9
+  ji liko `v8`, todėl telefonuose ir naršyklėse liko v2.7. Dabar HTML, JS ir CSS imami pirma iš
+  tinklo (`cache: "no-cache"`, apeinant ir naršyklės HTTP talpyklą), talpykla naudojama tik be
+  ryšio; šriftai, garsai ir paveikslėliai — kaip anksčiau, iš talpyklos. `CACHE` → `v9`. Istorijų
+  puslapiai (`/istorijos/:id`), `/api/` ir XML į SW talpyklą nebepatenka.
+- Serveris (`main.ts`) `.html/.js/.css/.webmanifest/.json` failus siunčia su `no-cache` (buvo
+  `max-age=3600`), kad naujas diegimas nevėluotų iki valandos.
+- `deno task dev` stebi ir `public/` (`--watch=public/`): `index.html` laikomas serverio atmintyje,
+  todėl be perkrovimo HTML pakeitimai nesimatė.
+- Perėjimas: kas turi seną (v8) SW, naują versiją pamatys **antrą kartą** atidaręs svetainę; nuo v9
+  kiekvienas diegimas matosi iš karto.
+
 ## [v2.9] — 2026-10-27
 
 - **„Viltis“ visada pažymėta iš anksto:** atidarius rašymo ekraną ir po kiekvieno paleidimo ar

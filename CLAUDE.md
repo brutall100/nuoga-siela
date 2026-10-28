@@ -15,7 +15,7 @@ apie release'ą.
 ## Komandos
 
 ```bash
-deno task dev    # http://localhost:8000, --watch, unstable KV
+deno task dev    # http://localhost:8000, --watch (+ public/), unstable KV
 deno task start  # be --watch (produkcinis paleidimas)
 deno task test   # visi testai server/ kataloge
 deno task lint   # deno lint tik main.ts + server/ (public/ — naršyklės kodas, žr. žemiau)
@@ -254,6 +254,20 @@ skripto, todėl tai atskiras failas) — taip puslapis nemirga. `window.themeTog
 nekuria. `public/js/ui.js` eksportuoja `window.ui.reveal(el)` ir `window.ui.countUp(el, to, fmt)`.
 Dinaminius parametrus dalelėms dėk per `el.style.setProperty()` (CSSOM) — `style=""` atributai
 HTML'e blokuojami CSP. Šriftai savi (`public/fonts/`), ne iš Google — dėl anonimiškumo.
+
+### Atnaujinimai: service worker ir talpinimas
+
+`public/sw.js` niekada neturi užlaikyti senos versijos. HTML, JS ir CSS — **network-first** su
+`cache: "no-cache"` (talpykla tik be ryšio), šriftai/garsai/paveikslėliai — cache-first, o `/api/`,
+`/istorijos/:id` ir `.xml` į SW talpyklą nepatenka visai (ištrinta istorija turi tapti 404 ir
+įrenginyje). Serveris (`main.ts` `REVALIDATE_EXT`) `.html/.js/.css/.webmanifest/.json` siunčia su
+`no-cache`, kitiems — `max-age=3600`. Todėl diegimui nereikia kelti `CACHE` versijos — kelk ją tik
+pakeitęs `SHELL` sąrašą. Iki v2.10 SW buvo cache-first, ir pamiršus pakelti versiją (v2.8–v2.9)
+žmonės matė seną programėlę.
+
+`main.ts` laiko `index.html` atmintyje (`indexHtmlCache`), todėl `deno task dev` stebi ir `public/`
+(`--watch=public/`) — pakeitus HTML serveris persikrauna. Deno Deploy kiekvienam diegimui paleidžia
+naują procesą, tad produkcijoje to nereikia.
 
 ### Saugumo header'iai
 

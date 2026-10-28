@@ -368,6 +368,11 @@ ${entries}
 
 // ---------- Statiniai failai ----------
 
+// Kas keičiasi su kiekvienu diegimu (HTML, JS, CSS, manifest) — `no-cache`, kad naujas
+// diegimas matytųsi iškart (kartu su public/sw.js network-first). Šriftai, garsai ir
+// paveikslėliai nesikeičia — juos naršyklė gali laikyti valandą.
+const REVALIDATE_EXT = new Set([".html", ".js", ".css", ".webmanifest", ".json"]);
+
 async function serveStatic(pathname: string): Promise<Response> {
   if (pathname === "/") return serveIndexHtml("/");
   const path = pathname;
@@ -385,9 +390,7 @@ async function serveStatic(pathname: string): Promise<Response> {
     const headers: Record<string, string> = {
       ...SECURITY_HEADERS,
       "content-type": MIME[ext] ?? "application/octet-stream",
-      "cache-control": path === "/index.html" || path === "/sw.js"
-        ? "no-cache"
-        : "public, max-age=3600",
+      "cache-control": REVALIDATE_EXT.has(ext) ? "no-cache" : "public, max-age=3600",
     };
     return new Response(file, { headers });
   } catch {
