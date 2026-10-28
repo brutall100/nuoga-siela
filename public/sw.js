@@ -2,7 +2,7 @@
 // versijos. HTML, JS ir CSS — pirma iš tinklo (talpykla — tik kai nėra ryšio), todėl
 // kiekvienas diegimas matosi iškart, nekeliant CACHE versijos. Šriftai, garsai ir
 // paveikslėliai nesikeičia — juos imam iš talpyklos. CACHE kelk tik pakeitus SHELL sąrašą.
-const CACHE = "nuoga-siela-v9";
+const CACHE = "nuoga-siela-v10";
 const SHELL = [
   "/",
   "/css/main.css",
@@ -15,12 +15,13 @@ const SHELL = [
   "/js/theme.js",
   "/js/river.js",
   "/js/ui.js",
+  "/js/icons.js",
   "/js/mood.js",
   "/js/sounds.js",
   "/fonts/lora-latin.woff2",
   "/fonts/lora-latin-ext.woff2",
-  "/fonts/nunito-sans-latin.woff2",
-  "/fonts/nunito-sans-latin-ext.woff2",
+  "/fonts/nunito-latin.woff2",
+  "/fonts/nunito-latin-ext.woff2",
   "/manifest.webmanifest",
   "/icons/icon.svg",
 ];

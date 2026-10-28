@@ -1,8 +1,9 @@
-/* Nuoga Siela — dizaino sistema „Paleisk upe".
+/* Nuoga Siela — dizaino sistema „Paleisk upe" (v3: kompaktiškas išdėstymas).
    Idėja: Joninių naktį žmonės paleidžia vainikus ir žiburius upe — tai, kas
    sunku, nuplaukia. Gili naktinė upė (tamsus režimas) arba rūkas virš vandens
    auštant (šviesus). Ugnis (gintaras) — deginimui, vanduo (žalsvai mėlyna) —
-   paleidimui. Visos spalvos gyvena TIK šiame :root bloke — norint pakeisti
+   paleidimui. Emocijos — kosmoso reiškiniai (public/js/icons.js), kiekviena su
+   savo spalva. Visos spalvos gyvena TIK šiuose :root blokuose — norint pakeisti
    paletę, keisk tik čia. */
 
 /* ---------- Šriftai (savi, ne iš Google — kad niekas nematytų lankytojų IP) ---------- */
@@ -29,22 +30,22 @@
     U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 @font-face {
-  font-family: "Nunito Sans";
+  font-family: "Nunito";
   font-style: normal;
-  font-weight: 400 800;
+  font-weight: 200 1000;
   font-display: swap;
-  src: url("/fonts/nunito-sans-latin-ext.woff2") format("woff2");
+  src: url("/fonts/nunito-latin-ext.woff2") format("woff2");
   unicode-range:
     U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
     U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F,
     U+A720-A7FF;
 }
 @font-face {
-  font-family: "Nunito Sans";
+  font-family: "Nunito";
   font-style: normal;
-  font-weight: 400 800;
+  font-weight: 200 1000;
   font-display: swap;
-  src: url("/fonts/nunito-sans-latin.woff2") format("woff2");
+  src: url("/fonts/nunito-latin.woff2") format("woff2");
   unicode-range:
     U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
     U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
@@ -52,117 +53,226 @@
 
 /* ---------- Paletė ---------- */
 /* Tamsus režimas — naktinė upė (numatytas). Kontrastas patikrintas (WCAG):
-   tekstas ≥ 4.5:1, UI elementai ≥ 3:1 ant --surface ir --bg. */
+   tekstas ≥ 4.5:1, UI elementai ≥ 3:1 ant --bg. */
 :root {
   color-scheme: dark;
 
   --bg: #08171c; /* upė naktį */
-  --surface: #0f242b; /* kortelės, laukeliai */
-  --surface-2: #14303a; /* pakeltas paviršius, aktyvūs chip'ai */
-  --line: #1c3940;
-  --line-strong: #2a5059;
-  --text: #e4f1ee;
-  --text-dim: #9dbdb7;
-  --text-faint: #7fa39c;
 
-  --accent: #4fd1bd; /* vanduo — paleidimas, pagrindinis veiksmas */
-  --accent-strong: #6fe0ce; /* vandens spalva tekstui */
-  --accent-deep: #2fae9b;
-  --on-accent: #062a24;
-  --ember: #ffb86b; /* žibintas / ugnis — deginimas */
-  --ember-strong: #ffb86b;
-  --ember-deep: #f08a3c;
-  --on-ember: #2b1600;
-  --danger: #ff8a8f;
-  --danger-bg: rgba(255, 138, 143, 0.12);
-  --danger-line: rgba(255, 138, 143, 0.5);
+  /* Paviršiai (permatomi — po jais matosi gyvas fonas) */
+  --tile: rgba(12, 32, 38, 0.62); /* emocijų plytelės, chip'ai */
+  --card: rgba(12, 32, 38, 0.74); /* srauto ir istorijų kortelės */
+  --box: rgba(12, 32, 38, 0.72); /* rašymo laukelis, kalendoriaus kortelės, skydeliai */
+  --round: rgba(10, 28, 33, 0.6); /* apvalūs ikonų mygtukai */
+  --seg-bg: rgba(8, 24, 28, 0.7);
+  --empty-bg: rgba(11, 30, 35, 0.55);
+  --day-bg: rgba(255, 255, 255, 0.025);
+  --sound-bg: rgba(255, 255, 255, 0.04);
+  --sheet-bg: #0e2328;
+  --menu-bg: #0f252b;
 
-  --emo-pyktis: #f0686d;
-  --emo-liudesys: #6f9cf2;
-  --emo-nerimas: #b98ceb;
-  --emo-kalte: #d39a6c;
-  --emo-vienatve: #8a9bbb;
-  --emo-viltis: #4fd1bd;
+  /* Linijos */
+  --line: rgba(140, 200, 195, 0.14);
+  --line-soft: rgba(140, 200, 195, 0.08);
+  --line-tile: rgba(140, 200, 195, 0.16);
+  --line-round: rgba(140, 200, 195, 0.18);
+  --line-hug: rgba(140, 200, 195, 0.2);
+  --line-menu: rgba(140, 200, 195, 0.22);
+  --line-dash: rgba(140, 200, 195, 0.24);
 
-  /* Gyvas fonas: švytėjimų ir dalelių ryškumas (tamsoje šviečia ryškiau). */
-  --glow-accent: rgba(79, 209, 189, 0.3);
-  --glow-ember: rgba(255, 184, 107, 0.22);
-  --ripple-line: rgba(111, 224, 206, 0.35);
-  --lantern: #ffc98a;
-  --lantern-halo: rgba(255, 184, 107, 0.55);
-  --water-lines: rgba(111, 224, 206, 0.05);
+  /* Tekstas: nuo ryškiausio iki blankiausio */
+  --text-strong: #f1f6f5; /* antraštės */
+  --text: #e6efee;
+  --text-card: #dce7e6;
+  --text-soft: #c9d8d7;
+  --text-chip: #c4d4d3;
+  --icon: #b4c7c6;
+  --text-dim: #9db3b4;
+  --text-nav: #8fa6a7;
+  --text-faint: #7f9798;
+  --day-text: #d3e0df;
 
-  --glass: rgba(15, 36, 43, 0.82);
-  --tabbar-bg: rgba(8, 23, 28, 0.86);
-  --overlay: rgba(4, 12, 15, 0.72);
-  --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
-  --shadow-lift: 0 16px 40px rgba(0, 0, 0, 0.45);
-  --btn-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  /* Vanduo — paleidimas, pagrindinis veiksmas */
+  --accent: #5fd9b8;
+  --accent-text: #7fe3c7;
+  --on-accent: #062620;
+  --accent-line: rgba(95, 217, 184, 0.7);
+  --accent-line-soft: rgba(95, 217, 184, 0.45);
+  --accent-tint: rgba(95, 217, 184, 0.14);
+  --accent-seg: rgba(95, 217, 184, 0.16);
+  --accent-soft: rgba(95, 217, 184, 0.1);
+  --accent-faint: rgba(95, 217, 184, 0.06);
+  --emo-on: #eafbf6; /* pažymėtos emocijos plytelės tekstas */
+
+  /* Ugnis — deginimas, žibintai */
+  --ember: #edb070;
+  --ember-text: #f1be84;
+  --ember-line: rgba(237, 176, 112, 0.6);
+  --ember-badge-line: rgba(237, 176, 112, 0.32);
+  --ember-tint: rgba(237, 176, 112, 0.1);
+  --ember-faint: rgba(237, 176, 112, 0.08);
+
+  /* „Suprantu tave" */
+  --heart: #f5b3bc;
+  --heart-line: rgba(242, 160, 170, 0.6);
+  --heart-bg: rgba(242, 140, 155, 0.12);
+
+  --danger: #f4a3a3;
+  --danger-bg: rgba(240, 110, 110, 0.1);
+  --danger-line: rgba(240, 138, 138, 0.55);
+
+  /* Emocijos — kosmoso reiškiniai */
+  --emo-pyktis: #f27d5e;
+  --emo-liudesys: #7fa8f5;
+  --emo-nerimas: #b49cf6;
+  --emo-kalte: #e8b460;
+  --emo-vienatve: #a9bec4;
+  --emo-viltis: #5fd9b8;
+  --emo-mask: #0b1c21; /* užtemimo / horizonto šešėlis simbolyje — fono spalva */
+
+  /* Gyvas fonas */
+  --glow-accent: rgba(44, 168, 148, 0.28);
+  --glow-ember: rgba(178, 122, 64, 0.3);
+  --ripple-line: rgba(95, 217, 184, 0.14);
+  --lantern: #edb070;
+  --lantern-halo: rgba(237, 176, 112, 0.45);
+  --water-lines: rgba(150, 215, 205, 0.035);
+
+  --tabbar-bg: rgba(7, 20, 24, 0.88);
+  --tabbar-line: rgba(140, 200, 195, 0.12);
+  --overlay: rgba(2, 9, 11, 0.62);
+  --handle: rgba(200, 225, 222, 0.28);
+  --shadow-sheet: 0 -16px 40px rgba(0, 0, 0, 0.45);
+  --shadow-menu: 0 12px 30px rgba(0, 0, 0, 0.45);
+  --shadow-release: 0 6px 18px rgba(95, 217, 184, 0.22);
+  --shadow-toast: 0 12px 30px rgba(0, 0, 0, 0.45);
   --focus: #ffd29e;
 
   /* Deginimo animacijai (burn.js skaito šią reikšmę) */
-  --burn-rgb: 255, 184, 107;
+  --burn-rgb: 237, 176, 112;
 
   --font-head: "Lora", Georgia, "Times New Roman", serif;
-  --font-body: "Nunito Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-body: "Nunito", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 
-  /* Forma: „akmenukas upėje" — du kampai apvalūs, du beveik tiesūs. */
-  --radius: 8px 24px 8px 24px;
-  --radius-soft: 18px;
-  --radius-sm: 12px;
-  --tabbar-h: 66px;
+  --tabbar-h: 68px;
 }
 
-/* Šviesus režimas — rūkas virš upės auštant. Tos pačios spalvos, tik
-   patamsintos tekstui (pvz. #0F8C7A → #0B7A6A mygtukui, kad baltas tekstas
-   pasiektų 5.2:1). */
+/* Šviesus režimas — rūkas virš upės auštant. Tie patys atspalviai, tik
+   patamsinti tekstui (kontrastas ≥ 4.5:1 ant --bg ir baltų paviršių). */
 :root[data-theme="light"] {
   color-scheme: light;
 
   --bg: #eaf4f2;
-  --surface: #ffffff;
-  --surface-2: #f4faf9;
-  --line: #cfe3df;
-  --line-strong: #a9cbc5;
+
+  --tile: rgba(255, 255, 255, 0.72);
+  --card: rgba(255, 255, 255, 0.86);
+  --box: rgba(255, 255, 255, 0.8);
+  --round: rgba(255, 255, 255, 0.72);
+  --seg-bg: rgba(255, 255, 255, 0.6);
+  --empty-bg: rgba(255, 255, 255, 0.55);
+  --day-bg: rgba(16, 72, 70, 0.03);
+  --sound-bg: rgba(16, 72, 70, 0.05);
+  --sheet-bg: #ffffff;
+  --menu-bg: #ffffff;
+
+  --line: rgba(16, 72, 70, 0.14);
+  --line-soft: rgba(16, 72, 70, 0.09);
+  --line-tile: rgba(16, 72, 70, 0.16);
+  --line-round: rgba(16, 72, 70, 0.18);
+  --line-hug: rgba(16, 72, 70, 0.22);
+  --line-menu: rgba(16, 72, 70, 0.2);
+  --line-dash: rgba(16, 72, 70, 0.26);
+
+  --text-strong: #0b2125;
   --text: #10292e;
+  --text-card: #183338;
+  --text-soft: #2b464b;
+  --text-chip: #2f4b50;
+  --icon: #3e5a5f;
   --text-dim: #48656a;
+  --text-nav: #52706f;
   --text-faint: #52706f;
+  --day-text: #23403f;
 
   --accent: #0b7a6a;
-  --accent-strong: #0b7465;
-  --accent-deep: #08604f;
+  --accent-text: #0b7465;
   --on-accent: #ffffff;
-  --ember: #e08a33;
-  --ember-strong: #9c5813;
-  --ember-deep: #b86a1f;
-  --on-ember: #2b1600;
+  --accent-line: rgba(11, 122, 106, 0.6);
+  --accent-line-soft: rgba(11, 122, 106, 0.45);
+  --accent-tint: rgba(11, 122, 106, 0.12);
+  --accent-seg: rgba(11, 122, 106, 0.13);
+  --accent-soft: rgba(11, 122, 106, 0.09);
+  --accent-faint: rgba(11, 122, 106, 0.05);
+  --emo-on: #0b2125;
+
+  --ember: #b86a1f;
+  --ember-text: #9c5813;
+  --ember-line: rgba(184, 106, 31, 0.55);
+  --ember-badge-line: rgba(184, 106, 31, 0.35);
+  --ember-tint: rgba(224, 138, 51, 0.12);
+  --ember-faint: rgba(224, 138, 51, 0.08);
+
+  --heart: #a8344d;
+  --heart-line: rgba(168, 52, 77, 0.5);
+  --heart-bg: rgba(200, 70, 100, 0.1);
+
   --danger: #b42a31;
   --danger-bg: rgba(180, 42, 49, 0.08);
   --danger-line: rgba(180, 42, 49, 0.45);
 
-  --emo-pyktis: #c7353b;
-  --emo-liudesys: #3a6fd8;
-  --emo-nerimas: #8a55c7;
-  --emo-kalte: #a8683a;
-  --emo-vienatve: #5e6e8c;
+  --emo-pyktis: #c4492b;
+  --emo-liudesys: #3866c9;
+  --emo-nerimas: #7350c8;
+  --emo-kalte: #9c650c;
+  --emo-vienatve: #52707a;
   --emo-viltis: #0f8c7a;
+  --emo-mask: #f2f8f7;
 
   --glow-accent: rgba(15, 140, 122, 0.2);
   --glow-ember: rgba(224, 138, 51, 0.2);
-  --ripple-line: rgba(11, 122, 106, 0.28);
+  --ripple-line: rgba(11, 122, 106, 0.2);
   --lantern: #f0a14e;
   --lantern-halo: rgba(224, 138, 51, 0.4);
   --water-lines: rgba(11, 122, 106, 0.05);
 
-  --glass: rgba(255, 255, 255, 0.86);
-  --tabbar-bg: rgba(234, 244, 242, 0.88);
+  --tabbar-bg: rgba(234, 244, 242, 0.9);
+  --tabbar-line: rgba(16, 72, 70, 0.12);
   --overlay: rgba(16, 41, 46, 0.45);
-  --shadow: 0 10px 30px rgba(16, 41, 46, 0.08);
-  --shadow-lift: 0 18px 40px rgba(16, 41, 46, 0.14);
-  --btn-shadow: 0 6px 18px rgba(16, 41, 46, 0.14);
+  --handle: rgba(16, 41, 46, 0.2);
+  --shadow-sheet: 0 -16px 40px rgba(16, 41, 46, 0.16);
+  --shadow-menu: 0 12px 30px rgba(16, 41, 46, 0.16);
+  --shadow-release: 0 6px 18px rgba(11, 122, 106, 0.22);
+  --shadow-toast: 0 12px 30px rgba(16, 41, 46, 0.16);
   --focus: #b86a1f;
 
   --burn-rgb: 224, 138, 51;
+}
+
+/* Emocijos spalva (--emo-c) — viena taisyklė visiems: plytelėms, chip'ams,
+   kortelėms, kalendoriui ir patiems simboliams. */
+[data-emo="pyktis"],
+[data-emotion="pyktis"] {
+  --emo-c: var(--emo-pyktis);
+}
+[data-emo="liudesys"],
+[data-emotion="liudesys"] {
+  --emo-c: var(--emo-liudesys);
+}
+[data-emo="nerimas"],
+[data-emotion="nerimas"] {
+  --emo-c: var(--emo-nerimas);
+}
+[data-emo="kalte"],
+[data-emotion="kalte"] {
+  --emo-c: var(--emo-kalte);
+}
+[data-emo="vienatve"],
+[data-emotion="vienatve"] {
+  --emo-c: var(--emo-vienatve);
+}
+[data-emo="viltis"],
+[data-emotion="viltis"] {
+  --emo-c: var(--emo-viltis);
 }
 
 * {
@@ -171,9 +281,7 @@
   box-sizing: border-box;
 }
 
-/* `hidden` atributas turi nugalėti bet kokį display iš klasių
-   (pvz., .scream-actions ir .hug-banner nustato display, tad be šito
-   liktų matomi net su hidden). */
+/* `hidden` atributas turi nugalėti bet kokį display iš klasių. */
 [hidden] {
   display: none !important;
 }
@@ -185,7 +293,7 @@ html {
   overflow-x: hidden;
   overflow-x: clip;
   /* Fokusuojamas elementas ar nuoroda neturi pasislėpti po prisegta juosta. */
-  scroll-padding-top: 84px;
+  scroll-padding-top: 76px;
 }
 
 body {
@@ -194,11 +302,16 @@ body {
   color: var(--text);
   font-family: var(--font-body);
   font-size: 16px;
-  line-height: 1.6;
+  line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
   overflow-x: clip;
   transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+button {
+  font: inherit;
+  color: inherit;
 }
 
 :focus-visible {
@@ -216,7 +329,7 @@ body {
   color: var(--on-accent);
   font-weight: 700;
   padding: 10px 16px;
-  border-radius: var(--radius-sm);
+  border-radius: 12px;
   text-decoration: none;
   transition: top 0.2s ease;
 }
@@ -233,10 +346,46 @@ body {
   white-space: nowrap;
 }
 
+/* Linijinės ikonos (inline SVG HTML'e ir icons.js line()). */
+.ico,
+.line-svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.ico-dot {
+  fill: currentColor;
+  stroke: none;
+}
+
+/* Emocijų simboliai (icons.js). Dydis — --ei, spalva — --emo-c. */
+.emo-icon {
+  --ei: 20px;
+  display: inline-flex;
+  flex-shrink: 0;
+  width: var(--ei);
+  height: var(--ei);
+  line-height: 0;
+  color: var(--emo-c, var(--text-dim));
+}
+.emo-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.emo-mask {
+  fill: var(--emo-mask);
+}
+
 /* ---------- Gyvas fonas: naktinė upė (river.js) ---------- */
-/* Sluoksniai: 1) du dideli neryškūs švytėjimai, 2) vandens ratilai,
-   3) kylantys žibintų žiburėliai, 4) statiška vandens linijų tekstūra.
-   Animuojama tik transform ir opacity. */
+/* Sluoksniai: 1) du dideli neryškūs švytėjimai (žibinto viršuje kairėje, vandens
+   apačioje dešinėje), 2) vandens ratilai, 3) kylantys žibintų žiburėliai,
+   4) statiška vandens linijų tekstūra. Animuojama tik transform ir opacity. */
 
 .river {
   position: fixed;
@@ -256,7 +405,7 @@ body {
   width: 46vmax;
   height: 46vmax;
   left: -14vmax;
-  top: -16vmax;
+  top: -18vmax;
   background: var(--glow-ember);
   animation: glow-drift 26s ease-in-out infinite alternate;
 }
@@ -278,21 +427,16 @@ body {
   }
 }
 
-/* Vandens paviršiaus tekstūra — plonos horizontalios linijos apatinėje dalyje. */
+/* Vandens paviršiaus tekstūra — plonos horizontalios linijos kas 24px. */
 .river::after {
   content: "";
   position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 55%;
+  inset: 0;
   background: repeating-linear-gradient(
-    180deg,
-    transparent 0 13px,
-    var(--water-lines) 13px 14px
+    0deg,
+    var(--water-lines) 0 1px,
+    transparent 1px 24px
   );
-  -webkit-mask-image: linear-gradient(180deg, transparent, #000 70%);
-  mask-image: linear-gradient(180deg, transparent, #000 70%);
 }
 
 /* Ratilas: elipsė, kuri plečiasi ir išblunka (dydis/trukmė — iš JS). */
@@ -301,7 +445,7 @@ body {
   width: var(--size, 160px);
   height: calc(var(--size, 160px) * 0.34);
   margin: calc(var(--size, 160px) * -0.17) 0 0 calc(var(--size, 160px) * -0.5);
-  border: 1.5px solid var(--ripple-line);
+  border: 1px solid var(--ripple-line);
   border-radius: 50%;
   opacity: 0;
   transform: scale(0.1);
@@ -315,7 +459,7 @@ body {
     transform: scale(0.1);
   }
   15% {
-    opacity: 0.9;
+    opacity: 1;
   }
   100% {
     opacity: 0;
@@ -376,7 +520,7 @@ body {
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
-  padding: 0 16px calc(var(--tabbar-h) + 24px);
+  padding: 0 16px calc(var(--tabbar-h) + env(safe-area-inset-bottom, 0px) + 20px);
 }
 
 /* ---------- Viršus ---------- */
@@ -390,9 +534,9 @@ body {
   z-index: 20;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  padding: calc(18px + env(safe-area-inset-top, 0px)) 2px 10px;
+  gap: 2px;
+  height: calc(60px + env(safe-area-inset-top, 0px));
+  padding-top: env(safe-area-inset-top, 0px);
 }
 .topbar::before {
   content: "";
@@ -402,7 +546,7 @@ body {
   background: var(--tabbar-bg);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid var(--tabbar-line);
   opacity: 0;
   transition: opacity 0.3s ease;
   pointer-events: none;
@@ -412,32 +556,38 @@ body {
 }
 
 .brand {
+  flex: 1;
+  min-width: 0;
+  height: 44px;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   text-decoration: none;
-  color: var(--text);
+  color: var(--text-strong);
   font-family: var(--font-head);
   font-weight: 600;
-  font-size: 21px;
+  font-size: 19px;
   letter-spacing: 0.2px;
+  margin-left: -2px;
 }
 
 .brand-mark {
-  width: 30px;
-  height: 30px;
+  width: 26px;
+  height: 26px;
   flex-shrink: 0;
+  fill: none;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 .brand-mark .mark-flame {
-  fill: var(--ember);
-  transform-origin: 50% 70%;
+  stroke: var(--ember);
+  transform-box: fill-box;
+  transform-origin: 50% 90%;
   animation: flame-flicker 3.2s ease-in-out infinite;
 }
 .brand-mark .mark-water {
-  fill: none;
   stroke: var(--accent);
-  stroke-width: 1.6;
-  stroke-linecap: round;
 }
 
 @keyframes flame-flicker {
@@ -456,42 +606,40 @@ body {
 .topbar-actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 2px;
+  margin-right: -6px;
 }
 
-/* Apvalūs ikonų mygtukai viršuje: nustatymai (⚙) ir tema. */
+/* Ikonų mygtukai viršuje: nustatymai ir tema — be rėmelio, 44×44. */
 .icon-btn {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
   display: grid;
   place-items: center;
+  padding: 0;
+  border: 0;
   border-radius: 50%;
-  border: 1px solid var(--line-strong);
-  background: var(--glass);
-  color: var(--text);
+  background: transparent;
+  color: var(--icon);
   cursor: pointer;
-  transition: transform 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease;
 }
-.icon-btn:hover {
-  transform: translateY(-2px);
-  border-color: var(--accent);
-}
-.icon-btn svg {
-  width: 19px;
-  height: 19px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.8;
-  stroke-linecap: round;
+.icon-btn .ico {
   transition: transform 0.5s ease;
 }
-.icon-btn:hover svg {
-  transform: rotate(-20deg);
+@media (hover: hover) {
+  .icon-btn:hover {
+    color: var(--text-strong);
+    background: var(--round);
+  }
+  .icon-btn:hover .ico {
+    transform: rotate(-20deg);
+  }
 }
 .icon-btn.is-active {
-  color: var(--accent-strong);
-  border-color: var(--accent);
-  box-shadow: 0 0 12px var(--glow-accent);
+  color: var(--accent-text);
+  background: var(--accent-soft);
 }
 .theme-toggle .icon-sun {
   display: none;
@@ -504,20 +652,27 @@ body {
 }
 
 .sos-btn {
+  height: 36px;
+  flex-shrink: 0;
+  margin-left: 4px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 14px;
+  border-radius: 18px;
+  border: 1px solid var(--danger-line);
+  background: var(--danger-bg);
   color: var(--danger);
   text-decoration: none;
   font-size: 13px;
   font-weight: 800;
-  letter-spacing: 1px;
-  padding: 8px 15px;
-  border: 1px solid var(--danger-line);
-  border-radius: 999px;
-  background: var(--danger-bg);
+  letter-spacing: 1.4px;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-.sos-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px var(--danger-bg);
+@media (hover: hover) {
+  .sos-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px var(--danger-bg);
+  }
 }
 
 /* ---------- Ekranai ---------- */
@@ -528,11 +683,20 @@ body {
   flex-direction: column;
 }
 .screen {
+  display: flex;
+  flex-direction: column;
+  padding-top: 4px;
   animation: screen-in 0.4s ease both;
-  padding-top: 8px;
 }
-.screen[hidden] {
-  display: none;
+.screen-write {
+  gap: 16px;
+}
+.screen-feed,
+.screen-calendar {
+  gap: 14px;
+}
+.screen-stories {
+  gap: 12px;
 }
 
 @keyframes screen-in {
@@ -548,15 +712,16 @@ body {
 
 h1 {
   font-family: var(--font-head);
-  font-size: 27px;
+  font-size: 24px;
+  line-height: 30px;
   font-weight: 600;
-  line-height: 1.25;
+  color: var(--text-strong);
 }
 h2 {
   font-family: var(--font-head);
   font-size: 18px;
   font-weight: 600;
-  color: var(--text);
+  color: var(--text-strong);
   margin-bottom: 10px;
 }
 .muted {
@@ -564,71 +729,234 @@ h2 {
   font-size: 14.5px;
 }
 
+/* Ekrano antraštė: pavadinimas + apvalūs mygtukai (ⓘ, atnaujinti). */
+.screen-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+}
+.screen-head > h1,
+.head-title {
+  flex: 1;
+  min-width: 0;
+}
+.head-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.head-block {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.round-btn {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid var(--line-round);
+  background: var(--round);
+  color: var(--icon);
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s, transform 0.45s ease, opacity 0.2s;
+}
+.round-btn.refresh .ico {
+  width: 18px;
+  height: 18px;
+  stroke-width: 1.8;
+}
+.round-plain {
+  background: transparent;
+}
+.round-plain .ico {
+  width: 18px;
+  height: 18px;
+  stroke-width: 1.9;
+}
+.round-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+@media (hover: hover) {
+  .round-btn:hover:not(:disabled) {
+    color: var(--accent-text);
+    border-color: var(--accent-line-soft);
+  }
+}
+.round-btn.is-spinning {
+  transform: rotate(360deg);
+}
+
+/* „24 val." ženkliukas srauto antraštėje. */
+.badge-ttl {
+  height: 26px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 10px 0 8px;
+  border-radius: 13px;
+  border: 1px solid var(--ember-badge-line);
+  background: var(--ember-tint);
+  color: var(--ember-text);
+  font-size: 12px;
+  font-weight: 700;
+}
+.badge-ttl .ico {
+  width: 14px;
+  height: 14px;
+  stroke-width: 2;
+}
+
+.field-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-dim);
+  letter-spacing: 0.3px;
+}
+
 /* ---------- Rašymo ekranas ---------- */
 
-.hero {
-  text-align: center;
-  margin: 14px 0 18px;
-}
-.hero-title {
-  font-size: 30px;
-  margin-bottom: 6px;
-}
-.promise {
-  color: var(--text-dim);
-  font-family: var(--font-head);
-  font-size: 15px;
-  font-style: italic;
-  text-align: center;
+.social-proof {
+  margin-top: -8px;
+  color: var(--accent-text);
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
 }
 
-.write-card {
-  background: var(--glass);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 14px;
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+.hug-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 44px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--heart);
+  text-align: center;
+  background: var(--heart-bg);
+  border: 1px solid var(--heart-line);
+  border-radius: 14px;
+  padding: 8px 14px;
+  cursor: pointer;
+  animation: screen-in 0.4s ease both;
+}
+.hug-banner .line-svg {
+  width: 16px;
+  height: 16px;
+}
+
+.emo-field {
+  min-width: 0;
+  border: 0;
+}
+.emo-field legend {
+  padding: 0;
+}
+
+/* Emocijos 3×2: simbolis + pavadinimas. Pažymėtą rodo plytelės fonas ir rėmelis, o
+   pats simbolis „atgyja" (icons.js live versija). */
+.emotions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.emo {
+  height: 44px;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 6px;
+  border-radius: 14px;
+  border: 1px solid var(--line-tile);
+  background: var(--tile);
+  color: var(--text-chip);
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: transform 0.18s, color 0.18s, border-color 0.18s, background-color 0.18s;
+}
+.emo > span:last-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* Užvedimas — tik pelei: telefone :hover „prilimpa" po paspaudimo ir atžymėta
+   plytelė atrodytų vis dar pažymėta. */
+@media (hover: hover) {
+  .emo:hover {
+    color: var(--text);
+    border-color: color-mix(in srgb, var(--emo-c) 55%, transparent);
+  }
+}
+.emo:active {
+  transform: scale(0.96);
+}
+.emo.is-active {
+  color: var(--emo-on);
+  border-color: var(--accent-line);
+  background: var(--accent-tint);
+}
+.emo.is-active .emo-icon {
+  animation: emo-pop 0.45s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+
+@keyframes emo-pop {
+  0% {
+    transform: scale(0.6);
+  }
+  60% {
+    transform: scale(1.25);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+/* Rašymo laukelis: tekstas, apačioje — fono garsai ir ženklų skaitiklis. */
+.write-box {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: 18px;
+  border: 1px solid var(--line-tile);
+  background: var(--box);
+  transition: border-color 0.25s;
+}
+.write-box:focus-within {
+  border-color: var(--accent-line-soft);
 }
 
 .write-area {
   position: relative;
 }
 
-/* Žingsnių antraštės kortelėje: „Kaip jautiesi?" → laukelis → „Ką darysi su tuo?" */
-.step-label {
-  font-family: var(--font-head);
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--text);
-  margin: 2px 2px 10px;
-}
-.step-label + .paths {
-  margin-top: 0;
-}
-
 #write-input {
   display: block;
   width: 100%;
-  min-height: 32vh;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
+  height: clamp(180px, 31vh, 340px);
+  resize: none;
+  border: 0;
+  outline: none;
+  background: transparent;
+  padding: 16px 16px 8px;
   color: var(--text);
   font: inherit;
-  font-size: 17px;
-  line-height: 1.7;
-  padding: 16px;
-  resize: none;
-  outline: none;
+  font-size: 16px;
+  line-height: 1.55;
   caret-color: var(--ember);
-  transition: border-color 0.25s, box-shadow 0.25s;
-}
-#write-input:focus-visible {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--glow-accent);
-  outline: none;
 }
 #write-input::placeholder {
   color: var(--text-faint);
@@ -640,159 +968,230 @@ h2 {
   width: 100%;
   height: 100%;
   pointer-events: none;
-  border-radius: var(--radius-sm);
+  border-radius: 18px 18px 0 0;
+}
+
+.write-foot {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px 4px 6px;
 }
 
 .char-count {
-  display: block;
-  text-align: right;
+  font-size: 12px;
   color: var(--text-faint);
-  font-size: 12.5px;
   font-variant-numeric: tabular-nums;
-  margin: 6px 4px 14px;
 }
 
-/* Emocijos */
-
-/* Plytelės 3×2: didelis emoji, po juo pavadinimas. Tas pats emoji vėliau
-   atsiranda kalendoriuje. Visi emoji visada pilnos spalvos — pažymėtą rodo tik
-   plytelės fonas ir rėmelis emocijos spalva. */
-.emotions {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  margin-bottom: 14px;
+/* Fono garsai: mygtukas laukelio kampe, meniu atsiveria virš jo. */
+.sound {
+  position: relative;
 }
-
-.emo {
-  --dot: var(--text-dim);
-  font: inherit;
-  font-size: 13.5px;
-  font-weight: 600;
+.sound-btn {
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 12px 0 10px;
+  border: 0;
+  border-radius: 18px;
+  background: var(--sound-bg);
   color: var(--text-dim);
-  background: var(--surface);
-  border: 1px solid var(--line-strong);
-  border-radius: var(--radius-sm);
-  padding: 10px 4px 8px;
+  font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
+  transition: color 0.2s, background-color 0.2s;
+}
+.sound-btn .ico {
+  width: 16px;
+  height: 16px;
+  stroke-width: 1.8;
+}
+.sound-btn.is-on {
+  background: var(--accent-tint);
+  color: var(--accent-text);
+}
+.sound-btn.is-loading {
+  animation: chip-loading 0.8s ease-in-out infinite alternate;
+}
+
+.sound-menu {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 6px);
+  z-index: 5;
+  min-width: 176px;
   display: flex;
   flex-direction: column;
+  gap: 2px;
+  padding: 6px;
+  border-radius: 14px;
+  background: var(--menu-bg);
+  border: 1px solid var(--line-menu);
+  box-shadow: var(--shadow-menu);
+  animation: menu-in 0.18s ease;
+}
+.sound-opt {
+  height: 40px;
+  display: flex;
   align-items: center;
-  gap: 5px;
-  transition: transform 0.18s, color 0.18s, border-color 0.18s, box-shadow 0.18s,
-    background-color 0.18s;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text-card);
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
 }
-.emo-face {
-  display: inline-block;
-  font-size: 27px;
-  line-height: 1;
+.sound-opt[aria-pressed="true"] {
+  background: var(--accent-soft);
 }
-/* Užvedimas — tik pelei: telefone :hover „prilimpa" po paspaudimo ir atžymėta
-   plytelė atrodytų vis dar pažymėta. */
 @media (hover: hover) {
-  .emo:hover {
-    transform: translateY(-2px);
-    color: var(--text);
-    border-color: color-mix(in srgb, var(--dot) 60%, var(--line-strong));
+  .sound-opt:hover {
+    background: var(--accent-faint);
   }
 }
-.emo:active {
-  transform: scale(0.96);
+.sound-check {
+  font-size: 13px;
+  color: var(--accent);
+  visibility: hidden;
 }
-.emo[data-emotion="pyktis"],
-.card[data-emotion="pyktis"],
-.mood-face[data-emotion="pyktis"],
-.mood-bar[data-emotion="pyktis"],
-.mood-day[data-emotion="pyktis"] {
-  --dot: var(--emo-pyktis);
-  --emo: var(--emo-pyktis);
-}
-.emo[data-emotion="liudesys"],
-.card[data-emotion="liudesys"],
-.mood-face[data-emotion="liudesys"],
-.mood-bar[data-emotion="liudesys"],
-.mood-day[data-emotion="liudesys"] {
-  --dot: var(--emo-liudesys);
-  --emo: var(--emo-liudesys);
-}
-.emo[data-emotion="nerimas"],
-.card[data-emotion="nerimas"],
-.mood-face[data-emotion="nerimas"],
-.mood-bar[data-emotion="nerimas"],
-.mood-day[data-emotion="nerimas"] {
-  --dot: var(--emo-nerimas);
-  --emo: var(--emo-nerimas);
-}
-.emo[data-emotion="kalte"],
-.card[data-emotion="kalte"],
-.mood-face[data-emotion="kalte"],
-.mood-bar[data-emotion="kalte"],
-.mood-day[data-emotion="kalte"] {
-  --dot: var(--emo-kalte);
-  --emo: var(--emo-kalte);
-}
-.emo[data-emotion="vienatve"],
-.card[data-emotion="vienatve"],
-.mood-face[data-emotion="vienatve"],
-.mood-bar[data-emotion="vienatve"],
-.mood-day[data-emotion="vienatve"] {
-  --dot: var(--emo-vienatve);
-  --emo: var(--emo-vienatve);
-}
-.emo[data-emotion="viltis"],
-.card[data-emotion="viltis"],
-.mood-face[data-emotion="viltis"],
-.mood-bar[data-emotion="viltis"],
-.mood-day[data-emotion="viltis"] {
-  --dot: var(--emo-viltis);
-  --emo: var(--emo-viltis);
+.sound-opt[aria-pressed="true"] .sound-check {
+  visibility: visible;
 }
 
-.emo.is-active {
-  color: var(--text);
-  border-color: var(--dot);
-  background: color-mix(in srgb, var(--dot) 20%, var(--surface));
-  box-shadow: 0 0 14px color-mix(in srgb, var(--dot) 30%, transparent);
-}
-/* Pasirinkus emoji „atgyja": iššoka ir vieną kartą sujuda savaip (kaip kalendoriuje). */
-.emo.is-active .emo-face {
-  filter: none;
-  opacity: 1;
-  animation: emo-pop 0.45s cubic-bezier(0.3, 1.6, 0.5, 1);
-}
-.emo.is-active[data-emotion="pyktis"] .emo-face {
-  animation: emo-pop 0.45s cubic-bezier(0.3, 1.6, 0.5, 1), mood-shake 2.6s ease-in-out 0.45s;
-}
-.emo.is-active[data-emotion="liudesys"] .emo-face {
-  animation: emo-pop 0.45s cubic-bezier(0.3, 1.6, 0.5, 1), mood-droop 2.4s ease-in-out 0.45s;
-}
-.emo.is-active[data-emotion="nerimas"] .emo-face {
-  animation: emo-pop 0.45s cubic-bezier(0.3, 1.6, 0.5, 1), mood-tremble 2s linear 0.45s;
-}
-.emo.is-active[data-emotion="kalte"] .emo-face {
-  animation: emo-pop 0.45s cubic-bezier(0.3, 1.6, 0.5, 1), mood-bow 2.4s ease-in-out 0.45s;
-}
-.emo.is-active[data-emotion="vienatve"] .emo-face {
-  animation: emo-pop 0.45s cubic-bezier(0.3, 1.6, 0.5, 1), mood-drift 3s ease-in-out 0.45s;
-}
-.emo.is-active[data-emotion="viltis"] .emo-face {
-  transform-origin: 50% 85%;
-  animation: emo-pop 0.45s cubic-bezier(0.3, 1.6, 0.5, 1), mood-grow 2.4s ease-in-out 0.45s;
-}
-
-@keyframes emo-pop {
-  0% {
-    transform: scale(0.6);
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
   }
-  60% {
-    transform: scale(1.35) rotate(-8deg);
-  }
-  100% {
-    transform: none;
+}
+@keyframes chip-loading {
+  to {
+    opacity: 0.5;
   }
 }
 
-/* „Pažiūrėk čia" — kai trūksta teksto ar emocijos (app.js nudge()). */
+/* ---------- Trys keliai: sudeginti / į srautą / į istorijas ---------- */
+
+.paths-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.paths {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.path {
+  position: relative;
+  overflow: hidden;
+  height: 48px;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 6px;
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.2s ease, opacity 0.2s, background-color 0.2s;
+}
+.path .path-icon {
+  width: 18px;
+  height: 18px;
+  stroke-width: 1.8;
+}
+.path:active:not(:disabled) {
+  transform: translateY(1px) scale(0.97);
+}
+.path:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* Sudeginti — ugnis (gintaras). */
+.path-burn {
+  border: 1px solid var(--ember-line);
+  background: var(--ember-faint);
+  color: var(--ember-text);
+}
+/* Į srautą — pagrindinis veiksmas: vanduo, užpildyta. Žiburys nuplaukia. */
+.path-release {
+  border: 0;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: 800;
+  box-shadow: var(--shadow-release);
+}
+.path-release .path-icon {
+  stroke-width: 1.9;
+}
+.path-release.is-unavailable {
+  opacity: 0.45;
+  box-shadow: none;
+}
+/* Į istorijas — vanduo, bet ramus: kontūras. */
+.path-story {
+  border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  background: var(--accent-faint);
+  color: var(--accent-text);
+}
+
+@media (hover: hover) {
+  .path:hover:not(:disabled) {
+    transform: translateY(-1px);
+  }
+  .path-burn:hover:not(:disabled) .path-icon {
+    animation: flame-flicker 0.8s ease-in-out infinite;
+  }
+  .path-release:hover:not(:disabled):not(.is-unavailable) .path-icon {
+    animation: float-away 1.2s ease-in-out infinite;
+  }
+  .path-story:hover:not(:disabled) .path-icon {
+    animation: book-open 1.4s ease-in-out infinite;
+  }
+}
+
+.path.is-sending .path-icon {
+  animation: sail-off 0.9s ease-in forwards;
+}
+
+.paths-note {
+  color: var(--text-faint);
+  font-size: 12px;
+  text-align: center;
+}
+
+@keyframes book-open {
+  50% {
+    transform: translateY(-2px) scale(1.08);
+  }
+}
+@keyframes float-away {
+  50% {
+    transform: translate(2px, -2px) rotate(6deg);
+  }
+}
+@keyframes sail-off {
+  to {
+    transform: translate(60px, -26px) rotate(14deg);
+    opacity: 0;
+  }
+}
+
+/* „Pažiūrėk čia" — kai trūksta teksto (app.js nudge()). */
 .is-nudged {
   animation: nudge 0.5s ease;
 }
@@ -807,168 +1206,37 @@ h2 {
   }
 }
 
-/* ---------- Trys keliai: sudeginti / į srautą / į istorijas ---------- */
-/* Trys vienodos plytelės vienoje eilėje: ženklas + trumpas pavadinimas.
-   Skirtumą paaiškina „Kaip tai veikia", Srauto/Istorijų ekranų įžangos ir
-   pranešimas po veiksmo. Paspaudimas iškart atlieka veiksmą. */
-
-.paths {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-}
-
-.path {
-  --path: var(--accent);
-  position: relative;
-  overflow: hidden;
-  font: inherit;
-  color: var(--text);
-  background: var(--surface);
-  border: 1.5px solid color-mix(in srgb, var(--path) 55%, transparent);
-  border-radius: var(--radius-soft);
-  min-height: 86px;
-  padding: 12px 6px 10px;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  text-align: center;
-  transition: transform 0.18s ease, box-shadow 0.2s ease, border-color 0.2s, opacity 0.2s,
-    background-color 0.2s;
-}
-.path:active:not(:disabled) {
-  transform: translateY(1px) scale(0.97);
-  box-shadow: none;
-}
-.path:disabled {
-  opacity: 0.5;
-  cursor: default;
-}
-.path-icon {
-  display: inline-block;
-  font-size: 26px;
-  line-height: 1;
-}
-.path-title {
-  font-weight: 800;
-  font-size: 14.5px;
-  line-height: 1.25;
-}
-
-/* Sudeginti — ugnis (gintaras). */
-.path-burn {
-  --path: var(--ember-deep);
-}
-.path-burn .path-title {
-  color: var(--ember-strong);
-}
-
-/* Į srautą — pagrindinis veiksmas: vanduo, užpildyta. Žiburys nuplaukia. */
-.path-release {
-  color: var(--on-accent);
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-deep) 100%);
-  border-color: transparent;
-  box-shadow: var(--btn-shadow);
-}
-.path-release.is-unavailable {
-  opacity: 0.45;
-  box-shadow: none;
-}
-
-/* Į istorijas — vanduo, bet ramus: kontūras, knyga lieka. */
-.path-story .path-title {
-  color: var(--accent-strong);
-}
-
-@media (hover: hover) {
-  .path:hover:not(:disabled) {
-    transform: translateY(-2px);
-    border-color: var(--path);
-    box-shadow: var(--shadow-lift);
-  }
-  .path-burn:hover:not(:disabled) {
-    background: color-mix(in srgb, var(--ember) 9%, var(--surface));
-  }
-  .path-burn:hover:not(:disabled) .path-icon {
-    animation: flame-flicker 0.8s ease-in-out infinite;
-  }
-  .path-release:hover:not(:disabled) {
-    border-color: transparent;
-  }
-  .path-release:hover:not(:disabled):not(.is-unavailable) .path-icon {
-    animation: float-away 1.2s ease-in-out infinite;
-  }
-  .path-story:hover:not(:disabled) {
-    background: color-mix(in srgb, var(--accent) 7%, var(--surface));
-  }
-  .path-story:hover:not(:disabled) .path-icon {
-    animation: book-open 1.4s ease-in-out infinite;
-  }
-}
-
-.path.is-sending .path-icon {
-  animation: sail-off 0.9s ease-in forwards;
-}
-
-.paths-note {
-  color: var(--text-faint);
-  font-size: 12.5px;
-  text-align: center;
-  margin: 10px 4px 2px;
-}
-
-@keyframes book-open {
-  0%,
-  100% {
-    transform: none;
-  }
-  50% {
-    transform: translateY(-3px) scale(1.08);
-  }
-}
-
 /* ---------- Mygtukai ---------- */
-/* Pakyla užvedus, nusileidžia paspaudus, bangelė (ripple) iš ui.js. */
 
 .btn {
   position: relative;
   overflow: hidden;
-  font: inherit;
-  font-size: 15.5px;
-  font-weight: 700;
+  min-height: 48px;
+  font-size: 15px;
+  font-weight: 800;
   border: none;
-  border-radius: 999px;
-  padding: 14px 20px;
+  border-radius: 14px;
+  padding: 0 20px;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 9px;
+  gap: 8px;
   text-decoration: none;
-  box-shadow: var(--btn-shadow);
   transition: transform 0.18s ease, box-shadow 0.2s ease, opacity 0.2s, background-color 0.2s;
-}
-.btn:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lift);
 }
 .btn:active:not(:disabled) {
   transform: translateY(1px) scale(0.98);
-  box-shadow: none;
 }
 .btn:disabled {
   opacity: 0.5;
   cursor: default;
 }
-.btn-small {
-  font-size: 14px;
-  padding: 10px 18px;
+.btn-block {
+  width: 100%;
 }
 
-/* Bangelė — tas pats „ratilas" kaip fone, tik mygtuke. */
+/* Bangelė — tas pats „ratilas" kaip fone, tik mygtuke (ui.js). */
 .btn-wave {
   position: absolute;
   border-radius: 50%;
@@ -985,161 +1253,144 @@ h2 {
   }
 }
 
-/* Paleidimo žiburys (.path-release): siūbuoja užvedus, nuplaukia paleidus. */
-@keyframes float-away {
-  0%,
-  100% {
-    transform: translate(0, 0) rotate(0);
-  }
-  50% {
-    transform: translate(3px, -3px) rotate(6deg);
-  }
-}
-@keyframes sail-off {
-  to {
-    transform: translate(60px, -26px) rotate(14deg);
-    opacity: 0;
-  }
-}
-
 .btn-calm {
   color: var(--on-accent);
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-deep) 100%);
+  background: var(--accent);
 }
 
 .btn-danger {
   color: var(--danger);
   background: var(--danger-bg);
   border: 1px solid var(--danger-line);
-  box-shadow: none;
 }
 
-.write-hint {
-  color: var(--text-faint);
-  font-size: 13px;
-  margin: 16px 0 8px;
-  text-align: center;
+.btn-support {
+  color: var(--ember-text);
+  background: var(--ember-tint);
+  border: 1px solid var(--ember-line);
 }
 
-/* ---------- Srautas ---------- */
-
-.feed-head {
-  display: flex;
+/* Mažesni mygtukai tuščiose būsenose. */
+.pill-btn {
+  height: 44px;
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
-}
-
-.refresh {
-  font: inherit;
-  font-size: 18px;
-  color: var(--text-dim);
-  background: var(--glass);
-  border: 1px solid var(--line-strong);
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
-  transition: transform 0.45s ease, color 0.2s;
-}
-.refresh:hover {
-  color: var(--accent-strong);
-}
-.refresh.is-spinning {
-  transform: rotate(360deg);
-}
-
-.feed-filters {
-  display: flex;
   gap: 6px;
+  padding: 0 16px;
+  border-radius: 14px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 700;
+}
+.pill-btn .ico {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2;
+}
+.pill-primary {
+  padding: 0 18px 0 14px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: 800;
+}
+.pill-outline {
+  border: 1px solid var(--accent-line-soft);
+  color: var(--accent-text);
+}
+
+/* ---------- Filtrai ir rikiavimas ---------- */
+
+/* Chip'ų juosta slenka per visą ekrano plotį (išeina už .app paraščių). */
+.chips {
+  display: flex;
+  gap: 8px;
   overflow-x: auto;
-  padding: 2px 2px 10px;
+  margin: 0 -16px;
+  padding: 2px 16px;
   scrollbar-width: none;
 }
-.feed-filters::-webkit-scrollbar {
+.chips::-webkit-scrollbar {
   display: none;
 }
 
 .chip {
-  font: inherit;
+  height: 36px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 13px 0 11px;
+  border-radius: 18px;
+  border: 1px solid var(--line-tile);
+  background: var(--tile);
+  color: var(--text-chip);
   font-size: 13px;
-  color: var(--text-dim);
-  background: var(--glass);
-  border: 1px solid var(--line-strong);
-  border-radius: 999px;
-  padding: 6px 14px;
-  cursor: pointer;
+  font-weight: 600;
   white-space: nowrap;
-  transition: color 0.18s, border-color 0.18s, background-color 0.18s, transform 0.18s;
+  cursor: pointer;
+  transition: color 0.18s, border-color 0.18s, background-color 0.18s;
+}
+.chip .emo-icon {
+  --ei: 16px;
 }
 @media (hover: hover) {
   .chip:hover {
     color: var(--text);
-    transform: translateY(-1px);
   }
 }
 .chip.is-active {
-  color: var(--accent-strong);
-  background: var(--surface-2);
-  border-color: var(--accent);
-  font-weight: 700;
+  border-color: var(--accent-line);
+  background: var(--accent-tint);
+  color: var(--accent-text);
 }
+.chip.is-loading {
+  animation: chip-loading 0.8s ease-in-out infinite alternate;
+}
+
+.segmented {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 3px;
+  padding: 3px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: var(--seg-bg);
+}
+.seg {
+  height: 36px;
+  border: 0;
+  border-radius: 11px;
+  background: transparent;
+  color: var(--text-dim);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: color 0.18s, background-color 0.18s;
+}
+.seg.is-active {
+  background: var(--accent-seg);
+  color: var(--accent-text);
+}
+
+/* ---------- Kortelės (srautas ir istorijos) ---------- */
 
 .feed {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
+}
+.feed:empty {
+  display: none;
 }
 
-/* Kortelė — „akmenukas": asimetriški kampai, emocijos spalvos ratilas kampe. */
 .card {
-  --emo: var(--text-dim);
-  position: relative;
-  background: var(--glass);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 12px 8px 16px;
+  border-radius: 18px;
   border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 18px 18px 12px 20px;
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  overflow: hidden;
-  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-}
-.card::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 14px;
-  bottom: 14px;
-  width: 3px;
-  border-radius: 0 3px 3px 0;
-  background: var(--emo);
-}
-.card::after {
-  content: "";
-  position: absolute;
-  z-index: 0;
-  right: -46px;
-  top: -46px;
-  width: 84px;
-  height: 84px;
-  border-radius: 50%;
-  border: 1px solid color-mix(in srgb, var(--emo) 45%, transparent);
-  box-shadow: 0 0 0 12px color-mix(in srgb, var(--emo) 7%, transparent);
-  pointer-events: none;
-}
-/* Turinys visada virš dekoratyvaus ratilo. */
-.card > * {
-  position: relative;
-  z-index: 1;
-}
-.card > .fuse {
-  position: static;
-}
-.card:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-lift);
-  border-color: var(--line-strong);
+  background: var(--card);
 }
 
 /* Atsiradimas slenkant (ui.js prideda .reveal ir vėliau .is-in). */
@@ -1154,143 +1405,367 @@ h2 {
 }
 
 .card-emo {
-  display: inline-block;
-  font-size: 12.5px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
   font-weight: 700;
-  color: color-mix(in srgb, var(--emo) 70%, var(--text));
-  margin-bottom: 6px;
+  color: var(--emo-c);
+}
+.card-emo .emo-icon {
+  --ei: 18px;
 }
 
 .card-text {
+  padding-right: 4px;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--text-card);
   white-space: pre-wrap;
-  overflow-wrap: break-word;
-  font-size: 16px;
+  overflow-wrap: anywhere;
+}
+/* Ilgas tekstas — tik pirmos keturios eilutės, kol nepaspausta „Skaityti toliau". */
+.card-text.is-clamped {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  overflow: hidden;
+}
+
+.expand {
+  align-self: flex-start;
+  margin: -4px 0;
+  padding: 4px 0;
+  border: 0;
+  background: none;
+  color: var(--accent-text);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+@media (hover: hover) {
+  .expand:hover {
+    text-decoration: underline;
+  }
 }
 
 .card-foot {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-top: 12px;
-  gap: 10px;
+  gap: 2px;
+}
+.card-spacer {
+  flex: 1;
 }
 
 .hug {
-  font: inherit;
-  font-size: 13.5px;
-  font-weight: 600;
-  color: var(--text-dim);
-  background: transparent;
-  border: 1px solid var(--line-strong);
-  border-radius: 999px;
-  padding: 6px 14px;
-  cursor: pointer;
+  height: 40px;
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  transition: transform 0.18s, color 0.2s, border-color 0.2s, background-color 0.2s;
+  padding: 0 14px 0 12px;
+  border-radius: 20px;
+  border: 1px solid var(--line-hug);
+  background: transparent;
+  color: var(--text-chip);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s, background-color 0.2s, transform 0.18s;
 }
-.hug:hover {
-  border-color: var(--accent);
-  color: var(--text);
-  transform: translateY(-1px);
+.hug .line-svg {
+  width: 16px;
+  height: 16px;
 }
 .hug:active {
   transform: scale(0.96);
 }
 .hug.is-hugged {
-  color: var(--on-accent);
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-deep) 100%);
-  border-color: transparent;
+  border-color: var(--heart-line);
+  background: var(--heart-bg);
+  color: var(--heart);
+}
+.hug.is-hugged .line-svg {
+  animation: emo-pop 0.45s cubic-bezier(0.3, 1.6, 0.5, 1);
 }
 .hug-count {
+  opacity: 0.8;
   font-variant-numeric: tabular-nums;
 }
+.hug-count:empty {
+  display: none;
+}
 
-.card-right {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+.icon-act {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-nav);
+  cursor: pointer;
+  transition: color 0.2s, background-color 0.2s;
+}
+.icon-act .line-svg {
+  width: 18px;
+  height: 18px;
+}
+@media (hover: hover) {
+  .icon-act:hover {
+    color: var(--accent-text);
+    background: var(--accent-faint);
+  }
+  .icon-act.report:hover {
+    color: var(--danger);
+    background: var(--danger-bg);
+  }
 }
 
 .time-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 6px;
   font-size: 12px;
   color: var(--text-faint);
   font-variant-numeric: tabular-nums;
 }
-
-.report,
-.copy-link {
-  font: inherit;
-  color: var(--text-faint);
-  background: none;
-  border: none;
-  font-size: 17px;
-  cursor: pointer;
-  padding: 4px 7px;
-  border-radius: 8px;
-  transition: color 0.2s, background-color 0.2s;
-}
-.report:hover {
-  color: var(--danger);
-  background: var(--danger-bg);
-}
-.copy-link:hover {
-  color: var(--accent-strong);
-  background: var(--glow-accent);
+.time-left .line-svg {
+  width: 14px;
+  height: 14px;
+  stroke-width: 2;
 }
 
-/* Likusio laiko juosta — žiburys, kuris nuplaukia (mažėja iki 24 val. pabaigos). */
-.fuse {
-  height: 2px;
-  margin: 12px -18px -12px -20px;
-  background: linear-gradient(90deg, var(--accent), var(--ember));
-  opacity: 0.7;
-  transform-origin: left;
-}
+/* ---------- Tuščios būsenos ---------- */
 
-.feed-empty {
+.empty-state {
+  margin-top: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 28px 24px 24px;
+  border-radius: 20px;
+  border: 1px dashed var(--line-dash);
+  background: var(--empty-bg);
   text-align: center;
-  padding: 50px 22px;
-  background: var(--glass);
-  border: 1px dashed var(--line-strong);
-  border-radius: var(--radius);
 }
-.feed-empty p:first-child {
-  font-family: var(--font-head);
+.empty-state h2 {
+  margin: 4px 0 0;
   font-size: 19px;
-  margin-bottom: 6px;
+}
+.empty-state p {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-dim);
+}
+.empty-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.empty-art {
+  width: 72px;
+  height: 72px;
+}
+.art-orbit {
+  fill: none;
+  stroke: var(--accent);
+  stroke-opacity: 0.35;
+  stroke-width: 1.4;
+  stroke-dasharray: 3 5;
+}
+.art-planet {
+  fill: var(--accent);
+  fill-opacity: 0.12;
+  stroke: var(--accent);
+  stroke-opacity: 0.7;
+  stroke-width: 1.4;
+}
+.art-star {
+  fill: var(--ember);
+}
+.art-dust {
+  fill: var(--emo-vienatve);
+  fill-opacity: 0.6;
+}
+
+.filter-empty {
+  margin-top: 8px;
+  padding: 24px;
+  border-radius: 18px;
+  border: 1px dashed var(--line-dash);
+  text-align: center;
+  font-size: 14px;
+  color: var(--text-dim);
+}
+
+/* ---------- Info lapai ir SOS lapas (iš apačios) ---------- */
+
+.sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.sheet-backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: var(--overlay);
+  cursor: pointer;
+  animation: fade-in 0.25s ease;
+}
+.sheet-card {
+  position: relative;
+  width: 100%;
+  max-width: 640px;
+  max-height: 90vh;
+  max-height: 90dvh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 10px 20px calc(22px + env(safe-area-inset-bottom, 0px));
+  border-radius: 24px 24px 0 0;
+  background: var(--sheet-bg);
+  border-top: 1px solid var(--line-hug);
+  box-shadow: var(--shadow-sheet);
+  animation: sheet-in 0.3s cubic-bezier(0.2, 0.8, 0.3, 1);
+}
+.sheet-card:focus {
+  outline: none;
+}
+.sheet-handle {
+  align-self: center;
+  width: 40px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--handle);
+}
+.sheet-card h2 {
+  margin: 4px 0 0;
+  font-size: 20px;
+}
+.sheet-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.sheet-sub {
+  font-family: var(--font-head);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--text-dim);
+}
+.sheet-lead {
+  font-size: 15px;
+  color: var(--text-soft);
+}
+
+.info-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.info-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.info-ico {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.info-ico .ico {
+  width: 18px;
+  height: 18px;
+  stroke-width: 1.8;
+}
+.info-ember {
+  background: var(--ember-tint);
+  color: var(--ember-text);
+}
+.info-heart {
+  background: var(--heart-bg);
+  color: var(--heart);
+}
+.info-text {
+  padding-top: 7px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-soft);
+}
+.info-text strong {
+  color: var(--text-strong);
+  font-weight: 700;
+}
+
+@keyframes sheet-in {
+  from {
+    transform: translateY(40px);
+    opacity: 0;
+  }
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
 }
 
 /* ---------- SOS ---------- */
 
 .sos-title {
-  margin-bottom: 6px;
+  margin-top: 6px;
+}
+#screen-sos > .muted {
+  margin-top: 6px;
 }
 
 .hotlines {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  margin: 18px 0 28px;
+  margin: 18px 0 26px;
 }
 
 .hotline {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  background: var(--glass);
+  background: var(--card);
   border: 1px solid var(--line);
-  border-radius: var(--radius);
+  border-radius: 18px;
   padding: 14px 18px;
   text-decoration: none;
   color: var(--text);
-  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+  transition: border-color 0.2s, transform 0.2s;
 }
-.hotline:hover {
-  transform: translateY(-2px);
-  border-color: var(--accent);
-  box-shadow: var(--shadow-lift);
+@media (hover: hover) {
+  .hotline:hover {
+    transform: translateY(-1px);
+    border-color: var(--accent-line-soft);
+  }
 }
 .hotline-name {
   font-size: 13.5px;
@@ -1300,7 +1775,7 @@ h2 {
   font-size: 22px;
   font-weight: 800;
   letter-spacing: 0.5px;
-  color: var(--accent-strong);
+  color: var(--accent-text);
 }
 .hotline-note {
   font-size: 12.5px;
@@ -1318,12 +1793,19 @@ h2 {
 /* Kvėpavimo ratas — ratilas, kuris plečiasi įkvepiant */
 
 .breathe-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
   padding-bottom: 20px;
+}
+.breathe-block h2 {
+  align-self: stretch;
 }
 
 .breathe-stage {
   position: relative;
+  width: 100%;
   height: 220px;
   display: flex;
   align-items: center;
@@ -1338,8 +1820,8 @@ h2 {
   border-radius: 50%;
   background: radial-gradient(
     circle at 35% 30%,
-    color-mix(in srgb, var(--accent) 55%, transparent),
-    color-mix(in srgb, var(--accent-deep) 22%, transparent) 65%
+    color-mix(in srgb, var(--accent) 50%, transparent),
+    color-mix(in srgb, var(--accent) 16%, transparent) 65%
   );
   border: 1px solid color-mix(in srgb, var(--accent) 50%, transparent);
   box-shadow: 0 0 40px var(--glow-accent);
@@ -1354,6 +1836,37 @@ h2 {
   transform: scale(0.8);
 }
 
+.breathe-label {
+  position: relative;
+  font-family: var(--font-head);
+  font-size: 16px;
+  color: var(--text-strong);
+  z-index: 1;
+}
+
+.ambient {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 18px;
+}
+.ambient-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-dim);
+  margin-right: 2px;
+}
+.ambient-label .ico {
+  width: 16px;
+  height: 16px;
+  stroke-width: 1.8;
+}
+
 /* Šauksmo kambario kortelė SOS ekrane. */
 .tool-card {
   display: grid;
@@ -1361,828 +1874,49 @@ h2 {
   align-items: center;
   gap: 12px;
   margin: 6px 0 20px;
-  padding: 14px 16px;
-  background: var(--glass);
+  padding: 14px 12px 14px 16px;
+  background: var(--card);
   border: 1px solid var(--line);
-  border-radius: var(--radius);
+  border-radius: 18px;
   color: var(--text);
   text-decoration: none;
-  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+  transition: border-color 0.2s;
 }
 .tool-icon {
-  font-size: 28px;
-  line-height: 1;
-  text-align: center;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--ember-tint);
+  color: var(--ember-text);
 }
 .tool-text {
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
+.tool-text strong {
+  color: var(--text-strong);
+}
 .tool-text span {
   font-size: 13.5px;
   color: var(--text-dim);
 }
 .tool-arrow {
-  color: var(--ember-strong);
-  font-size: 18px;
+  color: var(--ember-text);
 }
 @media (hover: hover) {
   .tool-card:hover {
-    transform: translateY(-2px);
-    border-color: var(--ember-deep);
-    box-shadow: var(--shadow-lift);
+    border-color: var(--ember-line);
   }
-}
-
-.breathe-label {
-  position: relative;
-  font-family: var(--font-head);
-  font-size: 16px;
-  color: var(--text);
-  z-index: 1;
-}
-
-/* ---------- Nustatymai ---------- */
-
-.setting {
-  margin: 4px 0 18px;
-}
-.setting:last-child {
-  margin-bottom: 4px;
-}
-.setting label {
-  display: block;
-  color: var(--text-dim);
-  font-size: 14px;
-  margin-bottom: 6px;
-}
-.setting select {
-  font: inherit;
-  color: var(--text);
-  background: var(--surface);
-  border: 1px solid var(--line-strong);
-  border-radius: var(--radius-sm);
-  padding: 10px 14px;
-  width: 100%;
-}
-/* Pavojinga zona — pačioje apačioje, atskirta nuo kitų nustatymų. */
-.setting-danger {
-  margin: 30px 0 10px;
-  padding: 18px;
-  border: 1px dashed var(--danger-line);
-  border-radius: var(--radius);
-}
-.setting-danger .muted {
-  margin-bottom: 12px;
-}
-
-h1 + .panel {
-  margin-top: 14px;
-}
-
-.about p,
-.privacy p {
-  color: var(--text-dim);
-  font-size: 14.5px;
-  margin-bottom: 10px;
-}
-.about .steps {
-  margin-top: 14px;
-}
-.privacy .promise {
-  text-align: left;
-  margin: 14px 0 0;
-  color: var(--accent-strong);
-}
-.support .muted {
-  margin-bottom: 12px;
-}
-
-.btn-support {
-  color: var(--on-ember);
-  background: linear-gradient(135deg, var(--lantern) 0%, var(--ember) 100%);
-}
-
-/* Jungiklis (switch) */
-
-.setting-toggle .muted {
-  margin-top: 6px;
-}
-
-.setting label.toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-  user-select: none;
-}
-
-.toggle input {
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
-}
-.toggle input:focus-visible + .toggle-track {
-  outline: 2px solid var(--focus);
-  outline-offset: 3px;
-}
-
-.toggle-track {
-  width: 44px;
-  height: 26px;
-  border-radius: 999px;
-  background: var(--surface-2);
-  border: 1px solid var(--line-strong);
-  position: relative;
-  transition: background-color 0.2s, border-color 0.2s;
-  flex-shrink: 0;
-}
-
-.toggle-thumb {
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: var(--text-dim);
-  transition: transform 0.25s ease, background-color 0.2s;
-}
-
-.toggle input:checked + .toggle-track {
-  background: var(--glow-accent);
-  border-color: var(--accent);
-}
-
-.toggle input:checked + .toggle-track .toggle-thumb {
-  transform: translateX(18px);
-  background: var(--accent);
-}
-
-.toggle-text {
-  font-size: 15px;
-  color: var(--text);
-}
-
-/* ---------- Apatinis meniu ---------- */
-
-.tabbar {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: calc(var(--tabbar-h) + env(safe-area-inset-bottom, 0px));
-  padding-bottom: env(safe-area-inset-bottom, 0px);
-  display: flex;
-  justify-content: center;
-  gap: 2px;
-  background: var(--tabbar-bg);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-top: 1px solid var(--line);
-  z-index: 10;
-}
-
-.tab {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 3px;
-  width: 92px;
-  color: var(--text-faint);
-  text-decoration: none;
-  font-size: 12px;
-  font-weight: 600;
-  transition: color 0.2s;
-}
-/* Ikonos — vieno stiliaus linijiniai SVG (ne emoji), kad visur atrodytų vienodai. */
-.tab-icon {
-  width: 23px;
-  height: 23px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.7;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  transition: transform 0.25s ease;
-}
-.tab:hover {
-  color: var(--text);
-}
-.tab:hover .tab-icon {
-  transform: translateY(-2px);
-}
-.tab.is-active {
-  color: var(--accent-strong);
-}
-.tab.is-active .tab-icon {
-  animation: tab-pick 0.4s cubic-bezier(0.3, 1.6, 0.5, 1);
-}
-
-/* Švytinti juostelė nuslenka prie aktyvaus tab'o (app.js placeTabGlow()). */
-.tab-glow {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: var(--w, 92px);
-  height: 3px;
-  transform: translateX(var(--x, 0));
-  transition: transform 0.45s cubic-bezier(0.3, 1.25, 0.5, 1), opacity 0.25s ease;
-  pointer-events: none;
-}
-.tab-glow::before {
-  content: "";
-  position: absolute;
-  inset: 0 28%;
-  border-radius: 0 0 3px 3px;
-  background: var(--accent);
-  box-shadow: 0 0 12px var(--accent);
-}
-.tab-glow.is-hidden {
-  opacity: 0;
-}
-.tab-glow.no-anim {
-  transition: none;
-}
-
-/* Kalendorius „priima" emociją: ikona pašoka, aplink — švelnus ratilas. */
-.tab.is-receiving .tab-icon {
-  animation: tab-receive 0.6s cubic-bezier(0.3, 1.6, 0.5, 1);
-}
-.tab.is-receiving::after {
-  content: "";
-  position: absolute;
-  top: 9px;
-  left: 50%;
-  width: 34px;
-  height: 34px;
-  margin-left: -17px;
-  border-radius: 50%;
-  border: 1.5px solid var(--accent);
-  pointer-events: none;
-  animation: tab-ring 0.8s ease-out forwards;
-}
-
-@keyframes tab-pick {
-  50% {
-    transform: translateY(-3px) scale(1.12);
-  }
-}
-@keyframes tab-receive {
-  40% {
-    transform: scale(1.35) rotate(-6deg);
-  }
-}
-@keyframes tab-ring {
-  from {
-    transform: scale(0.5);
-    opacity: 0.9;
-  }
-  to {
-    transform: scale(1.6);
-    opacity: 0;
-  }
-}
-
-/* Skrendantis emoji: iš pasirinktos emocijos į Kalendoriaus tab'ą (app.js flyToCalendar()). */
-.emo-fly {
-  position: fixed;
-  z-index: 50;
-  font-size: 24px;
-  line-height: 1;
-  pointer-events: none;
-  transform: translate(-50%, -50%);
-  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.35));
-}
-
-/* ---------- Toast + SOS sheet ---------- */
-
-.toast {
-  position: fixed;
-  left: 50%;
-  bottom: calc(var(--tabbar-h) + 18px);
-  transform: translateX(-50%);
-  background: var(--surface);
-  border: 1px solid var(--line-strong);
-  color: var(--text);
-  font-size: 14px;
-  padding: 11px 18px;
-  border-radius: 999px;
-  box-shadow: var(--shadow-lift);
-  z-index: 30;
-  max-width: 90vw;
-  text-align: center;
-  animation: toast-in 0.25s ease;
-}
-.toast.toast-calm {
-  border-color: var(--accent);
-}
-.toast.toast-warn {
-  border-color: var(--danger-line);
-}
-
-@keyframes toast-in {
-  from {
-    opacity: 0;
-    transform: translate(-50%, 8px);
-  }
-  to {
-    opacity: 1;
-    transform: translate(-50%, 0);
-  }
-}
-
-.sos-sheet {
-  position: fixed;
-  inset: 0;
-  background: var(--overlay);
-  backdrop-filter: blur(4px);
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  z-index: 40;
-}
-.sos-sheet[hidden] {
-  display: none;
-}
-
-.sos-sheet-card {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 24px 24px 0 0;
-  padding: 22px 20px calc(22px + env(safe-area-inset-bottom, 0px));
-  max-width: 640px;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  animation: sheet-in 0.3s ease;
-}
-.sos-sheet-card p {
-  font-size: 15px;
-  color: var(--text-dim);
-}
-
-@keyframes sheet-in {
-  from {
-    transform: translateY(40px);
-    opacity: 0;
-  }
-  to {
-    transform: none;
-    opacity: 1;
-  }
-}
-
-/* ---------- Istorijos, banneris, parama ---------- */
-
-.social-proof {
-  text-align: center;
-  color: var(--accent-strong);
-  font-size: 13px;
-  font-weight: 600;
-  margin: 10px 0 0;
-  font-variant-numeric: tabular-nums;
-}
-
-.hug-banner {
-  display: block;
-  width: 100%;
-  font: inherit;
-  font-size: 14.5px;
-  color: var(--text);
-  text-align: center;
-  background: var(--glow-accent);
-  border: 1px solid var(--accent);
-  border-radius: var(--radius-sm);
-  padding: 11px 14px;
-  margin-bottom: 12px;
-  cursor: pointer;
-  animation: screen-in 0.4s ease both;
-  transition: transform 0.2s;
-}
-.hug-banner:hover {
-  transform: translateY(-2px);
-}
-
-/* „Kaip tai veikia" — rašymo ekrane, kol žmogus jo neuždaro. */
-.intro-card {
-  position: relative;
-  background: var(--glass);
-  border: 1px solid var(--line-strong);
-  border-radius: var(--radius);
-  padding: 16px 18px 18px;
-  margin-bottom: 14px;
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  animation: screen-in 0.5s ease 0.15s both;
-}
-.intro-card.is-leaving {
-  animation: intro-out 0.35s ease forwards;
-}
-.intro-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 6px;
-}
-.intro-head h2 {
-  margin: 0;
-}
-.intro-close {
-  font: inherit;
-  font-size: 22px;
-  line-height: 1;
-  color: var(--text-faint);
-  background: none;
-  border: none;
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: color 0.2s, background-color 0.2s;
-}
-.intro-close:hover {
-  color: var(--text);
-  background: var(--surface-2);
-}
-.intro-card .btn {
-  margin-top: 14px;
-}
-
-@keyframes intro-out {
-  to {
-    opacity: 0;
-    transform: translateY(-8px) scale(0.98);
-  }
-}
-
-/* Trys žingsniai: tas pats sąrašas rašymo ekrane ir „Apie" skiltyje. */
-.steps {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.steps li {
-  display: grid;
-  grid-template-columns: 28px 1fr;
-  gap: 10px;
-  align-items: start;
-}
-.step-num {
-  width: 28px;
-  height: 28px;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  font-size: 13.5px;
-  font-weight: 800;
-  color: var(--accent-strong);
-  border: 1px solid color-mix(in srgb, var(--accent) 60%, transparent);
-  background: color-mix(in srgb, var(--accent) 10%, transparent);
-}
-.steps p {
-  font-size: 14px;
-  line-height: 1.45;
-  color: var(--text-dim);
-  margin: 0;
-}
-.steps strong {
-  display: block;
-  color: var(--text);
-  font-size: 15px;
-}
-/* Žingsniai atsiranda vienas po kito. */
-.intro-card .steps li {
-  animation: screen-in 0.45s ease both;
-}
-.intro-card .steps li:nth-child(1) {
-  animation-delay: 0.3s;
-}
-.intro-card .steps li:nth-child(2) {
-  animation-delay: 0.42s;
-}
-.intro-card .steps li:nth-child(3) {
-  animation-delay: 0.54s;
-}
-
-.screen-intro {
-  margin-bottom: 12px;
-}
-h1 + .screen-intro {
-  margin-top: 6px;
-}
-
-.expand {
-  font: inherit;
-  font-size: 13.5px;
-  font-weight: 700;
-  color: var(--accent-strong);
-  background: none;
-  border: none;
-  padding: 8px 0 0;
-  cursor: pointer;
-}
-.expand:hover {
-  text-decoration: underline;
-}
-
-.empty-link {
-  display: inline-block;
-  margin-top: 14px;
-  color: var(--accent-strong);
-  font-size: 14.5px;
-  font-weight: 600;
-  text-decoration: none;
-}
-.empty-link:hover {
-  text-decoration: underline;
-}
-
-/* ---------- Raminantys garsai ---------- */
-
-.ambient {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 14px;
-}
-.ambient-center {
-  justify-content: center;
-  margin-top: 18px;
-}
-.ambient-label {
-  font-size: 13px;
-  color: var(--text-faint);
-  margin-right: 2px;
-}
-.chip.is-loading {
-  animation: chip-loading 0.8s ease-in-out infinite alternate;
-}
-
-@keyframes chip-loading {
-  to {
-    opacity: 0.5;
-  }
-}
-
-/* ---------- Emocijų kalendorius ---------- */
-
-.panel,
-.mood-card {
-  background: var(--glass);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 18px;
-  margin-bottom: 14px;
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-}
-
-.mood-hero {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 14px;
-}
-.mood-line {
-  font-family: var(--font-head);
-  font-size: 16px;
-  line-height: 1.4;
-  color: var(--text);
-}
-
-/* Judantis emoji: kiekviena emocija juda savaip, už jo — emocijos spalvos švytėjimas. */
-.mood-face {
-  --emo: var(--text-dim);
-  position: relative;
-  isolation: isolate;
-  flex: none;
-  width: 72px;
-  height: 72px;
-  display: grid;
-  place-items: center;
-  font-size: 44px;
-  line-height: 1;
-}
-.mood-face::before {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  inset: -4px;
-  border-radius: 50%;
-  background: radial-gradient(circle, color-mix(in srgb, var(--emo) 38%, transparent), transparent
-    70%);
-}
-.mood-face.is-alive::before {
-  animation: mood-halo 3.2s ease-in-out infinite;
-}
-.mood-face.is-alive[data-emotion="pyktis"] {
-  animation: mood-shake 2.6s ease-in-out infinite;
-}
-.mood-face.is-alive[data-emotion="liudesys"] {
-  animation: mood-droop 4.5s ease-in-out infinite;
-}
-.mood-face.is-alive[data-emotion="nerimas"] {
-  animation: mood-tremble 3s linear infinite;
-}
-.mood-face.is-alive[data-emotion="kalte"] {
-  animation: mood-bow 5s ease-in-out infinite;
-}
-.mood-face.is-alive[data-emotion="vienatve"] {
-  animation: mood-drift 7s ease-in-out infinite;
-}
-.mood-face.is-alive[data-emotion="viltis"] {
-  transform-origin: 50% 85%;
-  animation: mood-grow 3.6s ease-in-out infinite;
-}
-
-@keyframes mood-halo {
-  50% {
-    opacity: 0.45;
-  }
-}
-@keyframes mood-shake {
-  0%,
-  44%,
-  100% {
-    transform: none;
-  }
-  8%,
-  24% {
-    transform: translateX(-3px) rotate(-5deg);
-  }
-  16%,
-  32% {
-    transform: translateX(3px) rotate(5deg);
-  }
-  40% {
-    transform: scale(1.06);
-  }
-}
-@keyframes mood-droop {
-  50% {
-    transform: translateY(5px) rotate(-6deg);
-  }
-}
-@keyframes mood-tremble {
-  0%,
-  36%,
-  100% {
-    transform: none;
-  }
-  6%,
-  18%,
-  30% {
-    transform: rotate(-3deg);
-  }
-  12%,
-  24% {
-    transform: rotate(3deg);
-  }
-}
-@keyframes mood-bow {
-  50% {
-    transform: translateY(4px) rotate(10deg);
-  }
-}
-@keyframes mood-drift {
-  0%,
-  100% {
-    transform: translateX(-6px);
-    opacity: 0.8;
-  }
-  50% {
-    transform: translateX(6px);
-    opacity: 1;
-  }
-}
-@keyframes mood-grow {
-  0%,
-  100% {
-    transform: scale(0.9);
-  }
-  50% {
-    transform: scale(1.08) translateY(-3px);
-  }
-}
-
-.mood-bars {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-}
-.mood-bar {
-  --emo: var(--text-dim);
-  display: grid;
-  grid-template-columns: 84px 1fr 28px;
-  align-items: center;
-  gap: 10px;
-  font-size: 13px;
-  color: var(--text-dim);
-}
-.mood-bar-track {
-  height: 8px;
-  border-radius: 999px;
-  background: var(--surface-2);
-  overflow: hidden;
-}
-.mood-bar-fill {
-  display: block;
-  height: 100%;
-  border-radius: inherit;
-  background: var(--emo);
-  transform-origin: left;
-  transform: scaleX(var(--w, 0));
-  transition: transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
-}
-.mood-bar-count {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-
-.mood-sos {
-  display: block;
-  margin-top: 14px;
-  font-size: 13.5px;
-  color: var(--ember-strong);
-  text-decoration: none;
-}
-.mood-sos:hover {
-  text-decoration: underline;
-}
-.mood-note {
-  margin-top: 12px;
-}
-
-.mood-month-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
-}
-.mood-month-head h2 {
-  margin: 0;
-}
-.mood-month-head .refresh:disabled {
-  opacity: 0.35;
-  cursor: default;
-}
-
-.mood-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 5px;
-}
-.mood-wd {
-  text-align: center;
-  font-size: 11.5px;
-  color: var(--text-faint);
-  text-transform: uppercase;
-}
-.mood-day {
-  --emo: transparent;
-  aspect-ratio: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 2px;
-  border-radius: 10px;
-  background: color-mix(in srgb, var(--emo) 16%, var(--surface));
-  border: 1px solid var(--line);
-  font-size: 12px;
-  color: var(--text-faint);
-}
-.mood-day.is-pad {
-  background: none;
-  border: none;
-}
-.mood-day[data-emotion] {
-  border-color: color-mix(in srgb, var(--emo) 55%, transparent);
-  color: var(--text);
-}
-.mood-day.is-today {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 1px var(--accent);
-}
-.mood-day-num {
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
-}
-.mood-day-face {
-  font-size: 15px;
-  line-height: 1;
 }
 
 /* ---------- Šauksmo kambarys ---------- */
+
+.screen-intro {
+  margin-top: 6px;
+}
 
 .scream-stage {
   display: flex;
@@ -2199,43 +1933,48 @@ h1 + .screen-intro {
   border: 1px solid color-mix(in srgb, var(--ember) 45%, transparent);
   background: radial-gradient(
     circle at 35% 30%,
-    color-mix(in srgb, var(--ember) 40%, transparent),
-    color-mix(in srgb, var(--ember-deep) 14%, transparent) 65%
+    color-mix(in srgb, var(--ember) 36%, transparent),
+    color-mix(in srgb, var(--ember) 10%, transparent) 65%
   );
   box-shadow: 0 0 50px var(--glow-ember);
+  color: var(--ember-text);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: transform 0.15s, box-shadow 0.3s;
 }
-.scream-orb:hover {
-  transform: translateY(-3px);
-}
 .scream-orb:active {
   transform: scale(0.96);
 }
 .scream-orb-icon {
-  font-size: 54px;
-  line-height: 1;
+  display: grid;
+  place-items: center;
+}
+.scream-orb-icon .line-svg {
+  width: 54px;
+  height: 54px;
+  stroke-width: 1.4;
 }
 
 .scream-orb.is-recording {
+  color: var(--danger);
   border-color: var(--danger);
   background: radial-gradient(
     circle at 35% 30%,
-    color-mix(in srgb, var(--danger) 50%, transparent),
-    color-mix(in srgb, var(--danger) 15%, transparent) 65%
+    color-mix(in srgb, var(--danger) 45%, transparent),
+    color-mix(in srgb, var(--danger) 12%, transparent) 65%
   );
   animation: scream-pulse 1.1s ease-in-out infinite;
 }
 
 .scream-orb.is-ready {
+  color: var(--accent-text);
   border-color: var(--accent);
   background: radial-gradient(
     circle at 35% 30%,
-    color-mix(in srgb, var(--accent) 38%, transparent),
-    color-mix(in srgb, var(--accent-deep) 12%, transparent) 65%
+    color-mix(in srgb, var(--accent) 34%, transparent),
+    color-mix(in srgb, var(--accent) 10%, transparent) 65%
   );
   box-shadow: 0 0 40px var(--glow-accent);
 }
@@ -2269,6 +2008,587 @@ h1 + .screen-intro {
   max-width: 200px;
 }
 
+/* ---------- Emocijų kalendorius ---------- */
+
+.local-note {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+.local-note .ico {
+  width: 14px;
+  height: 14px;
+  stroke-width: 2;
+}
+
+.panel,
+.cal-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 14px 16px;
+  border-radius: 18px;
+  border: 1px solid var(--line);
+  background: var(--box);
+}
+.cal-card h2 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.week-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 0 2px;
+}
+.week-range {
+  font-size: 12px;
+  color: var(--text-faint);
+}
+
+.week-strip {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+}
+.week-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.week-letter {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-faint);
+}
+.week-dot {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px dashed var(--line-dash);
+}
+.week-dot[data-emotion] {
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--emo-c) 13%, transparent);
+}
+.week-dot.is-today {
+  border: 1.5px solid var(--accent);
+}
+.week-dot .emo-icon {
+  --ei: 22px;
+}
+
+.mood-sos {
+  font-size: 13.5px;
+  color: var(--ember-text);
+  text-decoration: none;
+}
+.mood-sos:hover {
+  text-decoration: underline;
+}
+
+.month-card {
+  gap: 10px;
+  padding: 10px 14px 14px;
+}
+.month-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.month-card .month-head h2 {
+  flex: 1;
+  text-align: center;
+  font-size: 17px;
+}
+
+.mood-wds,
+.mood-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+}
+.mood-wds {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-faint);
+  text-transform: uppercase;
+}
+.mood-day {
+  height: 46px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  border-radius: 12px;
+  border: 1px solid var(--line-soft);
+  background: var(--day-bg);
+  color: var(--day-text);
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+.mood-day.is-pad {
+  visibility: hidden;
+}
+.mood-day.is-future {
+  color: var(--text-faint);
+}
+.mood-day[data-emotion] {
+  background: color-mix(in srgb, var(--emo-c) 13%, transparent);
+}
+.mood-day.is-today {
+  border: 1.5px solid var(--accent);
+}
+.mood-day .emo-icon {
+  --ei: 14px;
+}
+
+.mood-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  padding: 0 4px;
+}
+.mood-legend > span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+.mood-legend .emo-icon {
+  --ei: 14px;
+}
+
+/* Kaip jaučiasi visi — tik suminiai skaičiai iš /api/mood. */
+.mood-hero {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.mood-face {
+  flex: none;
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--emo-c, var(--accent)) 13%, transparent);
+}
+.mood-face .emo-icon {
+  --ei: 34px;
+}
+.mood-line {
+  font-family: var(--font-head);
+  font-size: 15px;
+  line-height: 1.4;
+  color: var(--text-strong);
+}
+.mood-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.mood-bar {
+  display: grid;
+  grid-template-columns: 18px 76px 1fr 28px;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+.mood-bar .emo-icon {
+  --ei: 16px;
+}
+.mood-bar-track {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--line-soft);
+  overflow: hidden;
+}
+.mood-bar-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--emo-c);
+  transform-origin: left;
+  transform: scaleX(var(--w, 0));
+  transition: transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.mood-bar-count {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.mood-note {
+  font-size: 13px;
+}
+
+/* ---------- Nustatymai ---------- */
+
+#screen-nustatymai {
+  gap: 14px;
+}
+#screen-nustatymai > h1 {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+.panel {
+  gap: 0;
+  padding: 16px;
+}
+.panel h2 {
+  font-size: 17px;
+}
+
+.setting {
+  margin: 4px 0 18px;
+}
+.setting:last-child {
+  margin-bottom: 4px;
+}
+.setting label {
+  display: block;
+  color: var(--text-dim);
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+.setting select {
+  font: inherit;
+  color: var(--text);
+  background: var(--tile);
+  border: 1px solid var(--line-tile);
+  border-radius: 12px;
+  padding: 10px 14px;
+  width: 100%;
+}
+/* Pavojinga zona — pačioje apačioje, atskirta nuo kitų nustatymų. */
+.setting-danger {
+  margin: 16px 0 10px;
+  padding: 16px;
+  border: 1px dashed var(--danger-line);
+  border-radius: 18px;
+}
+.setting-danger .muted {
+  margin-bottom: 12px;
+}
+
+.about p,
+.privacy p {
+  color: var(--text-dim);
+  font-size: 14.5px;
+  margin-bottom: 10px;
+}
+.about .steps {
+  margin-top: 4px;
+}
+.promise {
+  color: var(--text-dim);
+  font-family: var(--font-head);
+  font-size: 15px;
+  font-style: italic;
+}
+.privacy .promise {
+  margin: 4px 0 0;
+  color: var(--accent-text);
+}
+.support .muted {
+  margin-bottom: 12px;
+}
+.support .btn {
+  align-self: flex-start;
+}
+
+.empty-link {
+  display: inline-block;
+  margin-top: 12px;
+  color: var(--accent-text);
+  font-size: 14.5px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.empty-link:hover {
+  text-decoration: underline;
+}
+
+/* Trys žingsniai „Apie" skiltyje. */
+.steps {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.steps li {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 10px;
+  align-items: start;
+}
+.step-num {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 13.5px;
+  font-weight: 800;
+  color: var(--accent-text);
+  background: var(--accent-soft);
+}
+.steps p {
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--text-dim);
+  margin: 0;
+}
+.steps strong {
+  display: block;
+  color: var(--text-strong);
+  font-size: 15px;
+}
+
+/* Jungiklis (switch) */
+
+.setting-toggle .muted {
+  margin-top: 6px;
+}
+
+.setting label.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.toggle input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.toggle input:focus-visible + .toggle-track {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.toggle-track {
+  width: 44px;
+  height: 26px;
+  border-radius: 999px;
+  background: var(--tile);
+  border: 1px solid var(--line-dash);
+  position: relative;
+  transition: background-color 0.2s, border-color 0.2s;
+  flex-shrink: 0;
+}
+
+.toggle-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--text-dim);
+  transition: transform 0.25s ease, background-color 0.2s;
+}
+
+.toggle input:checked + .toggle-track {
+  background: var(--accent-tint);
+  border-color: var(--accent);
+}
+
+.toggle input:checked + .toggle-track .toggle-thumb {
+  transform: translateX(18px);
+  background: var(--accent);
+}
+
+.toggle-text {
+  font-size: 15px;
+  color: var(--text);
+}
+
+/* ---------- Apatinis meniu ---------- */
+
+.tabbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: var(--tabbar-bg);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-top: 1px solid var(--tabbar-line);
+}
+.tabbar-inner {
+  position: relative;
+  max-width: 640px;
+  height: var(--tabbar-h);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.tab {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: var(--text-nav);
+  text-decoration: none;
+  font-size: 11px;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+.tab .tab-icon {
+  width: 22px;
+  height: 22px;
+  transition: transform 0.25s ease;
+}
+@media (hover: hover) {
+  .tab:hover {
+    color: var(--text);
+  }
+}
+.tab.is-active {
+  color: var(--accent);
+  font-weight: 700;
+}
+.tab.is-active .tab-icon {
+  animation: tab-pick 0.4s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+
+/* Juostelė virš aktyvaus tab'o nuslenka prie naujo (app.js placeTabGlow()). */
+.tab-glow {
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: var(--w, 25%);
+  height: 3px;
+  transform: translateX(var(--x, 0));
+  transition: transform 0.45s cubic-bezier(0.3, 1.25, 0.5, 1), opacity 0.25s ease;
+  pointer-events: none;
+}
+.tab-glow::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 28px;
+  height: 3px;
+  margin-left: -14px;
+  border-radius: 0 0 3px 3px;
+  background: var(--accent);
+}
+.tab-glow.is-hidden {
+  opacity: 0;
+}
+.tab-glow.no-anim {
+  transition: none;
+}
+
+/* Kalendorius „priima" emociją: ikona pašoka, aplink — švelnus ratilas. */
+.tab.is-receiving .tab-icon {
+  animation: tab-receive 0.6s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+.tab.is-receiving::after {
+  content: "";
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  width: 34px;
+  height: 34px;
+  margin-left: -17px;
+  border-radius: 50%;
+  border: 1.5px solid var(--accent);
+  pointer-events: none;
+  animation: tab-ring 0.8s ease-out forwards;
+}
+
+@keyframes tab-pick {
+  50% {
+    transform: translateY(-3px) scale(1.12);
+  }
+}
+@keyframes tab-receive {
+  40% {
+    transform: scale(1.35) rotate(-6deg);
+  }
+}
+@keyframes tab-ring {
+  from {
+    transform: scale(0.5);
+    opacity: 0.9;
+  }
+  to {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+/* Skrendantis simbolis: iš pasirinktos emocijos į Kalendoriaus tab'ą (app.js flyToCalendar()). */
+.emo-fly {
+  position: fixed;
+  z-index: 50;
+  --ei: 24px;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.35));
+}
+
+/* ---------- Pranešimas (toast) ---------- */
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom, 0px) + 16px);
+  transform: translateX(-50%);
+  background: var(--menu-bg);
+  border: 1px solid var(--line-menu);
+  color: var(--text);
+  font-size: 14px;
+  padding: 11px 18px;
+  border-radius: 14px;
+  box-shadow: var(--shadow-toast);
+  z-index: 30;
+  width: max-content;
+  max-width: calc(100vw - 32px);
+  text-align: center;
+  animation: toast-in 0.25s ease;
+}
+.toast.toast-calm {
+  border-color: var(--accent-line-soft);
+}
+.toast.toast-warn {
+  border-color: var(--danger-line);
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 8px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
 /* ---------- Statiniai teisiniai puslapiai (privacy.html, privatumas.html) ---------- */
 /* CSP style-src 'self' neleidžia inline <style>/style="" — visos šių puslapių
    taisyklės todėl gyvena čia, ne pačiuose HTML failuose. */
@@ -2280,12 +2600,9 @@ h1 + .screen-intro {
   max-width: 680px;
   margin: 24px auto 64px;
   padding: 28px 22px 40px;
-  background: var(--glass);
+  background: var(--card);
   border: 1px solid var(--line);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  border-radius: 20px;
 }
 .legal h1 {
   margin-bottom: 6px;
@@ -2298,7 +2615,7 @@ h1 + .screen-intro {
 }
 .legal p,
 .legal li {
-  color: var(--text-dim);
+  color: var(--text-soft);
   font-size: 15px;
   line-height: 1.75;
 }
@@ -2307,7 +2624,7 @@ h1 + .screen-intro {
   margin: 8px 0;
 }
 .legal a {
-  color: var(--accent-strong);
+  color: var(--accent-text);
 }
 .legal .back {
   display: inline-block;
@@ -2321,12 +2638,12 @@ h1 + .screen-intro {
 }
 .legal-brand {
   text-decoration: none;
-  color: var(--text);
+  color: var(--text-strong);
   font-family: var(--font-head);
   font-weight: 600;
   font-size: 20px;
   display: inline-flex;
-  gap: 10px;
+  gap: 8px;
   align-items: center;
   margin-bottom: 24px;
 }
@@ -2335,12 +2652,35 @@ h1 + .screen-intro {
 
 .story-page .story-text {
   white-space: pre-wrap;
+  overflow-wrap: anywhere;
   font-size: 17px;
+  color: var(--text-card);
   margin: 20px 0;
 }
 .story-page .story-meta {
-  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+  gap: 7px;
   font-size: 14px;
+  font-weight: 700;
+  color: var(--emo-c, var(--text-dim));
+}
+.story-page .story-meta .emo-icon {
+  --ei: 18px;
+}
+.story-page .story-hugs {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: 8px;
+  color: var(--text-dim);
+}
+.story-page .story-hugs .ico {
+  width: 16px;
+  height: 16px;
+}
+.story-page .promise {
+  margin-bottom: 18px;
 }
 .story-page .back-link {
   display: inline-block;
@@ -2350,22 +2690,27 @@ h1 + .screen-intro {
 /* ---------- Telefonas ---------- */
 
 @media (max-width: 420px) {
-  .hero-title {
-    font-size: 26px;
-  }
-  .tab {
-    width: 25%;
-  }
   .legal,
   .story-page {
     margin: 12px 12px 40px;
     padding: 22px 16px 32px;
   }
 }
+/* Labai siauri ekranai (≤ 350px): plytelėse mažiau tarpo, kad tilptų pavadinimai. */
+@media (max-width: 350px) {
+  .emo,
+  .path {
+    gap: 5px;
+    font-size: 13px;
+  }
+  .emo .emo-icon {
+    --ei: 18px;
+  }
+}
 
 /* ---------- Judesio mažinimas ---------- */
 /* Dalelės (ratilai, žibintai) neberodomos — river.js jų nekuria; švytėjimai
-   lieka statiški. */
+   lieka statiški; emocijų simboliai — ramios versijos (icons.js). */
 
 @media (prefers-reduced-motion: reduce) {
   *,

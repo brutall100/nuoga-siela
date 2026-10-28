@@ -24,8 +24,8 @@ nuplaukia. Ugnis skirta deginimui, vanduo skirtas paleidimui.
 
 ### Kaip tai veikia
 
-1. **Pažymėk, kaip jautiesi** (iš anksto pažymėta 🌱 viltis). Emocija (su emoji) atsiras tavo
-   kalendoriuje, tik šiame įrenginyje.
+1. **Pažymėk, kaip jautiesi** (iš anksto pažymėta viltis). Emocija atsiras tavo kalendoriuje, tik
+   šiame įrenginyje.
 2. **Išliek žodžius.** Be vardo ir be registracijos.
 3. **Nuspręsk, ką su jais daryti:** 🔥 sudeginti (niekas nepamatys), 🏮 paleisti į **Srautą** (po 24
    val. išnyks) arba 📖 palikti **istoriją** (lieka, kol pats ištrini).
@@ -35,8 +35,10 @@ pasiekiami ⚙ mygtuku viršuje.
 
 ## Funkcijos
 
-- ✍️ **Rašyk laisvai.** Pasirink emociją: 😠 pyktis, 😢 liūdesys, 😰 nerimas, 😔 kaltė, 😶 vienatvė,
-  🌱 viltis. Tie patys emoji rodomi sraute, istorijose ir kalendoriuje.
+- ✍️ **Rašyk laisvai.** Pasirink emociją — kiekviena nupiešta kaip kosmoso reiškinys: pyktis
+  (susiduriančios planetos), liūdesys (krentanti žvaigždė), nerimas (nerimstančios orbitos), kaltė
+  (užtemimas), vienatvė (viena planeta), viltis (žvaigždė virš horizonto). Tie patys simboliai
+  rodomi sraute, istorijose ir kalendoriuje; pažymėtas — juda.
 - 🔥 **Sudegink.** Tekstas virsta žarijomis ir išnyksta. Į serverį jis niekada nesiunčiamas.
 - 🏮 **Paleisk** į **Srautą**: po 24 val. tekstas fiziškai ištrinamas.
 - 📖 **Palik istoriją**: ilgesnis tekstas (iki 5000 ženklų) lieka, kol pats ištrini, ir turi savo
@@ -46,9 +48,9 @@ pasiekiami ⚙ mygtuku viršuje.
   švelniai, bet tekstas neblokuojamas.
 - 🔊 **Šauksmo kambarys** (SOS ekrane). Garsas įrašomas tik į telefono atmintį ir niekur
   nesiunčiamas.
-- 📅 **Emocijų kalendorius** (apatiniame meniu). Tavo pažymėtos emocijos pagal dienas ir judantis
-  savaitės emoji; paleidus ar sudeginus tekstą, emoji nuskrenda į kalendorių. Saugoma tik diena ir
-  emocija, tik tavo įrenginyje. Šalia — kaip šią savaitę jaučiasi visi (tik suminiai skaičiai, be
+- 📅 **Emocijų kalendorius** (apatiniame meniu). Tavo pažymėtos emocijos pagal dienas ir šios
+  savaitės juosta; paleidus ar sudeginus tekstą, simbolis nuskrenda į kalendorių. Saugoma tik diena
+  ir emocija, tik tavo įrenginyje. Šalia — kaip šią savaitę jaučiasi visi (tik suminiai skaičiai, be
   jokio ryšio su žmonėmis).
 - 🎧 **Raminantys garsai.** Upė, lietus ar laužas rašant ir kvėpuojant.
 - 🌗 **Šviesus ir tamsus režimas.** Seka sistemos nustatymą, turi perjungimo mygtuką ir nemirga
@@ -68,12 +70,12 @@ pasiekiami ⚙ mygtuku viršuje.
 
 ## Sukurta su
 
-| Sritis   | Kas                                                                                                                             |
-| -------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| Serveris | [Deno](https://deno.com) 2 + Deno KV, nulis priklausomybių                                                                      |
-| Klientas | Vanilla HTML / CSS / JS (PWA), jokių bibliotekų ir jokio build žingsnio                                                         |
-| Šriftai  | [Lora](https://fonts.google.com/specimen/Lora) antraštėms, [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) tekstui |
-| Testai   | `deno test`, CI per GitHub Actions (fmt + lint + test)                                                                          |
+| Sritis   | Kas                                                                                                                   |
+| -------- | --------------------------------------------------------------------------------------------------------------------- |
+| Serveris | [Deno](https://deno.com) 2 + Deno KV, nulis priklausomybių                                                            |
+| Klientas | Vanilla HTML / CSS / JS (PWA), jokių bibliotekų ir jokio build žingsnio                                               |
+| Šriftai  | [Lora](https://fonts.google.com/specimen/Lora) antraštėms, [Nunito](https://fonts.google.com/specimen/Nunito) tekstui |
+| Testai   | `deno test`, CI per GitHub Actions (fmt + lint + test)                                                                |
 
 **Spalvų paletė „Paleisk upe“** (visos spalvos yra `public/css/main.css` viršuje, `:root`):
 
@@ -142,9 +144,10 @@ public/js/ui.js      bangelė mygtukuose, atsiradimas slenkant, skaičiavimas
 public/js/app.js     maršrutai, rašymas, srautas, istorijos, nustatymai
 public/js/burn.js    deginimo animacija (Canvas)
 public/js/scream.js  Šauksmo kambarys (garsas tik RAM'e)
+public/js/icons.js   emocijų simboliai (kosmoso reiškiniai) ir linijinės ikonos
 public/js/mood.js    emocijų kalendorius (tik įrenginyje) ir bendra savaitės nuotaika
 public/js/sounds.js  raminantys garsai (Web Audio kilpa, failai public/sounds/)
-public/fonts/        Lora ir Nunito Sans (woff2 + OFL licencijos)
+public/fonts/        Lora ir Nunito (woff2 + OFL licencijos)
 public/sounds/       upės, lietaus ir laužo kilpos (Freesound, CC0)
 public/images/       og-image.webp
 docs/                ekrano nuotraukos README failui
@@ -167,9 +170,8 @@ docs/                ekrano nuotraukos README failui
 ## Padėkos
 
 - Šriftai: [Lora](https://github.com/cyrealtype/Lora-Cyrillic) (The Lora Project Authors) ir
-  [Nunito Sans](https://github.com/Fonthausen/NunitoSans) (The Nunito Sans Project Authors), abu
-  pagal [SIL Open Font License 1.1](https://openfontlicense.org). Licencijų tekstai yra
-  `public/fonts/`.
+  [Nunito](https://github.com/googlefonts/nunito) (The Nunito Project Authors), abu pagal
+  [SIL Open Font License 1.1](https://openfontlicense.org). Licencijų tekstai yra `public/fonts/`.
 - Garsai iš [Freesound](https://freesound.org), visi
   [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/):
   [Murmuring Stream](https://freesound.org/people/borralbi/sounds/337614/) (borralbi),

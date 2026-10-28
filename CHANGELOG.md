@@ -4,6 +4,34 @@ Visi pastebimi projekto pakeitimai bus fiksuojami šiame faile.
 
 Formatas paremtas [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [v3.0] — 2026-10-28
+
+**Naujas dizainas — „kompaktiškas išdėstymas“** (pagal claude.ai dizaino drobę).
+
+- **Emocijos — kosmoso reiškiniai, ne emoji:** pyktis — susiduriančios planetos, liūdesys —
+  krentanti žvaigždė, nerimas — nerimstančios orbitos, kaltė — užtemimas, vienatvė — viena planeta,
+  viltis — žvaigždė virš horizonto. Pažymėta emocija juda (SMIL animacija; su „mažinti judesį“ —
+  rami). Nauja `public/js/icons.js` — vienintelis simbolių ir linijinių ikonų šaltinis; SSR
+  istorijos puslapis (`main.ts`) turi ramių simbolių kopiją. Naujos emocijų spalvos.
+- **Rašyti:** pavadinimas su ⓘ; „Kaip tai veikia“ — lapas iš apačios (pirmą kartą atsidaro pats,
+  vėliau per ⓘ), jame ir pažadas „Mes nežinome, kas tu“ bei „Rašymas apie jausmus…“. Emocijų
+  plytelės žemesnės (simbolis šalia pavadinimo). „Fonas“ perkeltas į laukelio kampą — meniu Išjungta
+  / Upė / Lietus / Laužas; skaitiklis — kitame kampe. Veiksmų plytelėse emoji pakeisti ikonomis.
+- **Srautas:** „24 val.“ ženkliukas, ⓘ ir atnaujinimas antraštėje; aprašas — info lape; nauja tuščia
+  būsena su „Rašyti“ ir „Paskaityk istorijas“.
+- **Istorijos:** rikiavimas — dviejų dalių jungiklis; kortelės: simbolis + emocija spalva, tekstas
+  iki 4 eilučių su „Skaityti toliau“ (išskleidžia vietoje), širdelė „Suprantu tave“, nuorodos ir
+  pranešimo ikonos. Srauto kortelės — tokios pat, su „liko X val.“ vietoj nuorodos. Filtruojant
+  emociją be įrašų — „Šios emocijos … dar nėra.“
+- **Kalendorius:** „Saugoma tik šiame įrenginyje“ po pavadinimu; „Tavo savaitė“ — 7 apskritimai
+  (pirmadienis–sekmadienis, šiandiena gyva); mėnesio dienos nuspalvintos ir su simboliu; legenda.
+  Bendra nuotaika ir SOS užuomina liko (naujame stiliuje).
+- **Visur:** naujas logotipas, viršutinės juostos ir apatinio meniu ikonos; info lapai su Escape,
+  fonas tuo metu `inert`. SOS, Šauksmo kambarys ir Nustatymai — nauja paletė ir ikonos (be emoji),
+  išdėstymas nepakeistas. Šviesi tema perkurta pagal tuos pačius atspalvius.
+- **Šriftas tekstui — Nunito** (buvo Nunito Sans), savas `public/fonts/nunito-*.woff2` (OFL,
+  `ofl-nunito.txt`), ne iš Google. Service worker `CACHE` → `v10` (pasikeitė `SHELL`).
+
 ## [v2.12] — 2026-10-28
 
 - CLAUDE.md: nauja taisyklė „Darbo eiga: visada į `main`“ — patikrinti pakeitimai jungiami į `main`

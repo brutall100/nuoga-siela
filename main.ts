@@ -136,21 +136,84 @@ async function serveIndexHtml(routePath: string): Promise<Response> {
 
 // ---------- Istorijos permalink'as (SSR — tekstas matomas be JS) ----------
 
-const BRAND_FLAME_PATH =
-  "M16 3c.8 3.4-3.6 5.2-3.6 9.4a3.6 3.6 0 0 0 7.2 0c0-1.6-.8-2.6-.8-4.2 1.8.8 2.8 2.6 2.8 4.2" +
-  "a5.6 5.6 0 1 1-11.2 0C10.4 7.6 15.2 6.4 16 3Z";
+// Tas pats ženklas kaip programėlės viršuje (public/index.html .brand-mark).
+const BRAND_MARK_SVG = `<svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true">
+          <path class="mark-flame" d="M12 3.2c-2.3 2.6-3.6 4.4-3.6 6.4a3.6 3.6 0 007.2 0c0-1.3-.6-2.3-1.5-3.3-.2 1.1-.8 1.8-1.5 2 .3-1.8.1-3.4-.6-5.1z" />
+          <path class="mark-water" d="M4 16.4c1.3-.9 2.7-.9 4 0s2.7.9 4 0 2.7-.9 4 0 2.7.9 4 0" />
+          <path class="mark-water" opacity="0.6" d="M4 19.8c1.3-.9 2.7-.9 4 0s2.7.9 4 0 2.7-.9 4 0 2.7.9 4 0" />
+        </svg>`;
 
 const STORY_PATH_RE = /^\/istorijos\/([\w-]+)$/;
 
-// Emoji — tas pats kaip rašant, sraute ir kalendoriuje (public/js/mood.js FACES).
 const EMOTION_LABELS_LT: Record<Emotion, string> = {
-  pyktis: "😠 Pyktis",
-  liudesys: "😢 Liūdesys",
-  nerimas: "😰 Nerimas",
-  kalte: "😔 Kaltė",
-  vienatve: "😶 Vienatvė",
-  viltis: "🌱 Viltis",
+  pyktis: "Pyktis",
+  liudesys: "Liūdesys",
+  nerimas: "Nerimas",
+  kalte: "Kaltė",
+  vienatve: "Vienatvė",
+  viltis: "Viltis",
 };
+
+// Ramūs emocijų simboliai — kopija iš public/js/icons.js (EMO[...].calm); keičiant vieną,
+// keisk abu. Spalva — currentColor (main.css [data-emo]), šešėlis — .emo-mask.
+const F = 'fill="currentColor"';
+const EMOTION_ICONS: Record<Emotion, [string, string]> = {
+  pyktis: [
+    "1.6",
+    `<circle cx="8" cy="14" r="5" ${F} fill-opacity="0.18"/>` +
+    `<circle cx="15" cy="9.5" r="3.5" ${F} fill-opacity="0.18"/>` +
+    `<path d="M10.6 8.8L9.7 7.4M13.8 13.8L14.7 15.2"/>` +
+    `<circle cx="7.6" cy="7.6" r="0.75" ${F} stroke="none"/>` +
+    `<circle cx="16.6" cy="14.4" r="0.75" ${F} stroke="none"/>`,
+  ],
+  liudesys: [
+    "1.6",
+    `<path d="M19.6 4.4L16 8" stroke-opacity="0.22"/>` +
+    `<path d="M16 8L12.2 11.8" stroke-opacity="0.5"/>` +
+    `<path d="M12.2 11.8L9 15" stroke-opacity="0.85"/>` +
+    `<circle cx="7.4" cy="16.6" r="3.6" ${F} fill-opacity="0.16" stroke="none"/>` +
+    `<circle cx="7.4" cy="16.6" r="2" ${F} stroke="none"/>` +
+    `<circle cx="18" cy="16.5" r="0.7" ${F} fill-opacity="0.55" stroke="none"/>` +
+    `<circle cx="5.2" cy="6" r="0.6" ${F} fill-opacity="0.45" stroke="none"/>`,
+  ],
+  nerimas: [
+    "1.4",
+    `<ellipse cx="12" cy="12" rx="9.5" ry="3.6" transform="rotate(-28 12 12)"/>` +
+    `<ellipse cx="12" cy="12" rx="9.5" ry="3.6" transform="rotate(32 12 12)" stroke-opacity="0.5"/>` +
+    `<circle cx="12" cy="12" r="2.6" ${F} stroke="none"/>` +
+    `<circle cx="19.3" cy="6.7" r="1.3" ${F} stroke="none"/>`,
+  ],
+  kalte: [
+    "1.4",
+    `<circle cx="11" cy="12.5" r="8.4" stroke-opacity="0.3" stroke-dasharray="1.5 2.6"/>` +
+    `<circle cx="11" cy="12.5" r="6" ${F} stroke="none"/>` +
+    `<circle class="emo-mask" cx="13.7" cy="11" r="5.6" stroke-opacity="0.5"/>`,
+  ],
+  vienatve: [
+    "1.4",
+    `<circle cx="8.5" cy="15.5" r="3.4" ${F} fill-opacity="0.22"/>` +
+    `<ellipse cx="8.5" cy="15.5" rx="6" ry="1.8" transform="rotate(-16 8.5 15.5)"/>` +
+    `<path d="M18.5 3.6V7.4M16.6 5.5H20.4" stroke-width="1.2"/>`,
+  ],
+  viltis: [
+    "1.5",
+    `<circle cx="12" cy="11" r="2.6" ${F} stroke="none"/>` +
+    `<path d="M12 4.6V6.2M7.6 6.6L8.7 7.7M16.4 6.6L15.3 7.7M5.6 11H7.2M16.8 11H18.4" stroke-opacity="0.85"/>` +
+    `<path class="emo-mask" d="M1.5 21Q12 14.6 22.5 21V24H1.5Z" stroke="none"/>` +
+    `<path d="M1.5 21Q12 14.6 22.5 21V24H1.5Z" ${F} fill-opacity="0.14" stroke="none"/>` +
+    `<path d="M1.5 21Q12 14.6 22.5 21"/>`,
+  ],
+};
+
+function emotionIcon(emotion: Emotion): string {
+  const [strokeWidth, body] = EMOTION_ICONS[emotion];
+  return `<span class="emo-icon" data-emo="${emotion}" aria-hidden="true">` +
+    `<svg class="emo-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" ` +
+    `stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round">${body}</svg></span>`;
+}
+
+const HEART_ICON = `<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">` +
+  `<path d="M12 19.5s-7.2-4.4-7.2-9.6a4 4 0 017.2-2.4 4 4 0 017.2 2.4c0 5.2-7.2 9.6-7.2 9.6z"/></svg>`;
 
 function excerpt(text: string, max: number): string {
   const clean = text.replace(/\s+/g, " ").trim();
@@ -213,14 +276,14 @@ function renderStoryPage(
   <body>
     <main class="story-page">
       <a class="legal-brand" href="/">
-        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
-          <path class="mark-flame" d="${BRAND_FLAME_PATH}" />
-          <path class="mark-water" d="M5 23c2.2-1.6 4.4-1.6 6.6 0s4.4 1.6 6.6 0 4.4-1.6 6.6 0" />
-        </svg>
+        ${BRAND_MARK_SVG}
         <span>Nuoga Siela</span>
       </a>
       <p class="promise">Mes nežinome, kas tu. Ir nenorime žinoti.</p>
-      <p class="story-meta">${emotionLabel} · 🤍 ${story.hugs}</p>
+      <p class="story-meta" data-emotion="${story.emotion}">
+        ${emotionIcon(story.emotion)}<span>${emotionLabel}</span>
+        <span class="story-hugs" aria-label="Suprantu tave: ${story.hugs}">${HEART_ICON}${story.hugs}</span>
+      </p>
       <p class="story-text">${escapeHtml(story.text)}</p>
       <a class="back-link empty-link" href="/istorijos">← Grįžti į Nuogą Sielą</a>
     </main>
