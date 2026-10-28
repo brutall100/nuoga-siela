@@ -31,7 +31,8 @@
     localStorage.setItem(MINE_KEY, JSON.stringify(mineCount));
   }
 
-  const MAX_LEN = { srautas: 1000, istorija: 5000 };
+  // Ta pati riba srautui ir istorijoms (serveris tikrina tą patį — server/filter.ts).
+  const MAX_LEN = 5000;
 
   // „Švelnus srautas": keiksmai rodomi kaip b*** (tik rodymas, ne cenzūra).
   const SOFT_KEY = "ns_svelnus";
@@ -242,19 +243,13 @@
   const btnRelease = $("#btn-release");
   const btnStory = $("#btn-story");
   const actionBtns = [btnBurn, btnRelease, btnStory];
+  const alsoFeedBox = $("#also-feed");
   // Viena emocija visada pažymėta; numatyta — „Viltis" (ir atidarius, ir po kiekvieno teksto).
   const DEFAULT_EMOTION = "viltis";
   let selectedEmotion = DEFAULT_EMOTION;
 
-  // Laukelis priima istorijos ilgį; srautui per ilgas tekstas tiesiog
-  // nukreipiamas į istoriją (serveris vis tiek tikrina abi ribas). Paspaudus
-  // pritemdytą „Į srautą" plytelę, pranešimas paaiškina kodėl (release()).
   function updateCounter() {
-    const len = input.value.length;
-    const tooLong = len > MAX_LEN.srautas;
-    charCount.textContent = len + " / " + (tooLong ? MAX_LEN.istorija : MAX_LEN.srautas);
-    btnRelease.classList.toggle("is-unavailable", tooLong);
-    btnRelease.setAttribute("aria-disabled", String(tooLong));
+    charCount.textContent = input.value.length + " / " + MAX_LEN;
   }
 
   input.addEventListener("input", updateCounter);
@@ -362,15 +357,13 @@
     if (busy) return;
     const text = input.value.trim();
     if (!text) return nudge(input);
-    if (text.length > MAX_LEN[kind]) {
-      toast(window.t("path.releaseTooLong"), "warn");
-      return nudge(btnStory);
-    }
+    // „Taip pat į srautą" — tik istorijai: serveris sukuria ir 24 val. kopiją sraute.
+    const alsoFeed = kind === "istorija" && alsoFeedBox.checked;
     setBusy(true);
     try {
       const data = await api("/api/posts", {
         method: "POST",
-        body: JSON.stringify({ text, emotion: selectedEmotion, kind }),
+        body: JSON.stringify({ text, emotion: selectedEmotion, kind, alsoFeed }),
       });
       if (data.ok) {
         input.value = "";
@@ -382,6 +375,10 @@
         setTimeout(() => btn.classList.remove("is-sending"), 900);
         if (data.sos) {
           $("#sos-sheet").hidden = false;
+        } else if (data.alsoFeed) {
+          toast(window.t("toast.storyAndFeed"), "calm");
+        } else if (data.feedSkipped) {
+          toast(window.t("toast.feedSkipped"), "warn");
         } else if (kind === "istorija") {
           toast(window.t("toast.storyReleased"), "calm");
         } else {

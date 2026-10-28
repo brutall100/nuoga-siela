@@ -4,6 +4,16 @@ Visi pastebimi projekto pakeitimai bus fiksuojami šiame faile.
 
 Formatas paremtas [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [v3.3] — 2026-10-28
+
+- **Srautas priima iki 5000 ženklų** (buvo 1000) — tiek pat, kiek istorijos. „Į srautą“ plytelė
+  nebepritemdoma ilgam tekstui; skaitiklis rodo „… / 5000“.
+- **Istoriją galima iškart paleisti ir į srautą:** po trimis plytelėmis — žymimasis langelis
+  „Istoriją taip pat paleisti į srautą (24 val.)“. Paspaudus „Į istorijas“ su pažymėtu langeliu,
+  serveris sukuria istoriją ir atskirą srauto kopiją (po 24 val. ji išnyksta, istorija lieka).
+  Kalendoriuje ir bendroje statistikoje tas tekstas ir emocija skaičiuojami vieną kartą. Jei srauto
+  limitas (5 per val.) išnaudotas, istorija vis tiek paskelbiama ir apie tai pranešama.
+
 ## [v3.2] — 2026-10-28
 
 - **Kalendorius:** emocijų legenda perkelta į mėnesio kortelės apačią (po plona linija): šešios

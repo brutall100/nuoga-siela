@@ -2,7 +2,7 @@
 // Vienintelis identifikatorius — kliento atsiųstas X-Device UUID,
 // kuris čia pat paverčiamas salted hash'u ir toliau niekur nekeliauja.
 
-import { checkText, detectCrisis, isEmotion, MAX_STORY_LENGTH } from "./filter.ts";
+import { checkText, detectCrisis, isEmotion } from "./filter.ts";
 import {
   checkRateLimit,
   createPost,
@@ -97,7 +97,7 @@ export async function handleApi(req: Request, url: URL): Promise<Response> {
       const deviceHash = await deviceHashFrom(req);
       if (!deviceHash) return badRequest("Trūksta įrenginio identifikatoriaus.");
 
-      let body: { text?: unknown; emotion?: unknown; kind?: unknown };
+      let body: { text?: unknown; emotion?: unknown; kind?: unknown; alsoFeed?: unknown };
       try {
         body = await req.json();
       } catch {
@@ -108,7 +108,7 @@ export async function handleApi(req: Request, url: URL): Promise<Response> {
       const kind: PostKind = body.kind === "istorija" ? "istorija" : "srautas";
 
       const text = body.text.trim();
-      const filter = kind === "istorija" ? checkText(text, MAX_STORY_LENGTH) : checkText(text);
+      const filter = checkText(text);
       if (!filter.ok) return badRequest(filter.reason);
 
       if (!(await checkRateLimit(deviceHash, kind))) {
@@ -118,12 +118,20 @@ export async function handleApi(req: Request, url: URL): Promise<Response> {
         return json({ ok: false, reason }, 429);
       }
 
+      // Istorija gali būti iškart paleista ir į srautą (24 val.) — tai antra, atskira kopija.
+      // Jei srauto limitas išnaudotas, istorija vis tiek paskelbiama (feedSkipped).
+      const alsoFeed = kind === "istorija" && body.alsoFeed === true;
+      const feedAllowed = alsoFeed && await checkRateLimit(deviceHash, "srautas");
+
       const sos = detectCrisis(text);
       const post = await createPost(deviceHash, text, body.emotion, kind);
       if (kind === "istorija") pingIndexNow(post.id);
+      if (feedAllowed) await createPost(deviceHash, text, body.emotion, "srautas", false);
       return json({
         ok: true,
         sos,
+        alsoFeed: feedAllowed,
+        feedSkipped: alsoFeed && !feedAllowed,
         post: {
           id: post.id,
           text: post.text,
