@@ -230,14 +230,13 @@ simboliai ir trijų kelių ikonos vieną kartą sujuda (`app.js` `greetWriteScre
 `icons.playOnce()`), paskui juda tik pažymėtas. Srauto ir istorijos skirtumas (24 val. / lieka, kol
 ištrinsi) aiškinamas „Kaip tai veikia“ lape, Srauto ir Istorijų info lapuose ir pranešime po
 veiksmo. Ilgio riba abiem ta pati — 5000 ženklų (`server/filter.ts` `MAX_TEXT_LENGTH`, `app.js`
-`MAX_LEN`). Po plytelėmis — žymimasis langelis „Istoriją taip pat paleisti į srautą“ (`#also-feed`,
-galioja tik „Į istorijas“): serveris (`POST /api/posts` su `alsoFeed: true`) sukuria istoriją ir
-atskirą 24 val. srauto kopiją; `stats` skaičiuoja tą tekstą ir emociją vieną kartą
-(`createPost(...,
-countStats = false)`), kalendoriuje — taip pat vienas įrašas. Jei srauto limitas
-išnaudotas, istorija vis tiek paskelbiama (`feedSkipped`). Po langeliu lieka viena eilutė „Istorijas
-gali rasti ir Google“ — tai privatumo atskleidimas prieš paskelbiant amžiną viešą tekstą, neišimk
-jos.
+`MAX_LEN`). Autorius sraute ant savo teksto mato „Į istorijas“ (`app.js` `buildKeepButton()`, savo
+tekstai — iš `/api/mine`): paspaudus `POST /api/posts/:id/keep` sukuriama istorija su `publishAt` =
+srauto teksto `expiresAt` — iki tol ji nematoma (`listStories`/`getPublicStory`/`listMine` ją
+praleidžia), o srauto įrašas vis tiek ištrinamas po 24 val. „Suprantu tave“ ir paslėpimas po
+pranešimų keliauja į laukiančią istoriją (`keptAs`); `/unkeep` ją ištrina, kol srautas dar gyvas. Po
+plytelėmis lieka viena eilutė „Istorijas gali rasti ir Google“ — tai privatumo atskleidimas prieš
+paskelbiant amžiną viešą tekstą, neišimk jos.
 
 `:hover` stilius plytelėms ir chip'ams rašyk tik `@media (hover: hover)` viduje — telefone `:hover`
 „prilimpa“ po paspaudimo, ir atžymėta plytelė atrodo vis dar pažymėta.

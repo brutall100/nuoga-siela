@@ -152,6 +152,8 @@
       '<path d="M5.5 11.5a6.5 6.5 0 0013 0M12 18v2.5"/>',
     stop: `<rect x="7" y="7" width="10" height="10" rx="2" ${F}/>`,
     check: '<circle cx="12" cy="12" r="8.5"/><path d="M8.3 12.3l2.5 2.5 5-5.2"/>',
+    book: '<path d="M12 6.8C10.4 5.5 7.9 4.8 3.8 4.8v12.8c4.1 0 6.6.7 8.2 2 1.6-1.3 4.1-2 ' +
+      '8.2-2V4.8c-4.1 0-6.6.7-8.2 2z"/><path d="M12 6.8v12.8"/>',
   };
 
   // Vienas kartas išparsinti, toliau — tik kopijos (be innerHTML, be vartotojo teksto).

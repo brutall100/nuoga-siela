@@ -42,8 +42,9 @@ the ⚙ button at the top.
   planet), hope (a star rising over the horizon). The same symbols show up in the stream, the
   stories and the calendar; the selected one moves.
 - 🔥 **Burn it.** The text turns into embers and disappears. It is never sent to the server.
-- 🏮 **Release it** to the **Stream**: the text is physically deleted after 24 h. A story can also
-  be released to the stream at the same time (one checkbox). Up to 5000 characters either way.
+- 🏮 **Release it** to the **Stream**: the text is physically deleted after 24 h, unless you (only
+  you) tap "To Stories" on it: then it moves to Stories when its 24 hours are up. Up to 5000
+  characters either way.
 - 📖 **Keep it as a story**: a text that stays until you delete it and gets its own page.
 - 🤍 **"I understand you".** Support without comments, one vote per device.
 - 🆘 **SOS.** Helplines and a breathing circle. If the text contains crisis words, help is offered

@@ -4,6 +4,17 @@ Visi pastebimi projekto pakeitimai bus fiksuojami šiame faile.
 
 Formatas paremtas [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [v3.4] — 2026-10-28
+
+- **Savo srauto tekstą galima perkelti į istorijas:** autorius (tik jis) ant savo teksto sraute mato
+  „Į istorijas“. Paspaudus tekstas lieka sraute iki savo 24 val. pabaigos, o tada atsiranda
+  istorijose (su tais pačiais „Suprantu tave“). Nepaspaudus — išnyksta kaip anksčiau. Paspaudus dar
+  kartą („Bus istorijose“) perkėlimas atšaukiamas. Galioja istorijų limitas (2 per parą). Serveryje:
+  `POST /api/posts/:id/keep|unkeep`, laukianti istorija su `publishAt` iki tol niekur nerodoma (nei
+  sąraše, nei permalink'e, nei sitemap'e).
+- Išimtas v3.3 žymimasis langelis „Istoriją taip pat paleisti į srautą“ rašymo ekrane (trukdė).
+- Srauto kortelėse likęs laikas perkeltas į antraštę (dešinėje), kad apačioje tilptų veiksmai.
+
 ## [v3.3] — 2026-10-28
 
 - **Srautas priima iki 5000 ženklų** (buvo 1000) — tiek pat, kiek istorijos. „Į srautą“ plytelė

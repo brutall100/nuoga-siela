@@ -7,12 +7,14 @@ import {
   getWeeklyMood,
   hashDevice,
   hugPost,
+  keepAsStory,
   listFeed,
   listMine,
   listStories,
   reportPost,
   setKvForTesting,
   STORY_LIMIT_PER_DAY,
+  unkeepStory,
 } from "./store.ts";
 
 function assert(cond: boolean, msg: string) {
@@ -196,19 +198,51 @@ Deno.test("statistika: skaičiuoja postus ir hugs", async () => {
   kv.close();
 });
 
-Deno.test("istorija + srautas: tas pats tekstas statistikoje skaičiuojamas vieną kartą", async () => {
+Deno.test("Į istorijas: srauto tekstas persikelia tik išnykus iš srauto", async () => {
   const kv = await freshKv();
   const dev = await hashDevice("d1");
+  const kitas = await hashDevice("d2");
 
-  const story = await createPost(dev, "abiejose vietose", "kalte", "istorija");
-  const post = await createPost(dev, "abiejose vietose", "kalte", "srautas", false);
+  const post = await createPost(dev, "perkelk mane", "kalte", "srautas");
+  assert(!(await keepAsStory(post.id, kitas)).ok, "svetimas negali perkelti");
 
-  assert(story.expiresAt === 0, "istorija be termino");
-  assert(post.expiresAt > Date.now(), "srauto kopija su 24 val. terminu");
-  assert((await listFeed()).some((p) => p.id === post.id), "matosi sraute");
-  assert((await listStories()).some((p) => p.id === story.id), "matosi istorijose");
-  assert((await getStats()).postsToday === 1, "vienas tekstas — vienas kartas");
-  assert((await getWeeklyMood()).counts.kalte === 1, "emocija — vieną kartą");
+  const res = await keepAsStory(post.id, dev);
+  assert(res.ok && res.publishAt === post.expiresAt, "istorija laukia srauto pabaigos");
+  assert((await listFeed()).some((p) => p.id === post.id), "kol kas lieka sraute");
+  assert((await listStories()).length === 0, "istorijose dar nesimato");
+  const mine = await listMine(dev);
+  assert(mine.length === 1 && mine[0].kept, "autorius mato, kad pažymėta");
+
+  // „Suprantu tave" keliauja kartu.
+  await hugPost(post.id, kitas);
+  const stories = [];
+  for await (
+    const e of kv.list<{ id: string; hugs: number; publishAt: number }>({ prefix: ["story"] })
+  ) {
+    stories.push(e.value);
+  }
+  assert(stories.length === 1 && stories[0].hugs === 1, "hug nukopijuotas į būsimą istoriją");
+  assert(!(await getPublicStory(stories[0].id)), "permalink'as dar 404");
+
+  // Atšaukus — laukianti istorija dingsta.
+  assert(await unkeepStory(post.id, dev), "atšaukta");
+  assert(!(await kv.get(["story", stories[0].id])).value, "istorija ištrinta");
+  assert(!(await listMine(dev))[0].kept, "nebepažymėta");
+
+  // Vėl pažymim ir „praleidžiam" laiką: istorija tampa matoma.
+  await keepAsStory(post.id, dev);
+  const after = await listMine(dev);
+  assert(after.length === 1, "laukianti istorija listMine nerodoma");
+  for await (const e of kv.list<{ publishAt: number }>({ prefix: ["story"] })) {
+    await kv.set(e.key, { ...e.value, publishAt: Date.now() - 1 });
+  }
+  const visible = await listStories();
+  assert(visible.length === 1 && visible[0].text === "perkelk mane", "istorija matoma");
+  assert(!!(await getPublicStory(visible[0].id)), "permalink'as veikia");
+
+  // Ištrinant mano duomenis — dingsta ir ji.
+  await deleteDeviceData(dev);
+  assert((await listStories()).length === 0, "ištrinta kartu su įrenginio duomenimis");
 
   kv.close();
 });
