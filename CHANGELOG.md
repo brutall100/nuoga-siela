@@ -4,6 +4,15 @@ Visi pastebimi projekto pakeitimai bus fiksuojami šiame faile.
 
 Formatas paremtas [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [v2.11] — 2026-10-28
+
+- **Viršutinė juosta nebepasislepia:** logotipas, ⚙, tema ir SOS lieka prisegti viršuje slenkant.
+  Kol puslapis nepaslinktas, juosta permatoma kaip anksčiau; paslinkus gauna tą patį stiklo foną ir
+  apatinę liniją kaip apatinis meniu (švelnus perėjimas).
+- `html`/`body`: `overflow-x: hidden` → `clip` (su `hidden` atsarginiu), kitaip `position: sticky`
+  neveikia; `scroll-padding-top`, kad fokusuojami elementai nelįstų po juosta; viršuje paisoma
+  `safe-area-inset-top` (iPhone su „iškirpte“).
+
 ## [v2.10] — 2026-10-27
 
 - **Pataisyta: programėlė neatsinaujindavo po diegimo.** Service worker'is (`public/sw.js`) viską

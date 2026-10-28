@@ -255,6 +255,11 @@ nekuria. `public/js/ui.js` eksportuoja `window.ui.reveal(el)` ir `window.ui.coun
 Dinaminius parametrus dalelėms dėk per `el.style.setProperty()` (CSSOM) — `style=""` atributai
 HTML'e blokuojami CSP. Šriftai savi (`public/fonts/`), ne iš Google — dėl anonimiškumo.
 
+Viršutinė juosta (`.topbar`) prisegta (`position: sticky`); paslinkus `app.js` uždeda
+`.is-scrolled`, ir ji gauna tą patį stiklo foną kaip apatinis meniu. `html`/`body` turi
+`overflow-x: clip`, ne `hidden` — `hidden` paverstų `body` slinkimo konteineriu ir `sticky` nustotų
+veikti.
+
 ### Atnaujinimai: service worker ir talpinimas
 
 `public/sw.js` niekada neturi užlaikyti senos versijos. HTML, JS ir CSS — **network-first** su

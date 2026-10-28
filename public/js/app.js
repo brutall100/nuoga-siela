@@ -147,6 +147,12 @@
 
   addEventListener("popstate", render);
 
+  // Viršutinė juosta prisegta; paslinkus ji gauna stiklo foną (žr. .topbar main.css).
+  const topbar = $(".topbar");
+  const markScrolled = () => topbar.classList.toggle("is-scrolled", scrollY > 4);
+  addEventListener("scroll", markScrolled, { passive: true });
+  markScrolled();
+
   // Perimame paspaudimus ant vidinių nuorodų (tabbar, brand, SOS, tarpiniai
   // "→" linkai), kad naršymas vyktų per pushState be viso puslapio perkrovimo.
   // Be JS naršyklė tiesiog atlieka įprastą navigaciją — main.ts fallback'as
