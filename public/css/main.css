@@ -74,6 +74,7 @@
   /* Linijos */
   --line: rgba(140, 200, 195, 0.14);
   --line-soft: rgba(140, 200, 195, 0.08);
+  --line-divider: rgba(140, 200, 195, 0.1);
   --line-tile: rgba(140, 200, 195, 0.16);
   --line-round: rgba(140, 200, 195, 0.18);
   --line-hug: rgba(140, 200, 195, 0.2);
@@ -177,6 +178,7 @@
 
   --line: rgba(16, 72, 70, 0.14);
   --line-soft: rgba(16, 72, 70, 0.09);
+  --line-divider: rgba(16, 72, 70, 0.11);
   --line-tile: rgba(16, 72, 70, 0.16);
   --line-round: rgba(16, 72, 70, 0.18);
   --line-hug: rgba(16, 72, 70, 0.22);
@@ -2165,21 +2167,34 @@ h2 {
   --ei: 14px;
 }
 
+/* Legenda — mėnesio kortelės apačioje, po plona linija: simbolis virš pavadinimo. */
 .mood-legend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 14px;
-  padding: 0 4px;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 2px;
+  margin-top: 4px;
+  padding-top: 12px;
+  list-style: none;
+  border-top: 1px solid var(--line-divider);
 }
-.mood-legend > span {
+.mood-legend li {
+  min-width: 0;
   display: flex;
+  flex-direction: column;
   align-items: center;
   gap: 5px;
-  font-size: 12px;
+  font-size: 11px;
+  font-weight: 600;
   color: var(--text-dim);
 }
+.mood-legend li > span:last-child {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .mood-legend .emo-icon {
-  --ei: 14px;
+  --ei: 16px;
 }
 
 /* Kaip jaučiasi visi — tik suminiai skaičiai iš /api/mood. */

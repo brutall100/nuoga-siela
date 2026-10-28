@@ -161,6 +161,7 @@
       "mood.months": "sau,vas,kov,bal,geg,bir,lie,rgp,rgs,spa,lap,grd",
       "mood.unmarked": "nepažymėta",
       "mood.today": "šiandien",
+      "mood.legendAria": "Simbolių reikšmės",
       "mood.sos": "Jei sunku jau kelias dienas iš eilės — nebūk su tuo viena(s). Pagalba →",
       "mood.prev": "Ankstesnis mėnuo",
       "mood.next": "Kitas mėnuo",
@@ -332,6 +333,7 @@
       "mood.months": "Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec",
       "mood.unmarked": "not marked",
       "mood.today": "today",
+      "mood.legendAria": "What the symbols mean",
       "mood.sos":
         "If it's been hard for several days in a row, you don't have to carry it alone. Help →",
       "mood.prev": "Previous month",

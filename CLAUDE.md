@@ -203,8 +203,9 @@ pasirinkta — deginimas vis tiek nieko nesiunčia); ta pati funkcija paleidžia
 animaciją (emocijos simbolis nuskrenda į Kalendoriaus tab'ą). „Ištrinti mano duomenis" jį išvalo
 (`window.mood.clear()`). Bendra savaitės nuotaika rodoma tik kai `total >= 5`, kaip ir socialinis
 įrodymas. Kalendoriaus ekranas: „Tavo savaitė“ — einamosios savaitės pirmadienis–sekmadienis
-(šiandienos simbolis gyvas), mėnesio tinklelis su dienos dominuojančios emocijos simboliu, legenda,
-o po jais — bendra nuotaika ir SOS užuomina (abi rodomos tik esant sąlygoms).
+(šiandienos simbolis gyvas), mėnesio tinklelis su dienos dominuojančios emocijos simboliu ir legenda
+tos pačios kortelės apačioje, o po jais — bendra nuotaika ir SOS užuomina (abi rodomos tik esant
+sąlygoms).
 
 Garsai (`public/js/sounds.js`) — failai `public/sounds/{upe,lietus,lauzas}.mp3`, grojami per Web
 Audio (`fetch` + `decodeAudioData`, kilpa, `GainNode` fade), ne per `<audio>`: iOS neleidžia keisti

@@ -4,6 +4,11 @@ Visi pastebimi projekto pakeitimai bus fiksuojami šiame faile.
 
 Formatas paremtas [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [v3.2] — 2026-10-28
+
+- **Kalendorius:** emocijų legenda perkelta į mėnesio kortelės apačią (po plona linija): šešios
+  vienodos skiltys, simbolis virš pavadinimo — pagal atnaujintą dizainą.
+
 ## [v3.1] — 2026-10-28
 
 - Atidarius rašymo ekraną **visi emocijų simboliai vieną kartą sujuda** (kiekvienas savo judesiu), o
