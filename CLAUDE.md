@@ -12,6 +12,14 @@ spręsk pagal pakeitimo apimtį). Prieš commit'ą papildyk `CHANGELOG.md` — a
 sekcija su tuo pačiu numeriu, arba įrašu `[Unreleased]` sekcijoje, jei versija dar neapsisprendus
 apie release'ą.
 
+## Darbo eiga: visada į `main`
+
+Savininko nurodymas: kiekvienas užbaigtas ir patikrintas pakeitimas **visada sujungiamas į `main`**
+be papildomo klausimo — PR iš darbo šakos → palaukti žalio CI → squash merge su `(#N)` pavadinime
+(kelių versijų PR — rebase, kad kiekvienas `vX.Y` commit'as liktų atskiras). Po merge Deno Deploy
+pats įdiegia į nuogasiela.lt; būseną matyti GitHub commit status'e `deploy/brutall100/nuoga-siela`.
+Raudonas CI — taisyti ir tik tada jungti, niekada nejungti raudono.
+
 ## Komandos
 
 ```bash
