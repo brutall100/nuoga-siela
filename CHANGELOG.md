@@ -4,6 +4,11 @@ Visi pastebimi projekto pakeitimai bus fiksuojami šiame faile.
 
 Formatas paremtas [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [v2.12] — 2026-10-28
+
+- CLAUDE.md: nauja taisyklė „Darbo eiga: visada į `main`“ — patikrinti pakeitimai jungiami į `main`
+  iškart po žalio CI, be papildomo klausimo.
+
 ## [v2.11] — 2026-10-28
 
 - **Viršutinė juosta nebepasislepia:** logotipas, ⚙, tema ir SOS lieka prisegti viršuje slenkant.
