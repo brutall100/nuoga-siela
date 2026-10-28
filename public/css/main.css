@@ -1140,10 +1140,6 @@ h2 {
 .path-release .path-icon {
   stroke-width: 1.9;
 }
-.path-release.is-unavailable {
-  opacity: 0.45;
-  box-shadow: none;
-}
 /* Į istorijas — vanduo, bet ramus: kontūras. */
 .path-story {
   border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
@@ -1158,7 +1154,7 @@ h2 {
   .path-burn:hover:not(:disabled) .path-icon {
     animation: flame-flicker 0.8s ease-in-out infinite;
   }
-  .path-release:hover:not(:disabled):not(.is-unavailable) .path-icon {
+  .path-release:hover:not(:disabled) .path-icon {
     animation: float-away 1.2s ease-in-out infinite;
   }
   .path-story:hover:not(:disabled) .path-icon {
@@ -1179,6 +1175,55 @@ h2 {
 
 .path.is-sending .path-icon {
   animation: sail-off 0.9s ease-in forwards;
+}
+
+/* „Istoriją taip pat paleisti į srautą" — galioja tik „Į istorijas" plytelei. */
+.also-feed {
+  align-self: center;
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-dim);
+  cursor: pointer;
+  user-select: none;
+}
+.also-feed input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.also-feed-box {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  border: 1.5px solid var(--line-dash);
+  background: var(--tile);
+  color: transparent;
+  transition: background-color 0.18s, border-color 0.18s, color 0.18s;
+}
+.also-feed-box .ico {
+  width: 14px;
+  height: 14px;
+  stroke-width: 2.4;
+}
+.also-feed input:checked + .also-feed-box {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.also-feed input:checked ~ span:last-child {
+  color: var(--accent-text);
+}
+.also-feed input:focus-visible + .also-feed-box {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
 }
 
 .paths-note {

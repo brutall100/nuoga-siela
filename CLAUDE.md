@@ -227,12 +227,17 @@ pakeičiama kita. Todėl nepakeitus emocijos į kalendorių ir `stats` keliauja 
 sąmoningas produkto sprendimas. Simboliai visada pilnos spalvos (jokio pilkinimo) — pažymėtą rodo
 plytelės fonas ir rėmelis, o pažymėtos emocijos simbolis juda. Atidarius rašymo ekraną visi
 simboliai ir trijų kelių ikonos vieną kartą sujuda (`app.js` `greetWriteScreen()`,
-`icons.playOnce()`), paskui juda tik pažymėtas. Srauto ir istorijos skirtumas (24 val. ir 1000
-ženklų / lieka ir 5000 ženklų) aiškinamas „Kaip tai veikia“ lape, Srauto ir Istorijų info lapuose ir
-pranešime po veiksmo. Po plytelėmis lieka viena eilutė „Istorijas gali rasti ir Google“ — tai
-privatumo atskleidimas prieš paskelbiant amžiną viešą tekstą, neišimk jos. Laukelis priima 5000
-ženklų; viršijus 1000, „Į srautą“ plytelė tampa `aria-disabled` (pritemdyta), o paspaudus pranešimas
-nukreipia į istorijas (serveris vis tiek tikrina abi ribas).
+`icons.playOnce()`), paskui juda tik pažymėtas. Srauto ir istorijos skirtumas (24 val. / lieka, kol
+ištrinsi) aiškinamas „Kaip tai veikia“ lape, Srauto ir Istorijų info lapuose ir pranešime po
+veiksmo. Ilgio riba abiem ta pati — 5000 ženklų (`server/filter.ts` `MAX_TEXT_LENGTH`, `app.js`
+`MAX_LEN`). Po plytelėmis — žymimasis langelis „Istoriją taip pat paleisti į srautą“ (`#also-feed`,
+galioja tik „Į istorijas“): serveris (`POST /api/posts` su `alsoFeed: true`) sukuria istoriją ir
+atskirą 24 val. srauto kopiją; `stats` skaičiuoja tą tekstą ir emociją vieną kartą
+(`createPost(...,
+countStats = false)`), kalendoriuje — taip pat vienas įrašas. Jei srauto limitas
+išnaudotas, istorija vis tiek paskelbiama (`feedSkipped`). Po langeliu lieka viena eilutė „Istorijas
+gali rasti ir Google“ — tai privatumo atskleidimas prieš paskelbiant amžiną viešą tekstą, neišimk
+jos.
 
 `:hover` stilius plytelėms ir chip'ams rašyk tik `@media (hover: hover)` viduje — telefone `:hover`
 „prilimpa“ po paspaudimo, ir atžymėta plytelė atrodo vis dar pažymėta.

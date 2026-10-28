@@ -40,9 +40,9 @@ pasiekiami ⚙ mygtuku viršuje.
   (užtemimas), vienatvė (viena planeta), viltis (žvaigždė virš horizonto). Tie patys simboliai
   rodomi sraute, istorijose ir kalendoriuje; pažymėtas — juda.
 - 🔥 **Sudegink.** Tekstas virsta žarijomis ir išnyksta. Į serverį jis niekada nesiunčiamas.
-- 🏮 **Paleisk** į **Srautą**: po 24 val. tekstas fiziškai ištrinamas.
-- 📖 **Palik istoriją**: ilgesnis tekstas (iki 5000 ženklų) lieka, kol pats ištrini, ir turi savo
-  puslapį.
+- 🏮 **Paleisk** į **Srautą**: po 24 val. tekstas fiziškai ištrinamas. Istoriją galima tuo pačiu
+  paleisti ir į srautą (vienas žymimasis langelis). Abiem atvejais — iki 5000 ženklų.
+- 📖 **Palik istoriją**: tekstas lieka, kol pats ištrini, ir turi savo puslapį.
 - 🤍 **„Suprantu tave“.** Palaikymas be komentarų, vienas balsas vienam įrenginiui.
 - 🆘 **SOS.** Pagalbos linijos ir kvėpavimo ratas. Jei tekste yra krizės žodžių, pagalba pasiūloma
   švelniai, bet tekstas neblokuojamas.

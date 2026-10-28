@@ -1,8 +1,8 @@
 // Teksto filtras. Principas: keiksmai leidžiami (tai išsiliejimo erdvė),
 // blokuojamas tik akivaizdus spamas ir asmens duomenis primenantys šablonai.
 
-export const MAX_TEXT_LENGTH = 1000;
-export const MAX_STORY_LENGTH = 5000;
+// Ta pati riba srautui ir istorijoms (iki v3.3 srautas turėjo 1000).
+export const MAX_TEXT_LENGTH = 5000;
 
 export const EMOTIONS = ["pyktis", "liudesys", "nerimas", "kalte", "vienatve", "viltis"] as const;
 export type Emotion = (typeof EMOTIONS)[number];

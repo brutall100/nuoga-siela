@@ -196,6 +196,23 @@ Deno.test("statistika: skaičiuoja postus ir hugs", async () => {
   kv.close();
 });
 
+Deno.test("istorija + srautas: tas pats tekstas statistikoje skaičiuojamas vieną kartą", async () => {
+  const kv = await freshKv();
+  const dev = await hashDevice("d1");
+
+  const story = await createPost(dev, "abiejose vietose", "kalte", "istorija");
+  const post = await createPost(dev, "abiejose vietose", "kalte", "srautas", false);
+
+  assert(story.expiresAt === 0, "istorija be termino");
+  assert(post.expiresAt > Date.now(), "srauto kopija su 24 val. terminu");
+  assert((await listFeed()).some((p) => p.id === post.id), "matosi sraute");
+  assert((await listStories()).some((p) => p.id === story.id), "matosi istorijose");
+  assert((await getStats()).postsToday === 1, "vienas tekstas — vienas kartas");
+  assert((await getWeeklyMood()).counts.kalte === 1, "emocija — vieną kartą");
+
+  kv.close();
+});
+
 Deno.test("savaitės nuotaika: tik suminiai emocijų skaičiai", async () => {
   const kv = await freshKv();
   const dev = await hashDevice("d1");

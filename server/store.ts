@@ -96,6 +96,9 @@ export async function createPost(
   text: string,
   emotion: Emotion,
   kind: PostKind = "srautas",
+  // false — kai tas pats tekstas skelbiamas antrą kartą (istorija + srautas): statistikoje
+  // vienas tekstas ir viena emocija skaičiuojami vieną kartą.
+  countStats = true,
 ): Promise<Post> {
   const kv = await getKv();
   const now = Date.now();
@@ -117,8 +120,10 @@ export async function createPost(
     .set([keyRoot(kind), post.id], post, ttl)
     .set(["byDevice", deviceHash, post.id], kind, ttl)
     .commit();
-  await bumpStat("posts");
-  await bumpEmotionStat(emotion);
+  if (countStats) {
+    await bumpStat("posts");
+    await bumpEmotionStat(emotion);
+  }
   return post;
 }
 
