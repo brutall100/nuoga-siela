@@ -1177,55 +1177,6 @@ h2 {
   animation: sail-off 0.9s ease-in forwards;
 }
 
-/* „Istoriją taip pat paleisti į srautą" — galioja tik „Į istorijas" plytelei. */
-.also-feed {
-  align-self: center;
-  min-height: 36px;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0 4px;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-dim);
-  cursor: pointer;
-  user-select: none;
-}
-.also-feed input {
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
-}
-.also-feed-box {
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
-  display: grid;
-  place-items: center;
-  border-radius: 6px;
-  border: 1.5px solid var(--line-dash);
-  background: var(--tile);
-  color: transparent;
-  transition: background-color 0.18s, border-color 0.18s, color 0.18s;
-}
-.also-feed-box .ico {
-  width: 14px;
-  height: 14px;
-  stroke-width: 2.4;
-}
-.also-feed input:checked + .also-feed-box {
-  border-color: var(--accent);
-  background: var(--accent);
-  color: var(--on-accent);
-}
-.also-feed input:checked ~ span:last-child {
-  color: var(--accent-text);
-}
-.also-feed input:focus-visible + .also-feed-box {
-  outline: 2px solid var(--focus);
-  outline-offset: 3px;
-}
-
 .paths-note {
   color: var(--text-faint);
   font-size: 12px;
@@ -1584,11 +1535,40 @@ h2 {
   }
 }
 
+/* Savo srauto teksto „Į istorijas" (app.js buildKeepButton()). */
+.keep-btn {
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 14px 0 12px;
+  border-radius: 20px;
+  border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  background: var(--accent-faint);
+  color: var(--accent-text);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+}
+.keep-btn .line-svg {
+  width: 16px;
+  height: 16px;
+}
+.keep-btn.is-kept {
+  border-color: var(--accent-line);
+  background: var(--accent-tint);
+}
+.keep-btn:disabled {
+  opacity: 0.6;
+}
+
 .time-left {
+  margin-left: auto;
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  padding: 0 6px;
+  padding: 0 2px;
   font-size: 12px;
   color: var(--text-faint);
   font-variant-numeric: tabular-nums;

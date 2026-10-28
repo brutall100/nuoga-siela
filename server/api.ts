@@ -11,11 +11,13 @@ import {
   getWeeklyMood,
   hashDevice,
   hugPost,
+  keepAsStory,
   listFeed,
   listMine,
   listStories,
   type PostKind,
   reportPost,
+  unkeepStory,
 } from "./store.ts";
 
 function json(body: unknown, status = 200): Response {
@@ -97,7 +99,7 @@ export async function handleApi(req: Request, url: URL): Promise<Response> {
       const deviceHash = await deviceHashFrom(req);
       if (!deviceHash) return badRequest("Trūksta įrenginio identifikatoriaus.");
 
-      let body: { text?: unknown; emotion?: unknown; kind?: unknown; alsoFeed?: unknown };
+      let body: { text?: unknown; emotion?: unknown; kind?: unknown };
       try {
         body = await req.json();
       } catch {
@@ -118,20 +120,12 @@ export async function handleApi(req: Request, url: URL): Promise<Response> {
         return json({ ok: false, reason }, 429);
       }
 
-      // Istorija gali būti iškart paleista ir į srautą (24 val.) — tai antra, atskira kopija.
-      // Jei srauto limitas išnaudotas, istorija vis tiek paskelbiama (feedSkipped).
-      const alsoFeed = kind === "istorija" && body.alsoFeed === true;
-      const feedAllowed = alsoFeed && await checkRateLimit(deviceHash, "srautas");
-
       const sos = detectCrisis(text);
       const post = await createPost(deviceHash, text, body.emotion, kind);
       if (kind === "istorija") pingIndexNow(post.id);
-      if (feedAllowed) await createPost(deviceHash, text, body.emotion, "srautas", false);
       return json({
         ok: true,
         sos,
-        alsoFeed: feedAllowed,
-        feedSkipped: alsoFeed && !feedAllowed,
         post: {
           id: post.id,
           text: post.text,
@@ -151,6 +145,25 @@ export async function handleApi(req: Request, url: URL): Promise<Response> {
       const post = await hugPost(hugMatch[1], deviceHash);
       if (!post) return json({ ok: false, reason: "Šis tekstas jau išnyko." }, 404);
       return json({ ok: true, hugs: post.hugs });
+    }
+
+    // Autoriaus „Į istorijas" savo srauto tekstui (ir atšaukimas, kol tekstas dar sraute).
+    const keepMatch = path.match(/^\/api\/posts\/([\w-]+)\/(keep|unkeep)$/);
+    if (method === "POST" && keepMatch) {
+      const deviceHash = await deviceHashFrom(req);
+      if (!deviceHash) return badRequest("Trūksta įrenginio identifikatoriaus.");
+      if (keepMatch[2] === "unkeep") {
+        const ok = await unkeepStory(keepMatch[1], deviceHash);
+        return ok
+          ? json({ ok: true })
+          : json({ ok: false, reason: "Šis tekstas jau išnyko." }, 404);
+      }
+      const res = await keepAsStory(
+        keepMatch[1],
+        deviceHash,
+        () => checkRateLimit(deviceHash, "istorija"),
+      );
+      return res.ok ? json(res) : json(res, 400);
     }
 
     const reportMatch = path.match(/^\/api\/posts\/([\w-]+)\/report$/);

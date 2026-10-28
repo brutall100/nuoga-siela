@@ -243,7 +243,6 @@
   const btnRelease = $("#btn-release");
   const btnStory = $("#btn-story");
   const actionBtns = [btnBurn, btnRelease, btnStory];
-  const alsoFeedBox = $("#also-feed");
   // Viena emocija visada pažymėta; numatyta — „Viltis" (ir atidarius, ir po kiekvieno teksto).
   const DEFAULT_EMOTION = "viltis";
   let selectedEmotion = DEFAULT_EMOTION;
@@ -357,13 +356,11 @@
     if (busy) return;
     const text = input.value.trim();
     if (!text) return nudge(input);
-    // „Taip pat į srautą" — tik istorijai: serveris sukuria ir 24 val. kopiją sraute.
-    const alsoFeed = kind === "istorija" && alsoFeedBox.checked;
     setBusy(true);
     try {
       const data = await api("/api/posts", {
         method: "POST",
-        body: JSON.stringify({ text, emotion: selectedEmotion, kind, alsoFeed }),
+        body: JSON.stringify({ text, emotion: selectedEmotion, kind }),
       });
       if (data.ok) {
         input.value = "";
@@ -375,10 +372,6 @@
         setTimeout(() => btn.classList.remove("is-sending"), 900);
         if (data.sos) {
           $("#sos-sheet").hidden = false;
-        } else if (data.alsoFeed) {
-          toast(window.t("toast.storyAndFeed"), "calm");
-        } else if (data.feedSkipped) {
-          toast(window.t("toast.feedSkipped"), "warn");
         } else if (kind === "istorija") {
           toast(window.t("toast.storyReleased"), "calm");
         } else {
@@ -542,7 +535,8 @@
     return btn;
   }
 
-  function buildCard(post, now) {
+  // mine — tik autoriaus srauto tekstams: { kept } iš /api/mine (žr. loadFeed()).
+  function buildCard(post, now, mine) {
     const isStory = post.kind === "istorija";
     const card = document.createElement("article");
     card.className = "card";
@@ -554,6 +548,16 @@
     const emoName = document.createElement("span");
     emoName.textContent = window.t("emo." + post.emotion);
     emo.append(window.icons.emoSpan(post.emotion, false), emoName);
+    if (!isStory) {
+      // Likęs laikas — antraštėje dešinėje, kad apačioje tilptų veiksmai.
+      card.dataset.expires = post.expiresAt;
+      const timeLeft = document.createElement("span");
+      timeLeft.className = "time-left";
+      const timeText = document.createElement("span");
+      timeText.textContent = formatTimeLeft(post.expiresAt - now);
+      timeLeft.append(window.icons.line("clock"), timeText);
+      emo.append(timeLeft);
+    }
 
     // Ilgas tekstas — tik keturios eilutės; „Skaityti toliau" atsiranda tik jei
     // tekstas tikrai netilpo (markClamped(), kai kortelė jau puslapyje).
@@ -609,14 +613,16 @@
         toast(window.t("toast.linkCopied"), "calm");
       });
       foot.append(copyLink);
-    } else {
-      card.dataset.expires = post.expiresAt;
-      const timeLeft = document.createElement("span");
-      timeLeft.className = "time-left";
-      const timeText = document.createElement("span");
-      timeText.textContent = formatTimeLeft(post.expiresAt - now);
-      timeLeft.append(window.icons.line("clock"), timeText);
-      foot.append(timeLeft);
+    } else if (mine) {
+      // Savo tekstui — „Į istorijas": lieka sraute iki 24 val. pabaigos, tada persikelia.
+      foot.append(buildKeepButton(post, mine.kept));
+    }
+
+    // Savo teksto pranešti nėra prasmės.
+    if (mine) {
+      card.append(foot);
+      window.ui.reveal(card);
+      return card;
     }
 
     const report = iconButton("report", "flag", window.t("report.title"));
@@ -633,6 +639,40 @@
     return card;
   }
 
+  function buildKeepButton(post, kept) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "keep-btn";
+    const label = document.createElement("span");
+    const show = (on) => {
+      btn.classList.toggle("is-kept", on);
+      btn.setAttribute("aria-pressed", String(on));
+      btn.title = window.t(on ? "keep.cancelHint" : "keep.hint");
+      label.textContent = window.t(on ? "keep.on" : "keep.off");
+      btn.replaceChildren(window.icons.line(on ? "check" : "book"), label);
+    };
+    show(kept);
+    btn.addEventListener("click", async () => {
+      const on = !btn.classList.contains("is-kept");
+      btn.disabled = true;
+      try {
+        const data = await api(`/api/posts/${post.id}/${on ? "keep" : "unkeep"}`, {
+          method: "POST",
+        });
+        if (data.ok) {
+          show(on);
+          toast(window.t(on ? "toast.kept" : "toast.unkept"), "calm");
+        } else {
+          toast(data.reason || window.t("toast.serverFail"), "warn");
+        }
+      } catch {
+        toast(window.t("toast.noConnection"), "warn");
+      }
+      btn.disabled = false;
+    });
+    return btn;
+  }
+
   // „Skaityti toliau" — tik toms kortelėms, kurių tekstas netelpa į keturias eilutes.
   function markClamped(container) {
     requestAnimationFrame(() => {
@@ -644,10 +684,10 @@
   }
 
   // Sąrašas, tuščia būsena (kai visai nieko) arba „šios emocijos dar nėra" (kai filtras).
-  function showPosts(listSel, emptySel, filterEmptySel, posts, now, filtered) {
+  function showPosts(listSel, emptySel, filterEmptySel, posts, now, filtered, mine) {
     const list = $(listSel);
     list.textContent = "";
-    for (const post of posts) list.append(buildCard(post, now));
+    for (const post of posts) list.append(buildCard(post, now, mine?.get(post.id)));
     markClamped(list);
     $(emptySel).hidden = posts.length > 0 || filtered;
     $(filterEmptySel).hidden = posts.length > 0 || !filtered;
@@ -687,9 +727,17 @@
   async function loadFeed() {
     try {
       const query = feedFilter ? "?emotion=" + feedFilter : "";
-      const data = await api("/api/posts" + query);
+      const [data, mine] = await Promise.all([api("/api/posts" + query), loadMineFeed()]);
       if (!data.ok) return;
-      showPosts("#feed", "#feed-empty", "#feed-filter-empty", data.posts, data.now, !!feedFilter);
+      showPosts(
+        "#feed",
+        "#feed-empty",
+        "#feed-filter-empty",
+        data.posts,
+        data.now,
+        !!feedFilter,
+        mine,
+      );
 
       clearInterval(feedTicker);
       feedTicker = setInterval(() => {
@@ -703,6 +751,20 @@
       }, 30000);
     } catch {
       toast(window.t("toast.feedFail"), "warn");
+    }
+  }
+
+  // Kurie srauto tekstai — mano (tik šis įrenginys; serveris tikrina pagal deviceHash).
+  async function loadMineFeed() {
+    if (mineCount === 0) return null;
+    try {
+      const data = await api("/api/mine");
+      if (!data.ok) return null;
+      return new Map(
+        data.posts.filter((p) => p.kind === "srautas").map((p) => [p.id, { kept: p.kept }]),
+      );
+    } catch {
+      return null;
     }
   }
 

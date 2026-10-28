@@ -2,7 +2,10 @@
 //  - saugomas tik salted SHA-256 įrenginio hash'as, niekada UUID ar IP;
 //  - srauto įrašai kuriami su expireIn, tad KV pats FIZIŠKAI ištrina
 //    duomenis po 24 val. — ne slepia, o trina;
-//  - istorijos gyvena be termino, bet tik kol autorius jų neištrina.
+//  - istorijos gyvena be termino, bet tik kol autorius jų neištrina;
+//  - autorius gali savo srauto tekstą „perkelti į istorijas": tada sukuriama
+//    istorija, kuri tampa matoma tik srauto tekstui išnykus (publishAt). Srauto
+//    įrašas vis tiek ištrinamas po 24 val. — tai autoriaus sprendimas palikti tekstą.
 
 import { type Emotion, EMOTIONS } from "./filter.ts";
 
@@ -34,6 +37,13 @@ export interface Post {
   createdAt: number;
   expiresAt: number; // 0 = niekada (istorija)
   hidden: boolean;
+  keptAs?: string; // srauto įrašas: istorijos id, į kurią persikels po 24 val.
+  publishAt?: number; // istorija: iki šio laiko nematoma (laukia, kol išnyks srauto tekstas)
+}
+
+// Istorija, kuri dar laukia savo laiko (perkelta iš srauto, bet srautas dar gyvas).
+function isPending(p: Post, now = Date.now()): boolean {
+  return (p.publishAt ?? 0) > now;
 }
 
 export interface PublicPost {
@@ -96,9 +106,6 @@ export async function createPost(
   text: string,
   emotion: Emotion,
   kind: PostKind = "srautas",
-  // false — kai tas pats tekstas skelbiamas antrą kartą (istorija + srautas): statistikoje
-  // vienas tekstas ir viena emocija skaičiuojami vieną kartą.
-  countStats = true,
 ): Promise<Post> {
   const kv = await getKv();
   const now = Date.now();
@@ -120,10 +127,8 @@ export async function createPost(
     .set([keyRoot(kind), post.id], post, ttl)
     .set(["byDevice", deviceHash, post.id], kind, ttl)
     .commit();
-  if (countStats) {
-    await bumpStat("posts");
-    await bumpEmotionStat(emotion);
-  }
+  await bumpStat("posts");
+  await bumpEmotionStat(emotion);
   return post;
 }
 
@@ -148,7 +153,7 @@ export async function listFeed(emotion?: Emotion): Promise<PublicPost[]> {
 export async function getPublicStory(id: string): Promise<PublicPost | null> {
   const kv = await getKv();
   const entry = await kv.get<Post>(["story", id]);
-  if (!entry.value || entry.value.hidden) return null;
+  if (!entry.value || entry.value.hidden || isPending(entry.value)) return null;
   return toPublic(entry.value);
 }
 
@@ -159,11 +164,12 @@ export async function listStories(
 ): Promise<PublicPost[]> {
   const kv = await getKv();
   const out: PublicPost[] = [];
+  const now = Date.now();
   // Prefikso tvarka = naujausios pirmos; skaitome iki limit*2 ir rūšiuojame
-  // atmintyje (marža dėl hidden/emotion filtro, kaip ir listFeed()).
+  // atmintyje (marža dėl hidden/emotion/laukiančių filtro, kaip ir listFeed()).
   for await (const entry of kv.list<Post>({ prefix: ["story"] }, { limit: limit * 2 })) {
     const p = entry.value;
-    if (p.hidden) continue;
+    if (p.hidden || isPending(p, now)) continue;
     if (emotion && p.emotion !== emotion) continue;
     out.push(toPublic(p));
   }
@@ -226,6 +232,8 @@ export async function hugPost(id: string, deviceHash: string): Promise<Post | nu
   if (post) {
     await kv.set(hugKey, true, markTtl(post));
     await bumpStat("hugs");
+    // „Suprantu tave" keliauja kartu į būsimą istoriją.
+    if (post.keptAs) await updatePost(post.keptAs, (s) => ({ ...s, hugs: s.hugs + 1 }));
   }
   return post;
 }
@@ -243,8 +251,73 @@ export async function reportPost(id: string, deviceHash: string): Promise<Post |
   });
   if (post) {
     await kv.set(reportKey, true, markTtl(post));
+    // Paslėptas srauto tekstas neturi „prasmukti" į istorijas.
+    if (post.hidden && post.keptAs) {
+      await updatePost(post.keptAs, (s) => ({ ...s, hidden: true }));
+    }
   }
   return post;
+}
+
+// „Į istorijas" savo srauto tekstui: istorija sukuriama dabar, bet matoma tik nuo
+// srauto teksto išnykimo momento (publishAt = expiresAt). Tik autoriui (deviceHash).
+export async function keepAsStory(
+  id: string,
+  deviceHash: string,
+  // Istorijų limitas tikrinamas tik tada, kai istorija iš tikrųjų bus kuriama.
+  allowed: () => Promise<boolean> = () => Promise.resolve(true),
+): Promise<{ ok: true; publishAt: number } | { ok: false; reason: string }> {
+  const kv = await getKv();
+  const entry = await kv.get<Post>(["post", id]);
+  const post = entry.value;
+  const now = Date.now();
+  if (!post || post.hidden || post.expiresAt <= now) {
+    return { ok: false, reason: "Šis tekstas jau išnyko." };
+  }
+  if (post.deviceHash !== deviceHash) return { ok: false, reason: "Tai ne tavo tekstas." };
+  if (post.keptAs) return { ok: true, publishAt: post.expiresAt };
+  if (!(await allowed())) {
+    return { ok: false, reason: "Istorijos — apgalvoti tekstai: daugiausia 2 per parą." };
+  }
+
+  const story: Post = {
+    id: newPostId(post.expiresAt),
+    deviceHash,
+    text: post.text,
+    emotion: post.emotion,
+    kind: "istorija",
+    hugs: post.hugs,
+    reports: 0,
+    createdAt: post.expiresAt,
+    expiresAt: 0,
+    hidden: false,
+    publishAt: post.expiresAt,
+  };
+  const res = await kv.atomic()
+    .check(entry)
+    .set(["story", story.id], story)
+    .set(["byDevice", deviceHash, story.id], "istorija")
+    .set(["post", id], { ...post, keptAs: story.id }, markTtl(post))
+    .commit();
+  if (!res.ok) return { ok: false, reason: "Nepavyko — pabandyk dar kartą." };
+  return { ok: true, publishAt: post.expiresAt };
+}
+
+// Atšaukti „Į istorijas", kol srauto tekstas dar gyvas: laukianti istorija ištrinama.
+export async function unkeepStory(id: string, deviceHash: string): Promise<boolean> {
+  const kv = await getKv();
+  const entry = await kv.get<Post>(["post", id]);
+  const post = entry.value;
+  if (!post || post.deviceHash !== deviceHash || post.expiresAt <= Date.now()) return false;
+  if (!post.keptAs) return true;
+  const { keptAs, ...rest } = post;
+  const res = await kv.atomic()
+    .check(entry)
+    .delete(["story", keptAs])
+    .delete(["byDevice", deviceHash, keptAs])
+    .set(["post", id], rest, markTtl(post))
+    .commit();
+  return res.ok;
 }
 
 // „Ištrinti mano duomenis": fiziškai trinami visi įrenginio postai ir istorijos.
@@ -260,15 +333,18 @@ export async function deleteDeviceData(deviceHash: string): Promise<number> {
   return deleted;
 }
 
-// Mano tekstai su „suprantu" skaičiais — sugrįžimo banneriui.
-export async function listMine(deviceHash: string): Promise<PublicPost[]> {
+// Mano tekstai su „suprantu" skaičiais — sugrįžimo banneriui ir „Į istorijas" mygtukui
+// (kept — srauto tekstas jau pažymėtas persikelti). Laukiančios istorijos neįtraukiamos:
+// jų „suprantu" dar skaičiuojami srauto įraše.
+export async function listMine(deviceHash: string): Promise<(PublicPost & { kept: boolean })[]> {
   const kv = await getKv();
-  const out: PublicPost[] = [];
+  const out: (PublicPost & { kept: boolean })[] = [];
   for await (const entry of kv.list({ prefix: ["byDevice", deviceHash] })) {
     const postId = entry.key[2] as string;
     const kind: PostKind = entry.value === "istorija" ? "istorija" : "srautas";
     const post = await kv.get<Post>([keyRoot(kind), postId]);
-    if (post.value && !post.value.hidden) out.push(toPublic(post.value));
+    const p = post.value;
+    if (p && !p.hidden && !isPending(p)) out.push({ ...toPublic(p), kept: Boolean(p.keptAs) });
   }
   return out;
 }
