@@ -178,9 +178,14 @@
   display: none !important;
 }
 
+/* overflow-x: clip, ne hidden: hidden paverstų body slinkimo konteineriu ir
+   prisegta viršutinė juosta (.topbar, position: sticky) nebeliktų viršuje. */
 html {
   height: 100%;
   overflow-x: hidden;
+  overflow-x: clip;
+  /* Fokusuojamas elementas ar nuoroda neturi pasislėpti po prisegta juosta. */
+  scroll-padding-top: 84px;
 }
 
 body {
@@ -192,6 +197,7 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  overflow-x: clip;
   transition: background-color 0.4s ease, color 0.4s ease;
 }
 
@@ -375,12 +381,34 @@ body {
 
 /* ---------- Viršus ---------- */
 
+/* Prisegta viršuje. Kol puslapis nepaslinktas — permatoma (matosi fono švytėjimas);
+   paslinkus (app.js .is-scrolled) gauna tą patį stiklo foną kaip apatinis meniu. Fonas —
+   ::before per visą ekrano plotį, nes pati juosta yra .app (640px) viduje. */
 .topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  padding: 18px 2px 10px;
+  padding: calc(18px + env(safe-area-inset-top, 0px)) 2px 10px;
+}
+.topbar::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0 calc(50% - 50vw);
+  background: var(--tabbar-bg);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--line);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.topbar.is-scrolled::before {
+  opacity: 1;
 }
 
 .brand {
