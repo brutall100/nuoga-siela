@@ -137,6 +137,7 @@
     if (active === "srautas") loadFeed();
     if (active === "istorijos") loadStories();
     if (active === "rasyti") loadSocialProof();
+    if (active === "rasyti" && prevScreen !== "rasyti") greetWriteScreen();
     if (active === "kalendorius") window.mood.render();
     if (active !== "sos") {
       window.breatheStop($("#breathe-circle"), $("#breathe-label"), $("#btn-breathe"));
@@ -275,6 +276,19 @@
     const btn = e.target.closest(".emo");
     if (btn) selectEmotion(btn.dataset.emotion);
   });
+
+  // Atidarius rašymo ekraną visi emocijų simboliai ir trys keliai vieną kartą sujuda,
+  // paskui juda tik pažymėta emocija.
+  let greetTimer = null;
+  function greetWriteScreen() {
+    document.querySelectorAll(".emo:not(.is-active) .emo-icon").forEach(window.icons.playOnce);
+    const paths = $(".paths");
+    paths.classList.remove("is-greeting");
+    void paths.offsetWidth;
+    paths.classList.add("is-greeting");
+    clearTimeout(greetTimer);
+    greetTimer = setTimeout(() => paths.classList.remove("is-greeting"), 2000);
+  }
 
   // Švelnus „pažiūrėk čia" — kai ko nors trūksta, elementas trumpai sujuda.
   function nudge(el) {
