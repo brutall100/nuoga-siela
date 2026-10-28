@@ -33,7 +33,7 @@
       title="Nuoga Siela — Istorijos"
       href="/istorijos/feed.xml"
     >
-    <link rel="preload" href="/fonts/nunito-sans-latin.woff2" as="font" type="font/woff2"
+    <link rel="preload" href="/fonts/nunito-latin.woff2" as="font" type="font/woff2"
       crossorigin>
     <link rel="preload" href="/fonts/lora-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="/css/main.css">
@@ -57,16 +57,16 @@
     <div class="app">
       <header class="topbar">
         <a class="brand" href="/rasyti">
-          <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+          <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true">
             <path
               class="mark-flame"
-              d="M16 3c.8 3.4-3.6 5.2-3.6 9.4a3.6 3.6 0 0 0 7.2 0c0-1.6-.8-2.6-.8-4.2 1.8.8 2.8 2.6 2.8 4.2a5.6 5.6 0 1 1-11.2 0C10.4 7.6 15.2 6.4 16 3Z"
+              d="M12 3.2c-2.3 2.6-3.6 4.4-3.6 6.4a3.6 3.6 0 007.2 0c0-1.3-.6-2.3-1.5-3.3-.2 1.1-.8 1.8-1.5 2 .3-1.8.1-3.4-.6-5.1z"
             />
-            <path class="mark-water" d="M5 23c2.2-1.6 4.4-1.6 6.6 0s4.4 1.6 6.6 0 4.4-1.6 6.6 0" />
+            <path class="mark-water" d="M4 16.4c1.3-.9 2.7-.9 4 0s2.7.9 4 0 2.7-.9 4 0 2.7.9 4 0" />
             <path
               class="mark-water"
-              opacity="0.55"
-              d="M8.4 28c1.6-1.1 3.2-1.1 4.8 0s3.2 1.1 4.8 0 3.2-1.1 4.8 0"
+              opacity="0.6"
+              d="M4 19.8c1.3-.9 2.7-.9 4 0s2.7.9 4 0 2.7-.9 4 0 2.7.9 4 0"
             />
           </svg>
           <span>Nuoga Siela</span>
@@ -79,10 +79,10 @@
             aria-label="Nustatymai"
             data-i18n-aria="set.title"
           >
-            <svg viewBox="0 0 24 24" aria-hidden="true">
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M4 7h9M17 7h3M4 17h3M11 17h9" />
-              <circle cx="15" cy="7" r="2.2" />
-              <circle cx="9" cy="17" r="2.2" />
+              <circle cx="15" cy="7" r="2" />
+              <circle cx="9" cy="17" r="2" />
             </svg>
           </a>
           <button
@@ -93,13 +93,13 @@
             data-i18n-aria="theme.toggle"
             aria-pressed="false"
           >
-            <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" />
+            <svg class="ico icon-moon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M19.5 14.6A7.6 7.6 0 019.4 4.5a7.6 7.6 0 1010.1 10.1z" />
             </svg>
-            <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true">
+            <svg class="ico icon-sun" viewBox="0 0 24 24" aria-hidden="true">
               <circle cx="12" cy="12" r="4" />
               <path
-                d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"
+                d="M12 2.5v2M12 19.5v2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M2.5 12h2M19.5 12h2M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"
               />
             </svg>
           </button>
@@ -110,107 +110,64 @@
 
       <main class="screens" id="main" tabindex="-1">
         <!-- 1. Rašymo ekranas: emocija → žodžiai → ką su jais daryti -->
-        <section class="screen" id="screen-rasyti" hidden>
-          <div class="hero">
-            <h1 class="hero-title" data-i18n="hero.title">Kas guli ant širdies?</h1>
-            <p class="promise" data-i18n="promise">Mes nežinome, kas tu. Ir nenorime žinoti.</p>
-            <p class="social-proof" id="social-proof" hidden></p>
+        <section class="screen screen-write" id="screen-rasyti" hidden>
+          <div class="screen-head">
+            <h1 data-i18n="hero.title">Kas guli ant širdies?</h1>
+            <button
+              type="button"
+              class="round-btn"
+              data-info="rasyti"
+              aria-label="Kaip tai veikia"
+              data-i18n-aria="intro.title"
+            >
+              <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="8.6" />
+                <path d="M12 11v5" />
+                <circle class="ico-dot" cx="12" cy="7.9" r="1" />
+              </svg>
+            </button>
           </div>
 
-          <!-- „Kaip tai veikia" — rodoma, kol žmogus jo neuždaro (ns_intro, tik localStorage). -->
-          <aside class="intro-card" id="intro-card" hidden aria-labelledby="intro-title">
-            <div class="intro-head">
-              <h2 id="intro-title" data-i18n="intro.title">Kaip tai veikia</h2>
-              <button
-                type="button"
-                class="intro-close"
-                id="intro-close"
-                aria-label="Uždaryti"
-                data-i18n-aria="intro.close"
-              >
-                ×
-              </button>
-            </div>
-            <ol class="steps">
-              <li>
-                <span class="step-num" aria-hidden="true">1</span>
-                <p>
-                  <strong data-i18n="step1.title">Pažymėk, kaip jautiesi</strong>
-                  <span data-i18n="step1.text">Emocija atsiras tavo kalendoriuje — tik šiame
-                    įrenginyje.</span>
-                </p>
-              </li>
-              <li>
-                <span class="step-num" aria-hidden="true">2</span>
-                <p>
-                  <strong data-i18n="step2.title">Išliek žodžius</strong>
-                  <span data-i18n="step2.text">Be vardo ir be registracijos.</span>
-                </p>
-              </li>
-              <li>
-                <span class="step-num" aria-hidden="true">3</span>
-                <p>
-                  <strong data-i18n="step3.title">Nuspręsk, ką su jais daryti</strong>
-                  <span
-                    data-i18n="step3.text">Sudeginti, paleisti į srautą 24 valandoms arba palikti
-                    istoriją, kuri liks, kol ištrinsi.</span>
-                </p>
-              </li>
-            </ol>
-            <button type="button" class="btn btn-calm btn-small" id="intro-ok" data-i18n="intro.ok">
-              Supratau
-            </button>
-          </aside>
-
+          <p class="social-proof" id="social-proof" hidden></p>
           <button type="button" class="hug-banner" id="hug-banner" hidden></button>
 
-          <div class="write-card">
-            <p class="step-label" id="emotion-label" data-i18n="write.emoLabel">Kaip jautiesi?</p>
-            <div
-              class="emotions"
-              id="emotion-picker"
-              role="group"
-              aria-labelledby="emotion-label"
-            >
+          <fieldset class="emo-field">
+            <legend class="field-label" data-i18n="write.emoLabel">Kaip jautiesi?</legend>
+            <div class="emotions" id="emotion-picker">
               <button type="button" class="emo" data-emotion="pyktis" aria-pressed="false">
-                <span class="emo-face" aria-hidden="true">😠</span><span
-                  data-i18n="emo.pyktis"
-                >Pyktis</span>
+                <span class="emo-icon" data-emo-icon="pyktis" aria-hidden="true"></span>
+                <span data-i18n="emo.pyktis">Pyktis</span>
               </button>
               <button type="button" class="emo" data-emotion="liudesys" aria-pressed="false">
-                <span class="emo-face" aria-hidden="true">😢</span><span
-                  data-i18n="emo.liudesys"
-                >Liūdesys</span>
+                <span class="emo-icon" data-emo-icon="liudesys" aria-hidden="true"></span>
+                <span data-i18n="emo.liudesys">Liūdesys</span>
               </button>
               <button type="button" class="emo" data-emotion="nerimas" aria-pressed="false">
-                <span class="emo-face" aria-hidden="true">😰</span><span
-                  data-i18n="emo.nerimas"
-                >Nerimas</span>
+                <span class="emo-icon" data-emo-icon="nerimas" aria-hidden="true"></span>
+                <span data-i18n="emo.nerimas">Nerimas</span>
               </button>
               <button type="button" class="emo" data-emotion="kalte" aria-pressed="false">
-                <span class="emo-face" aria-hidden="true">😔</span><span
-                  data-i18n="emo.kalte"
-                >Kaltė</span>
+                <span class="emo-icon" data-emo-icon="kalte" aria-hidden="true"></span>
+                <span data-i18n="emo.kalte">Kaltė</span>
               </button>
               <button type="button" class="emo" data-emotion="vienatve" aria-pressed="false">
-                <span class="emo-face" aria-hidden="true">😶</span><span
-                  data-i18n="emo.vienatve"
-                >Vienatvė</span>
+                <span class="emo-icon" data-emo-icon="vienatve" aria-hidden="true"></span>
+                <span data-i18n="emo.vienatve">Vienatvė</span>
               </button>
               <button type="button" class="emo" data-emotion="viltis" aria-pressed="false">
-                <span class="emo-face" aria-hidden="true">🌱</span><span
-                  data-i18n="emo.viltis"
-                >Viltis</span>
+                <span class="emo-icon" data-emo-icon="viltis" aria-hidden="true"></span>
+                <span data-i18n="emo.viltis">Viltis</span>
               </button>
             </div>
+          </fieldset>
 
+          <div class="write-box">
             <div class="write-area">
               <label class="visually-hidden" for="write-input"
                 data-i18n="write.label">Tavo tekstas</label>
               <textarea
                 id="write-input"
                 maxlength="5000"
-                rows="6"
                 placeholder="Išliek viską…"
                 data-i18n-placeholder="write.placeholder"
                 autocomplete="off"
@@ -218,158 +175,306 @@
               ></textarea>
               <canvas id="burn-canvas" aria-hidden="true"></canvas>
             </div>
-            <span class="char-count" id="char-count">0 / 1000</span>
+            <div class="write-foot">
+              <!-- Fono garsai: meniu virš mygtuko (Išjungta / Upė / Lietus / Laužas). -->
+              <div class="sound">
+                <button
+                  type="button"
+                  class="sound-btn"
+                  id="sound-btn"
+                  aria-expanded="false"
+                  aria-controls="sound-menu"
+                >
+                  <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M4.5 15v-2.5a7.5 7.5 0 0115 0V15" />
+                    <rect x="3.5" y="14" width="4" height="6" rx="1.6" />
+                    <rect x="16.5" y="14" width="4" height="6" rx="1.6" />
+                  </svg>
+                  <span id="sound-label" data-i18n="sound.label">Fonas</span>
+                </button>
+                <div
+                  class="sound-menu"
+                  id="sound-menu"
+                  role="group"
+                  aria-label="Raminantys garsai"
+                  data-i18n-aria="sound.aria"
+                  hidden
+                >
+                  <button type="button" class="sound-opt" data-sound="" aria-pressed="true">
+                    <span data-i18n="sound.off">Išjungta</span>
+                    <span class="sound-check" aria-hidden="true">✓</span>
+                  </button>
+                  <button type="button" class="sound-opt" data-sound="upe" aria-pressed="false">
+                    <span data-i18n="sound.upe">Upė</span>
+                    <span class="sound-check" aria-hidden="true">✓</span>
+                  </button>
+                  <button type="button" class="sound-opt" data-sound="lietus" aria-pressed="false">
+                    <span data-i18n="sound.lietus">Lietus</span>
+                    <span class="sound-check" aria-hidden="true">✓</span>
+                  </button>
+                  <button type="button" class="sound-opt" data-sound="lauzas" aria-pressed="false">
+                    <span data-i18n="sound.lauzas">Laužas</span>
+                    <span class="sound-check" aria-hidden="true">✓</span>
+                  </button>
+                </div>
+              </div>
+              <span class="char-count" id="char-count">0 / 1000</span>
+            </div>
+          </div>
 
-            <p class="step-label" id="path-label" data-i18n="write.pathLabel">Ką darysi su tuo?</p>
+          <div class="paths-block">
+            <p class="field-label" id="path-label" data-i18n="write.pathLabel">Ką darysi su tuo?</p>
             <div class="paths" role="group" aria-labelledby="path-label">
               <button type="button" class="path path-burn" id="btn-burn">
-                <span class="path-icon" aria-hidden="true">🔥</span>
-                <span class="path-title" data-i18n="path.burn">Sudeginti</span>
+                <svg class="ico path-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M12 20.5a6 6 0 006-6c0-3.6-2.4-5.6-3.8-9-.8 2.4-2 3.5-3.2 4-.3-1.6-.9-2.9-1.8-4C7.4 8 6 10.8 6 14.5a6 6 0 006 6z"
+                  />
+                </svg>
+                <span data-i18n="path.burn">Sudeginti</span>
               </button>
               <button type="button" class="path path-release" id="btn-release">
-                <span class="path-icon" aria-hidden="true">🏮</span>
-                <span class="path-title" data-i18n="path.release">Į srautą</span>
+                <svg class="ico path-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M3 8c1.5-1.2 3-1.2 4.5 0s3 1.2 4.5 0 3-1.2 4.5 0 3 1.2 4.5 0" />
+                  <path d="M3 12.5c1.5-1.2 3-1.2 4.5 0s3 1.2 4.5 0 3-1.2 4.5 0 3 1.2 4.5 0" />
+                  <path d="M3 17c1.5-1.2 3-1.2 4.5 0s3 1.2 4.5 0 3-1.2 4.5 0 3 1.2 4.5 0" />
+                </svg>
+                <span data-i18n="path.release">Į srautą</span>
               </button>
               <button type="button" class="path path-story" id="btn-story">
-                <span class="path-icon" aria-hidden="true">📖</span>
-                <span class="path-title" data-i18n="path.story">Į istorijas</span>
+                <svg class="ico path-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M12 6.8C10.4 5.5 7.9 4.8 3.8 4.8v12.8c4.1 0 6.6.7 8.2 2 1.6-1.3 4.1-2 8.2-2V4.8c-4.1 0-6.6.7-8.2 2z"
+                  />
+                  <path d="M12 6.8v12.8" />
+                </svg>
+                <span data-i18n="path.story">Į istorijas</span>
               </button>
             </div>
             <p class="paths-note" data-i18n="path.note">
               Anonimiškai. Istorijas gali rasti ir Google paieška.
             </p>
           </div>
-
-          <div class="ambient" role="group" aria-label="Raminantys garsai"
-            data-i18n-aria="sound.aria">
-            <span class="ambient-label" data-i18n="sound.label">🎧 Fonas</span>
-            <button type="button" class="chip" data-sound="upe" aria-pressed="false"
-              data-i18n="sound.upe">🌊 Upė</button>
-            <button type="button" class="chip" data-sound="lietus" aria-pressed="false"
-              data-i18n="sound.lietus">🌧 Lietus</button>
-            <button type="button" class="chip" data-sound="lauzas" aria-pressed="false"
-              data-i18n="sound.lauzas">🔥 Laužas</button>
-          </div>
-          <p class="write-hint" data-i18n="write.hint">
-            Rašymas apie jausmus mažina jų intensyvumą — tai patvirtinta tyrimais.
-          </p>
         </section>
 
         <!-- 2. Srautas -->
-        <section class="screen" id="screen-srautas" hidden>
-          <div class="feed-head">
-            <h1 data-i18n="feed.title">Srautas</h1>
+        <section class="screen screen-feed" id="screen-srautas" hidden>
+          <div class="screen-head">
+            <div class="head-title">
+              <h1 data-i18n="feed.title">Srautas</h1>
+              <span class="badge-ttl">
+                <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+                  <circle cx="12" cy="12" r="8.5" />
+                  <path d="M12 7.5V12l3 2" />
+                </svg>
+                <span data-i18n="feed.badge">24 val.</span>
+              </span>
+            </div>
             <button
               type="button"
-              class="refresh"
+              class="round-btn"
+              data-info="srautas"
+              aria-label="Apie srautą"
+              data-i18n-aria="info.feedAria"
+            >
+              <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="8.6" />
+                <path d="M12 11v5" />
+                <circle class="ico-dot" cx="12" cy="7.9" r="1" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              class="round-btn refresh"
               id="btn-refresh"
               aria-label="Atnaujinti"
               data-i18n-aria="aria.refresh"
             >
-              ↻
+              <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M19.5 12a7.5 7.5 0 11-2.4-5.5" />
+                <path d="M19.5 4.5V9H15" />
+              </svg>
             </button>
           </div>
-          <p class="muted screen-intro" data-i18n="feed.intro">
-            Ką žmonės paleido per pastarąją parą. Po 24 val. kiekvienas tekstas išnyksta visam
-            laikui.
-          </p>
-          <div class="feed-filters" id="feed-filters">
-            <button type="button" class="chip is-active" data-filter="" data-i18n="feed.all">
-              Visi
+          <div
+            class="chips"
+            id="feed-filters"
+            role="group"
+            aria-label="Filtruoti pagal emociją"
+            data-i18n-aria="filter.aria"
+          >
+            <button type="button" class="chip is-active" data-filter="" aria-pressed="true">
+              <span data-i18n="feed.all">Visi</span>
             </button>
-            <button type="button" class="chip" data-filter="pyktis">
-              <span aria-hidden="true">😠</span> <span data-i18n="emo.pyktis">Pyktis</span>
+            <button type="button" class="chip" data-filter="pyktis" aria-pressed="false">
+              <span class="emo-icon" data-emo-icon="pyktis" aria-hidden="true"></span>
+              <span data-i18n="emo.pyktis">Pyktis</span>
             </button>
-            <button type="button" class="chip" data-filter="liudesys">
-              <span aria-hidden="true">😢</span> <span data-i18n="emo.liudesys">Liūdesys</span>
+            <button type="button" class="chip" data-filter="liudesys" aria-pressed="false">
+              <span class="emo-icon" data-emo-icon="liudesys" aria-hidden="true"></span>
+              <span data-i18n="emo.liudesys">Liūdesys</span>
             </button>
-            <button type="button" class="chip" data-filter="nerimas">
-              <span aria-hidden="true">😰</span> <span data-i18n="emo.nerimas">Nerimas</span>
+            <button type="button" class="chip" data-filter="nerimas" aria-pressed="false">
+              <span class="emo-icon" data-emo-icon="nerimas" aria-hidden="true"></span>
+              <span data-i18n="emo.nerimas">Nerimas</span>
             </button>
-            <button type="button" class="chip" data-filter="kalte">
-              <span aria-hidden="true">😔</span> <span data-i18n="emo.kalte">Kaltė</span>
+            <button type="button" class="chip" data-filter="kalte" aria-pressed="false">
+              <span class="emo-icon" data-emo-icon="kalte" aria-hidden="true"></span>
+              <span data-i18n="emo.kalte">Kaltė</span>
             </button>
-            <button type="button" class="chip" data-filter="vienatve">
-              <span aria-hidden="true">😶</span> <span data-i18n="emo.vienatve">Vienatvė</span>
+            <button type="button" class="chip" data-filter="vienatve" aria-pressed="false">
+              <span class="emo-icon" data-emo-icon="vienatve" aria-hidden="true"></span>
+              <span data-i18n="emo.vienatve">Vienatvė</span>
             </button>
-            <button type="button" class="chip" data-filter="viltis">
-              <span aria-hidden="true">🌱</span> <span data-i18n="emo.viltis">Viltis</span>
+            <button type="button" class="chip" data-filter="viltis" aria-pressed="false">
+              <span class="emo-icon" data-emo-icon="viltis" aria-hidden="true"></span>
+              <span data-i18n="emo.viltis">Viltis</span>
             </button>
           </div>
           <div class="feed" id="feed"></div>
-          <div class="feed-empty" id="feed-empty" hidden>
-            <p data-i18n="feed.emptyTitle">Srautas šiuo metu tylus.</p>
-            <p class="muted" data-i18n="feed.emptyText">
-              Kiekvienas tekstas čia gyvena tik 24 valandas — būk tas, kuris paleidžia pirmas.
-            </p>
-            <a class="empty-link" href="/istorijos" data-i18n="feed.emptyLink">
-              Arba paskaityk istorijas →
-            </a>
-          </div>
+          <p class="filter-empty" id="feed-filter-empty" hidden data-i18n="feed.filterEmpty">
+            Šios emocijos tekstų dar nėra.
+          </p>
+          <section class="empty-state" id="feed-empty" hidden>
+            <svg class="empty-art" viewBox="0 0 72 72" aria-hidden="true">
+              <ellipse class="art-orbit" cx="36" cy="38" rx="30" ry="10" />
+              <circle class="art-planet" cx="36" cy="38" r="9" />
+              <circle class="art-star" cx="58" cy="20" r="1.6" />
+              <circle class="art-dust" cx="14" cy="18" r="1" />
+            </svg>
+            <h2 data-i18n="feed.emptyTitle">Srautas šiuo metu tylus.</h2>
+            <p data-i18n="feed.emptyText">Būk tas, kuris paleidžia pirmas.</p>
+            <div class="empty-actions">
+              <a class="pill-btn pill-primary" href="/rasyti">
+                <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M4.5 19.5l1-3.9L15.8 5.3a2 2 0 012.9 2.9L8.4 18.5l-3.9 1z" />
+                  <path d="M14 7l3 3" />
+                </svg>
+                <span data-i18n="empty.write">Rašyti</span>
+              </a>
+              <a class="pill-btn pill-outline" href="/istorijos" data-i18n="feed.emptyLink">
+                Paskaityk istorijas
+              </a>
+            </div>
+          </section>
         </section>
 
         <!-- 2b. Istorijos -->
-        <section class="screen" id="screen-istorijos" hidden>
-          <div class="feed-head">
+        <section class="screen screen-stories" id="screen-istorijos" hidden>
+          <div class="screen-head">
             <h1 data-i18n="stories.title">Istorijos</h1>
             <button
               type="button"
-              class="refresh"
+              class="round-btn"
+              data-info="istorijos"
+              aria-label="Apie istorijas"
+              data-i18n-aria="info.storiesAria"
+            >
+              <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="8.6" />
+                <path d="M12 11v5" />
+                <circle class="ico-dot" cx="12" cy="7.9" r="1" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              class="round-btn refresh"
               id="btn-refresh-stories"
               aria-label="Atnaujinti"
               data-i18n-aria="aria.refresh"
             >
-              ↻
+              <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M19.5 12a7.5 7.5 0 11-2.4-5.5" />
+                <path d="M19.5 4.5V9H15" />
+              </svg>
             </button>
           </div>
-          <p class="muted screen-intro" data-i18n="stories.intro">
-            Tekstai, kuriuos žmonės paliko ilgam: jie lieka, kol autorius pats ištrina. Gal tarp
-            jų rasi ir savo.
-          </p>
-          <div class="feed-filters" id="story-sort">
+          <div
+            class="segmented"
+            id="story-sort"
+            role="group"
+            aria-label="Rikiavimas"
+            data-i18n-aria="stories.sortAria"
+          >
             <button
               type="button"
-              class="chip is-active"
+              class="seg is-active"
               data-sort="suprastos"
+              aria-pressed="true"
               data-i18n="stories.sortHugs"
             >
               Labiausiai suprastos
             </button>
-            <button type="button" class="chip" data-sort="naujausios" data-i18n="stories.sortNew">
+            <button
+              type="button"
+              class="seg"
+              data-sort="naujausios"
+              aria-pressed="false"
+              data-i18n="stories.sortNew"
+            >
               Naujausios
             </button>
           </div>
-          <div class="feed-filters" id="story-filters">
-            <button type="button" class="chip is-active" data-filter="" data-i18n="stories.all">
-              Visos
+          <div
+            class="chips"
+            id="story-filters"
+            role="group"
+            aria-label="Filtruoti pagal emociją"
+            data-i18n-aria="filter.aria"
+          >
+            <button type="button" class="chip is-active" data-filter="" aria-pressed="true">
+              <span data-i18n="stories.all">Visos</span>
             </button>
-            <button type="button" class="chip" data-filter="pyktis">
-              <span aria-hidden="true">😠</span> <span data-i18n="emo.pyktis">Pyktis</span>
+            <button type="button" class="chip" data-filter="pyktis" aria-pressed="false">
+              <span class="emo-icon" data-emo-icon="pyktis" aria-hidden="true"></span>
+              <span data-i18n="emo.pyktis">Pyktis</span>
             </button>
-            <button type="button" class="chip" data-filter="liudesys">
-              <span aria-hidden="true">😢</span> <span data-i18n="emo.liudesys">Liūdesys</span>
+            <button type="button" class="chip" data-filter="liudesys" aria-pressed="false">
+              <span class="emo-icon" data-emo-icon="liudesys" aria-hidden="true"></span>
+              <span data-i18n="emo.liudesys">Liūdesys</span>
             </button>
-            <button type="button" class="chip" data-filter="nerimas">
-              <span aria-hidden="true">😰</span> <span data-i18n="emo.nerimas">Nerimas</span>
+            <button type="button" class="chip" data-filter="nerimas" aria-pressed="false">
+              <span class="emo-icon" data-emo-icon="nerimas" aria-hidden="true"></span>
+              <span data-i18n="emo.nerimas">Nerimas</span>
             </button>
-            <button type="button" class="chip" data-filter="kalte">
-              <span aria-hidden="true">😔</span> <span data-i18n="emo.kalte">Kaltė</span>
+            <button type="button" class="chip" data-filter="kalte" aria-pressed="false">
+              <span class="emo-icon" data-emo-icon="kalte" aria-hidden="true"></span>
+              <span data-i18n="emo.kalte">Kaltė</span>
             </button>
-            <button type="button" class="chip" data-filter="vienatve">
-              <span aria-hidden="true">😶</span> <span data-i18n="emo.vienatve">Vienatvė</span>
+            <button type="button" class="chip" data-filter="vienatve" aria-pressed="false">
+              <span class="emo-icon" data-emo-icon="vienatve" aria-hidden="true"></span>
+              <span data-i18n="emo.vienatve">Vienatvė</span>
             </button>
-            <button type="button" class="chip" data-filter="viltis">
-              <span aria-hidden="true">🌱</span> <span data-i18n="emo.viltis">Viltis</span>
+            <button type="button" class="chip" data-filter="viltis" aria-pressed="false">
+              <span class="emo-icon" data-emo-icon="viltis" aria-hidden="true"></span>
+              <span data-i18n="emo.viltis">Viltis</span>
             </button>
           </div>
           <div class="feed" id="story-feed"></div>
-          <div class="feed-empty" id="story-empty" hidden>
-            <p data-i18n="stories.emptyTitle">Istorijų dar nėra.</p>
-            <p class="muted" data-i18n="stories.emptyText">
-              Parašyk savo — rašymo ekrane pasirink „Palikti kaip istoriją". Ji liks tiems, kam jos
-              reikės.
+          <p class="filter-empty" id="story-filter-empty" hidden data-i18n="stories.filterEmpty">
+            Šios emocijos istorijų dar nėra.
+          </p>
+          <section class="empty-state" id="story-empty" hidden>
+            <svg class="empty-art" viewBox="0 0 72 72" aria-hidden="true">
+              <ellipse class="art-orbit" cx="36" cy="38" rx="30" ry="10" />
+              <circle class="art-planet" cx="36" cy="38" r="9" />
+              <circle class="art-star" cx="58" cy="20" r="1.6" />
+              <circle class="art-dust" cx="14" cy="18" r="1" />
+            </svg>
+            <h2 data-i18n="stories.emptyTitle">Istorijų dar nėra.</h2>
+            <p data-i18n="stories.emptyText">
+              Parašyk savo — rašymo ekrane pasirink „Į istorijas“. Ji liks tiems, kam jos reikės.
             </p>
-          </div>
+            <div class="empty-actions">
+              <a class="pill-btn pill-primary" href="/rasyti">
+                <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M4.5 19.5l1-3.9L15.8 5.3a2 2 0 012.9 2.9L8.4 18.5l-3.9 1z" />
+                  <path d="M14 7l3 3" />
+                </svg>
+                <span data-i18n="empty.write">Rašyti</span>
+              </a>
+            </div>
+          </section>
         </section>
 
         <!-- 3. SOS -->
@@ -399,25 +504,42 @@
             <button type="button" class="btn btn-calm" id="btn-breathe" data-i18n="breathe.start">
               Pradėti kvėpavimą
             </button>
-            <div class="ambient ambient-center" role="group" aria-label="Raminantys garsai"
+            <div class="ambient" role="group" aria-label="Raminantys garsai"
               data-i18n-aria="sound.aria">
-              <span class="ambient-label" data-i18n="sound.label">🎧 Fonas</span>
-              <button type="button" class="chip" data-sound="upe" aria-pressed="false"
-                data-i18n="sound.upe">🌊 Upė</button>
-              <button type="button" class="chip" data-sound="lietus" aria-pressed="false"
-                data-i18n="sound.lietus">🌧 Lietus</button>
-              <button type="button" class="chip" data-sound="lauzas" aria-pressed="false"
-                data-i18n="sound.lauzas">🔥 Laužas</button>
+              <span class="ambient-label">
+                <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M4.5 15v-2.5a7.5 7.5 0 0115 0V15" />
+                  <rect x="3.5" y="14" width="4" height="6" rx="1.6" />
+                  <rect x="16.5" y="14" width="4" height="6" rx="1.6" />
+                </svg>
+                <span data-i18n="sound.label">Fonas</span>
+              </span>
+              <button type="button" class="chip" data-sound="upe" aria-pressed="false">
+                <span data-i18n="sound.upe">Upė</span>
+              </button>
+              <button type="button" class="chip" data-sound="lietus" aria-pressed="false">
+                <span data-i18n="sound.lietus">Lietus</span>
+              </button>
+              <button type="button" class="chip" data-sound="lauzas" aria-pressed="false">
+                <span data-i18n="sound.lauzas">Laužas</span>
+              </button>
             </div>
           </div>
           <a class="tool-card" href="/sauksmas">
-            <span class="tool-icon" aria-hidden="true">🔊</span>
+            <span class="tool-icon" aria-hidden="true">
+              <svg class="ico" viewBox="0 0 24 24">
+                <rect x="9" y="3.5" width="6" height="11" rx="3" />
+                <path d="M5.5 11.5a6.5 6.5 0 0013 0M12 18v2.5" />
+              </svg>
+            </span>
             <span class="tool-text">
               <strong data-i18n="sos.screamTitle">Šauksmo kambarys</strong>
               <span data-i18n="sos.screamText">Kartais reikia ne žodžių, o balso. Įrašas lieka tik
                 telefono atmintyje.</span>
             </span>
-            <span class="tool-arrow" aria-hidden="true">→</span>
+            <svg class="ico tool-arrow" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M9.5 6l6 6-6 6" />
+            </svg>
           </a>
         </section>
 
@@ -436,7 +558,7 @@
               aria-label="Rėkti"
               data-i18n-aria="aria.scream"
             >
-              <span class="scream-orb-icon" id="scream-icon">🎙️</span>
+              <span class="scream-orb-icon" id="scream-icon" aria-hidden="true"></span>
             </button>
             <p class="scream-status" id="scream-status" data-i18n="scream.tapToStart">
               Spausk ir rėk.
@@ -458,48 +580,102 @@
         </section>
 
         <!-- 3c. Emocijų kalendorius (asmeninė dalis — tik šiame įrenginyje, žr. mood.js) -->
-        <section class="screen" id="screen-kalendorius" hidden>
-          <h1 data-i18n="mood.title">Emocijų kalendorius</h1>
-          <p class="muted screen-intro" data-i18n="mood.intro">
-            Čia atsiranda kiekviena emocija, kurią pažymi rašydama(s) — ir paleistame, ir
-            sudegintame tekste. Tik diena ir emocija, be teksto. Saugoma tik šiame įrenginyje.
-          </p>
-          <div class="mood-card">
-            <h2 data-i18n="mood.weekTitle">Tavo savaitė</h2>
-            <div class="mood-hero">
-              <span class="mood-face" id="mood-week-face" aria-hidden="true" hidden></span>
-              <p class="mood-line" id="mood-week-line"></p>
+        <section class="screen screen-calendar" id="screen-kalendorius" hidden>
+          <div class="head-block">
+            <div class="screen-head">
+              <h1 data-i18n="mood.title">Emocijų kalendorius</h1>
+              <button
+                type="button"
+                class="round-btn"
+                data-info="kalendorius"
+                aria-label="Apie kalendorių"
+                data-i18n-aria="info.calendarAria"
+              >
+                <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+                  <circle cx="12" cy="12" r="8.6" />
+                  <path d="M12 11v5" />
+                  <circle class="ico-dot" cx="12" cy="7.9" r="1" />
+                </svg>
+              </button>
             </div>
-            <div class="mood-bars" id="mood-week-bars"></div>
+            <p class="local-note">
+              <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="5" y="10.5" width="14" height="9.5" rx="2.5" />
+                <path d="M8.5 10.5V8a3.5 3.5 0 017 0v2.5" />
+              </svg>
+              <span data-i18n="mood.localNote">Saugoma tik šiame įrenginyje</span>
+            </p>
+          </div>
+
+          <section class="cal-card week-card">
+            <div class="week-head">
+              <h2 data-i18n="mood.weekTitle">Tavo savaitė</h2>
+              <span class="week-range" id="mood-week-range"></span>
+            </div>
+            <div class="week-strip" id="mood-week"></div>
             <a class="mood-sos" id="mood-week-sos" href="/sos" hidden data-i18n="mood.sos">
               Jei sunku jau kelias dienas iš eilės — nebūk su tuo viena(s). Pagalba →
             </a>
-          </div>
-          <div class="mood-card">
-            <div class="mood-month-head">
+          </section>
+
+          <section class="cal-card month-card">
+            <div class="month-head">
               <button
                 type="button"
-                class="refresh"
+                class="round-btn round-plain"
                 id="mood-prev"
                 aria-label="Ankstesnis mėnuo"
                 data-i18n-aria="mood.prev"
               >
-                ‹
+                <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M14.5 6l-6 6 6 6" />
+                </svg>
               </button>
               <h2 id="mood-month-title"></h2>
               <button
                 type="button"
-                class="refresh"
+                class="round-btn round-plain"
                 id="mood-next"
                 aria-label="Kitas mėnuo"
                 data-i18n-aria="mood.next"
               >
-                ›
+                <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M9.5 6l6 6-6 6" />
+                </svg>
               </button>
             </div>
+            <div class="mood-wds" id="mood-wds" aria-hidden="true"></div>
             <div class="mood-grid" id="mood-grid"></div>
+          </section>
+
+          <div class="mood-legend">
+            <span>
+              <span class="emo-icon" data-emo-icon="pyktis" aria-hidden="true"></span>
+              <span data-i18n="emo.pyktis">Pyktis</span>
+            </span>
+            <span>
+              <span class="emo-icon" data-emo-icon="liudesys" aria-hidden="true"></span>
+              <span data-i18n="emo.liudesys">Liūdesys</span>
+            </span>
+            <span>
+              <span class="emo-icon" data-emo-icon="nerimas" aria-hidden="true"></span>
+              <span data-i18n="emo.nerimas">Nerimas</span>
+            </span>
+            <span>
+              <span class="emo-icon" data-emo-icon="kalte" aria-hidden="true"></span>
+              <span data-i18n="emo.kalte">Kaltė</span>
+            </span>
+            <span>
+              <span class="emo-icon" data-emo-icon="vienatve" aria-hidden="true"></span>
+              <span data-i18n="emo.vienatve">Vienatvė</span>
+            </span>
+            <span>
+              <span class="emo-icon" data-emo-icon="viltis" aria-hidden="true"></span>
+              <span data-i18n="emo.viltis">Viltis</span>
+            </span>
           </div>
-          <div class="mood-card" id="mood-shared" hidden>
+
+          <section class="cal-card" id="mood-shared" hidden>
             <h2 data-i18n="mood.sharedTitle">Kaip jaučiasi visi</h2>
             <div class="mood-hero">
               <span class="mood-face" id="mood-shared-face" aria-hidden="true"></span>
@@ -507,7 +683,7 @@
             </div>
             <div class="mood-bars" id="mood-shared-bars"></div>
             <p class="muted mood-note" id="mood-shared-note"></p>
-          </div>
+          </section>
         </section>
 
         <!-- 4. Nustatymai (atidaromi ⚙ mygtuku viršuje). Pavojinga zona — pačioje apačioje. -->
@@ -601,8 +777,13 @@
               href="https://buymeacoffee.com/nuogasiela"
               target="_blank"
               rel="noopener"
-              data-i18n="set.supportBtn"
-            >☕ Pavaišinti kava</a>
+            >
+              <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 9.5h11.5v5a5 5 0 01-5 5h-1.5a5 5 0 01-5-5z" />
+                <path d="M16.5 11h1a2.5 2.5 0 010 5h-1.2M8.5 3.5v2.5M12 3.5v2.5" />
+              </svg>
+              <span data-i18n="set.supportBtn">Pavaišinti kava</span>
+            </a>
           </div>
 
           <div class="setting-danger">
@@ -623,47 +804,299 @@
       </main>
 
       <!-- Apatinis meniu: kelias „rašai → skaitai → matai save laike". Nustatymai — ⚙ viršuje. -->
-      <nav class="tabbar" id="tabbar">
-        <span class="tab-glow" id="tab-glow" aria-hidden="true"></span>
-        <a href="/rasyti" data-screen="rasyti" class="tab">
-          <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M4.5 19.5l1-4.2L15.6 5.2a2.1 2.1 0 0 1 3 3L8.5 18.4l-4 1.1Z" />
-            <path d="M13.6 7.2l3 3" />
-          </svg>
-          <span data-i18n="tab.write">Rašyti</span>
-        </a>
-        <a href="/srautas" data-screen="srautas" class="tab">
-          <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M3 8c2-1.6 4-1.6 6 0s4 1.6 6 0 4-1.6 6 0" />
-            <path d="M3 13c2-1.6 4-1.6 6 0s4 1.6 6 0 4-1.6 6 0" />
-            <path d="M3 18c2-1.6 4-1.6 6 0s4 1.6 6 0 4-1.6 6 0" opacity="0.5" />
-          </svg>
-          <span data-i18n="tab.feed">Srautas</span>
-        </a>
-        <a href="/istorijos" data-screen="istorijos" class="tab">
-          <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true">
-            <path
-              d="M12 6.6C10 5.1 7.4 4.6 4 5v13c3.4-.4 6 .1 8 1.6 2-1.5 4.6-2 8-1.6V5c-3.4-.4-6 .1-8 1.6Z" />
-            <path d="M12 6.6v13" />
-          </svg>
-          <span data-i18n="tab.stories">Istorijos</span>
-        </a>
-        <a href="/kalendorius" data-screen="kalendorius" class="tab">
-          <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true">
-            <rect x="4" y="5.5" width="16" height="14.5" rx="3" />
-            <path d="M4 10.5h16M9 3.5v4M15 3.5v4" />
-            <circle cx="12" cy="15.2" r="1.7" fill="currentColor" stroke="none" />
-          </svg>
-          <span data-i18n="tab.calendar">Kalendorius</span>
-        </a>
+      <nav class="tabbar" id="tabbar" aria-label="Pagrindinis meniu" data-i18n-aria="tab.aria">
+        <div class="tabbar-inner">
+          <span class="tab-glow" id="tab-glow" aria-hidden="true"></span>
+          <a href="/rasyti" data-screen="rasyti" class="tab">
+            <svg class="ico tab-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4.5 19.5l1-3.9L15.8 5.3a2 2 0 012.9 2.9L8.4 18.5l-3.9 1z" />
+              <path d="M14 7l3 3" />
+            </svg>
+            <span data-i18n="tab.write">Rašyti</span>
+          </a>
+          <a href="/srautas" data-screen="srautas" class="tab">
+            <svg class="ico tab-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 8c1.5-1.2 3-1.2 4.5 0s3 1.2 4.5 0 3-1.2 4.5 0 3 1.2 4.5 0" />
+              <path d="M3 12.5c1.5-1.2 3-1.2 4.5 0s3 1.2 4.5 0 3-1.2 4.5 0 3 1.2 4.5 0" />
+              <path d="M3 17c1.5-1.2 3-1.2 4.5 0s3 1.2 4.5 0 3-1.2 4.5 0 3 1.2 4.5 0" />
+            </svg>
+            <span data-i18n="tab.feed">Srautas</span>
+          </a>
+          <a href="/istorijos" data-screen="istorijos" class="tab">
+            <svg class="ico tab-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M12 6.8C10.4 5.5 7.9 4.8 3.8 4.8v12.8c4.1 0 6.6.7 8.2 2 1.6-1.3 4.1-2 8.2-2V4.8c-4.1 0-6.6.7-8.2 2z"
+              />
+              <path d="M12 6.8v12.8" />
+            </svg>
+            <span data-i18n="tab.stories">Istorijos</span>
+          </a>
+          <a href="/kalendorius" data-screen="kalendorius" class="tab">
+            <svg class="ico tab-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="3.8" y="5.2" width="16.4" height="15" rx="3" />
+              <path d="M3.8 10h16.4M8.2 3.2v3.6M15.8 3.2v3.6" />
+              <circle class="ico-dot" cx="12" cy="15" r="1.2" />
+            </svg>
+            <span data-i18n="tab.calendar">Kalendorius</span>
+          </a>
+        </div>
       </nav>
 
       <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
+      <!-- Info lapai (ⓘ mygtukai ekranų antraštėse). Rašymo — atsidaro pats pirmą kartą (ns_intro). -->
+      <div class="sheet" id="info-sheet" hidden>
+        <button
+          type="button"
+          class="sheet-backdrop"
+          data-sheet-close
+          tabindex="-1"
+          aria-label="Uždaryti"
+          data-i18n-aria="intro.close"
+        ></button>
+
+        <section
+          class="sheet-card"
+          data-info-panel="rasyti"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="info-title-rasyti"
+          hidden
+        >
+          <span class="sheet-handle" aria-hidden="true"></span>
+          <h2 id="info-title-rasyti" data-i18n="intro.title">Kaip tai veikia</h2>
+          <ul class="info-list">
+            <li>
+              <span class="info-ico">
+                <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="5" y="10.5" width="14" height="9.5" rx="2.5" />
+                  <path d="M8.5 10.5V8a3.5 3.5 0 017 0v2.5" />
+                </svg>
+              </span>
+              <span class="info-text" data-i18n="promise">
+                Mes nežinome, kas tu. Ir nenorime žinoti.
+              </span>
+            </li>
+            <li>
+              <span class="info-ico info-ember">
+                <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M12 20.5a6 6 0 006-6c0-3.6-2.4-5.6-3.8-9-.8 2.4-2 3.5-3.2 4-.3-1.6-.9-2.9-1.8-4C7.4 8 6 10.8 6 14.5a6 6 0 006 6z"
+                  />
+                </svg>
+              </span>
+              <span class="info-text">
+                <strong data-i18n="path.burn">Sudeginti</strong>
+                <span data-i18n="info.burn">— tekstas sudega, niekas jo nepamatys.</span>
+              </span>
+            </li>
+            <li>
+              <span class="info-ico">
+                <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M3 8c1.5-1.2 3-1.2 4.5 0s3 1.2 4.5 0 3-1.2 4.5 0 3 1.2 4.5 0" />
+                  <path d="M3 12.5c1.5-1.2 3-1.2 4.5 0s3 1.2 4.5 0 3-1.2 4.5 0 3 1.2 4.5 0" />
+                  <path d="M3 17c1.5-1.2 3-1.2 4.5 0s3 1.2 4.5 0 3-1.2 4.5 0 3 1.2 4.5 0" />
+                </svg>
+              </span>
+              <span class="info-text">
+                <strong data-i18n="path.release">Į srautą</strong>
+                <span data-i18n="info.release">
+                  — kiti matys 24 val., po to tekstas išnyksta visam laikui.
+                </span>
+              </span>
+            </li>
+            <li>
+              <span class="info-ico">
+                <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M12 6.8C10.4 5.5 7.9 4.8 3.8 4.8v12.8c4.1 0 6.6.7 8.2 2 1.6-1.3 4.1-2 8.2-2V4.8c-4.1 0-6.6.7-8.2 2z"
+                  />
+                  <path d="M12 6.8v12.8" />
+                </svg>
+              </span>
+              <span class="info-text">
+                <strong data-i18n="path.story">Į istorijas</strong>
+                <span data-i18n="info.story">
+                  — lieka, kol pats ištrinsi. Istorijas gali rasti ir Google paieška.
+                </span>
+              </span>
+            </li>
+            <li>
+              <span class="info-ico">
+                <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 20v-7" />
+                  <path d="M12 13c0-4 2.5-6.5 7-6.5 0 4.5-2.5 6.5-7 6.5z" />
+                  <path d="M12 15.5c0-3-2-5-5.5-5 0 3.5 2 5 5.5 5z" />
+                </svg>
+              </span>
+              <span class="info-text" data-i18n="write.hint">
+                Rašymas apie jausmus mažina jų intensyvumą — tai patvirtinta tyrimais.
+              </span>
+            </li>
+          </ul>
+          <button type="button" class="btn btn-calm btn-block" data-sheet-close
+            data-i18n="intro.ok">
+            Supratau
+          </button>
+        </section>
+
+        <section
+          class="sheet-card"
+          data-info-panel="srautas"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="info-title-srautas"
+          hidden
+        >
+          <span class="sheet-handle" aria-hidden="true"></span>
+          <h2 id="info-title-srautas" data-i18n="feed.title">Srautas</h2>
+          <ul class="info-list">
+            <li>
+              <span class="info-ico">
+                <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M3 8c1.5-1.2 3-1.2 4.5 0s3 1.2 4.5 0 3-1.2 4.5 0 3 1.2 4.5 0" />
+                  <path d="M3 12.5c1.5-1.2 3-1.2 4.5 0s3 1.2 4.5 0 3-1.2 4.5 0 3 1.2 4.5 0" />
+                  <path d="M3 17c1.5-1.2 3-1.2 4.5 0s3 1.2 4.5 0 3-1.2 4.5 0 3 1.2 4.5 0" />
+                </svg>
+              </span>
+              <span class="info-text" data-i18n="info.feed1">
+                Ką žmonės paleido per pastarąją parą.
+              </span>
+            </li>
+            <li>
+              <span class="info-ico info-ember">
+                <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+                  <circle cx="12" cy="12" r="8.5" />
+                  <path d="M12 7.5V12l3 2" />
+                </svg>
+              </span>
+              <span class="info-text" data-i18n="info.feed2">
+                Po 24 val. kiekvienas tekstas išnyksta visam laikui.
+              </span>
+            </li>
+          </ul>
+          <button type="button" class="btn btn-calm btn-block" data-sheet-close
+            data-i18n="intro.ok">
+            Supratau
+          </button>
+        </section>
+
+        <section
+          class="sheet-card"
+          data-info-panel="istorijos"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="info-title-istorijos"
+          hidden
+        >
+          <span class="sheet-handle" aria-hidden="true"></span>
+          <div class="sheet-titles">
+            <h2 id="info-title-istorijos" data-i18n="stories.title">Istorijos</h2>
+            <p class="sheet-sub" data-i18n="info.storiesSub">Gal tarp jų rasi ir savo.</p>
+          </div>
+          <ul class="info-list">
+            <li>
+              <span class="info-ico">
+                <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M12 6.8C10.4 5.5 7.9 4.8 3.8 4.8v12.8c4.1 0 6.6.7 8.2 2 1.6-1.3 4.1-2 8.2-2V4.8c-4.1 0-6.6.7-8.2 2z"
+                  />
+                  <path d="M12 6.8v12.8" />
+                </svg>
+              </span>
+              <span class="info-text" data-i18n="info.stories1">
+                Tekstai, kuriuos žmonės paliko ilgam: jie lieka, kol autorius pats ištrina.
+              </span>
+            </li>
+            <li>
+              <span class="info-ico info-heart">
+                <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M12 19.5s-7.2-4.4-7.2-9.6a4 4 0 017.2-2.4 4 4 0 017.2 2.4c0 5.2-7.2 9.6-7.2 9.6z"
+                  />
+                </svg>
+              </span>
+              <span class="info-text">
+                <strong data-i18n="stories.sortHugs">Labiausiai suprastos</strong>
+                <span data-i18n="info.stories2">
+                  — istorijos, kurioms daugiausia žmonių paspaudė „Suprantu tave“.
+                </span>
+              </span>
+            </li>
+            <li>
+              <span class="info-ico">
+                <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+                  <circle cx="11" cy="11" r="6.5" />
+                  <path d="M16 16l4 4" />
+                </svg>
+              </span>
+              <span class="info-text" data-i18n="info.stories3">
+                Istorijas gali rasti ir Google paieška.
+              </span>
+            </li>
+          </ul>
+          <button type="button" class="btn btn-calm btn-block" data-sheet-close
+            data-i18n="intro.ok">
+            Supratau
+          </button>
+        </section>
+
+        <section
+          class="sheet-card"
+          data-info-panel="kalendorius"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="info-title-kalendorius"
+          hidden
+        >
+          <span class="sheet-handle" aria-hidden="true"></span>
+          <h2 id="info-title-kalendorius" data-i18n="mood.title">Emocijų kalendorius</h2>
+          <ul class="info-list">
+            <li>
+              <span class="info-ico">
+                <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M4.5 19.5l1-3.9L15.8 5.3a2 2 0 012.9 2.9L8.4 18.5l-3.9 1z" />
+                  <path d="M14 7l3 3" />
+                </svg>
+              </span>
+              <span class="info-text" data-i18n="info.cal1">
+                Čia atsiranda kiekviena emocija, kurią pažymi rašydama(s) — ir paleistame, ir
+                sudegintame tekste.
+              </span>
+            </li>
+            <li>
+              <span class="info-ico">
+                <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="3.8" y="5.2" width="16.4" height="15" rx="3" />
+                  <path d="M3.8 10h16.4M8.2 3.2v3.6M15.8 3.2v3.6" />
+                </svg>
+              </span>
+              <span class="info-text" data-i18n="info.cal2">Tik diena ir emocija, be teksto.</span>
+            </li>
+            <li>
+              <span class="info-ico">
+                <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="5" y="10.5" width="14" height="9.5" rx="2.5" />
+                  <path d="M8.5 10.5V8a3.5 3.5 0 017 0v2.5" />
+                </svg>
+              </span>
+              <span class="info-text" data-i18n="info.cal3">Saugoma tik šiame įrenginyje.</span>
+            </li>
+          </ul>
+          <button type="button" class="btn btn-calm btn-block" data-sheet-close
+            data-i18n="intro.ok">
+            Supratau
+          </button>
+        </section>
+      </div>
+
       <!-- Švelnus SOS pasiūlymas po krizės žodžių -->
-      <div class="sos-sheet" id="sos-sheet" hidden>
-        <div class="sos-sheet-card">
-          <p data-i18n="sheet.text">
+      <div class="sheet" id="sos-sheet" hidden>
+        <div class="sheet-backdrop" aria-hidden="true"></div>
+        <section class="sheet-card" role="dialog" aria-modal="true"
+          aria-labelledby="sos-sheet-text">
+          <span class="sheet-handle" aria-hidden="true"></span>
+          <p class="sheet-lead" id="sos-sheet-text" data-i18n="sheet.text">
             Skamba, lyg tau dabar tikrai sunku. Tavo žodžiai paleisti — bet jei norisi su kuo nors
             pasikalbėti balsu, čia yra žmonės, kurie klauso:
           </p>
@@ -675,10 +1108,15 @@
             <span class="hotline-name" data-i18n="sos.youth">Jaunimo linija</span>
             <span class="hotline-number">8 800 28888</span>
           </a>
-          <button type="button" class="btn btn-calm" id="sos-sheet-close" data-i18n="sheet.close">
+          <button
+            type="button"
+            class="btn btn-calm btn-block"
+            id="sos-sheet-close"
+            data-i18n="sheet.close"
+          >
             Ačiū, suprantu
           </button>
-        </div>
+        </section>
       </div>
     </div>
 
@@ -689,6 +1127,7 @@
     <script src="/js/scream.js"></script>
     <script src="/js/river.js"></script>
     <script src="/js/ui.js"></script>
+    <script src="/js/icons.js"></script>
     <script src="/js/mood.js"></script>
     <script src="/js/sounds.js"></script>
     <script src="/js/app.js"></script>

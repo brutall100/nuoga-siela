@@ -200,32 +200,36 @@ Asmeninis kalendorius (`public/js/mood.js`) gyvena **tik** `localStorage` (`ns_m
 `[vietinė diena "YYYY-MM-DD", emocija]`) — niekada tekstas, niekada nesiunčiamas į serverį. Įrašas
 daromas `app.js` `sendEmotionToCalendar()` po sėkmingo paleidimo ir po deginimo (jei emocija
 pasirinkta — deginimas vis tiek nieko nesiunčia); ta pati funkcija paleidžia `flyToCalendar()`
-animaciją (emoji nuskrenda į Kalendoriaus tab'ą). „Ištrinti mano duomenis" jį išvalo
+animaciją (emocijos simbolis nuskrenda į Kalendoriaus tab'ą). „Ištrinti mano duomenis" jį išvalo
 (`window.mood.clear()`). Bendra savaitės nuotaika rodoma tik kai `total >= 5`, kaip ir socialinis
-įrodymas.
+įrodymas. Kalendoriaus ekranas: „Tavo savaitė“ — einamosios savaitės pirmadienis–sekmadienis
+(šiandienos simbolis gyvas), mėnesio tinklelis su dienos dominuojančios emocijos simboliu, legenda,
+o po jais — bendra nuotaika ir SOS užuomina (abi rodomos tik esant sąlygoms).
 
 Garsai (`public/js/sounds.js`) — failai `public/sounds/{upe,lietus,lauzas}.mp3`, grojami per Web
 Audio (`fetch` + `decodeAudioData`, kilpa, `GainNode` fade), ne per `<audio>`: iOS neleidžia keisti
 `<audio>` garsumo, o `serveStatic()` nepalaiko `Range` užklausų, kurių Safari reikalauja medijai.
-Atėjus į Šauksmo kambarį fono garsas sustabdomas (`render()`), kad nepatektų į įrašą. Failai turi
-būti su laisva licencija (CC0 ar pan.) — šaltinį ir licenciją užrašyk `CHANGELOG.md`.
+Atėjus į Šauksmo kambarį fono garsas sustabdomas (`render()`), kad nepatektų į įrašą. Rašymo ekrane
+garsą renkasi „Fonas“ mygtukas laukelio kampe (`#sound-btn` → meniu `#sound-menu`), SOS ekrane —
+chip'ai; abu sinchronizuoja `app.js` `syncAmbient()`. Failai turi būti su laisva licencija (CC0 ar
+pan.) — šaltinį ir licenciją užrašyk `CHANGELOG.md`.
 
 ### Produkto kelias — nuoseklumas
 
 Visa programa seka vieną kelią, ir nauji ekranai ar tekstai turi jį palaikyti, ne kurti šalutinį:
-**emocija → žodžiai → ką su jais daryti**. Rašymo kortelėje tvarka fiksuota: „Kaip jautiesi?“ (emoji
-plytelės 3×2) → laukelis → „Ką darysi su tuo?“ — trys plytelės `.path` vienoje eilėje (🔥 Sudeginti
-/ 🏮 Į srautą / 📖 Į istorijas), be aprašų; paspaudimas iškart atlieka veiksmą. Viena emocija visada
-pažymėta (`app.js` `DEFAULT_EMOTION`): numatyta „Viltis“ — atidarius ekraną ir po kiekvieno
-paleidimo ar deginimo; paspaudus pažymėtą dar kartą ji nenuimama, tik pakeičiama kita. Todėl
-nepakeitus emocijos į kalendorių ir `stats` keliauja „Viltis“ — tai sąmoningas produkto sprendimas.
-Emoji visada pilnos spalvos (jokio pilkinimo) — pažymėtą rodo plytelės fonas ir rėmelis. Srauto ir
-istorijos skirtumas (24 val. ir 1000 ženklų / lieka ir 5000 ženklų) aiškinamas „Kaip tai veikia“
-kortelėje, abiejų ekranų `screen-intro` tekstuose ir pranešime po veiksmo. Po plytelėmis lieka viena
-eilutė „Istorijas gali rasti ir Google“ — tai privatumo atskleidimas prieš paskelbiant amžiną viešą
-tekstą, neišimk jos. Laukelis priima 5000 ženklų; viršijus 1000, „Į srautą“ plytelė tampa
-`aria-disabled` (pritemdyta), o paspaudus pranešimas nukreipia į istorijas (serveris vis tiek
-tikrina abi ribas).
+**emocija → žodžiai → ką su jais daryti**. Rašymo kortelėje tvarka fiksuota: „Kaip jautiesi?“
+(emocijų plytelės 3×2) → laukelis → „Ką darysi su tuo?“ — trys plytelės `.path` vienoje eilėje
+(Sudeginti / Į srautą / Į istorijas, su linijinėmis ikonomis), be aprašų; paspaudimas iškart atlieka
+veiksmą. Viena emocija visada pažymėta (`app.js` `DEFAULT_EMOTION`): numatyta „Viltis“ — atidarius
+ekraną ir po kiekvieno paleidimo ar deginimo; paspaudus pažymėtą dar kartą ji nenuimama, tik
+pakeičiama kita. Todėl nepakeitus emocijos į kalendorių ir `stats` keliauja „Viltis“ — tai
+sąmoningas produkto sprendimas. Simboliai visada pilnos spalvos (jokio pilkinimo) — pažymėtą rodo
+plytelės fonas ir rėmelis, o pažymėtos emocijos simbolis juda. Srauto ir istorijos skirtumas (24
+val. ir 1000 ženklų / lieka ir 5000 ženklų) aiškinamas „Kaip tai veikia“ lape, Srauto ir Istorijų
+info lapuose ir pranešime po veiksmo. Po plytelėmis lieka viena eilutė „Istorijas gali rasti ir
+Google“ — tai privatumo atskleidimas prieš paskelbiant amžiną viešą tekstą, neišimk jos. Laukelis
+priima 5000 ženklų; viršijus 1000, „Į srautą“ plytelė tampa `aria-disabled` (pritemdyta), o
+paspaudus pranešimas nukreipia į istorijas (serveris vis tiek tikrina abi ribas).
 
 `:hover` stilius plytelėms ir chip'ams rašyk tik `@media (hover: hover)` viduje — telefone `:hover`
 „prilimpa“ po paspaudimo, ir atžymėta plytelė atrodo vis dar pažymėta.
@@ -236,12 +240,21 @@ ekrane lieka tik emocija, laukelis, trys keliai ir fono garsai.
 Apatinis meniu: Rašyti · Srautas · Istorijos · Kalendorius. Nustatymai — ⚙ (`#settings-btn`)
 viršuje, šalia temos ir SOS; nustatymų ekrane „Ištrinti mano duomenis“ visada paskutinis.
 
-Emocijų kalba visur ta pati: emoji + pavadinimas + spalva (`--emo-*`). Vienintelis emoji šaltinis JS
-pusėje — `window.mood.faces` (`mood.js` `FACES`); statiniame HTML (plytelės, filtrai) ir `main.ts`
-`EMOTION_LABELS_LT` (SSR istorija) tie patys emoji įrašyti ranka — keičiant vieną, keisk visus.
+Emocijų kalba visur ta pati: simbolis + pavadinimas + spalva (`--emo-*`). Emocijos — kosmoso
+reiškiniai (pyktis — susiduriančios planetos, liūdesys — krentanti žvaigždė, nerimas — nerimstančios
+orbitos, kaltė — užtemimas, vienatvė — viena planeta, viltis — žvaigždė virš horizonto). Vienintelis
+simbolių šaltinis kliento pusėje — `public/js/icons.js` (`window.icons.emo()`, ramios ir „gyvos“
+SMIL versijos; su `prefers-reduced-motion` — visada ramios); statiniame HTML vietos žymimos
+`<span class="emo-icon" data-emo-icon="…">` ir užpildomos `icons.fill()`. `main.ts` `EMOTION_ICONS`
+(SSR istorija) — ramių simbolių kopija: keičiant vieną, keisk abu. Spalva — `currentColor` iš
+`[data-emo]`/`[data-emotion]` (`--emo-c`), užtemimo/horizonto šešėlis — `.emo-mask` (`--emo-mask`,
+fono spalva; ne įrašyta ranka, kitaip šviesioje temoje liktų tamsi dėmė). Emoji sąsajoje nenaudojami
+— linijinės ikonos yra inline SVG (`.ico`) arba `icons.line()`.
 
-„Kaip tai veikia“ kortelė rašymo ekrane rodoma, kol žmogus jos neuždaro (`ns_intro` localStorage);
-tie patys trys žingsniai ir misijos tekstas nuolat yra nustatymų „Apie“ skiltyje.
+Ekranų antraštėse ⓘ (`[data-info]`) atidaro info lapą iš apačios (`#info-sheet`,
+`[data-info-panel]`); kol jis atviras, fonas `inert`, Escape uždaro. Rašymo ekrano „Kaip tai veikia“
+lapas pats atsidaro pirmą kartą (`ns_intro` localStorage), vėliau — tik per ⓘ; trys žingsniai ir
+misijos tekstas nuolat yra nustatymų „Apie“ skiltyje.
 
 ### i18n susitarimas
 

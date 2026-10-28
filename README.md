@@ -26,8 +26,8 @@ go.
 
 ### How it works
 
-1. **Tag how you feel** (🌱 hope is preselected). The emotion (with its emoji) goes to your
-   calendar, on this device only.
+1. **Tag how you feel** (hope is preselected). The emotion goes to your calendar, on this device
+   only.
 2. **Pour out the words.** No name, no sign-up.
 3. **Decide what to do with them:** 🔥 burn them (no one will see), 🏮 release them to the
    **Stream** (gone in 24 h), or 📖 keep them as a **story** (stays until you delete it).
@@ -37,8 +37,10 @@ the ⚙ button at the top.
 
 ## Features
 
-- ✍️ **Write freely.** Tag an emotion: 😠 anger, 😢 sadness, 😰 anxiety, 😔 guilt, 😶 loneliness, 🌱
-  hope. The same emoji show up in the stream, the stories and the calendar.
+- ✍️ **Write freely.** Tag an emotion, each drawn as a space phenomenon: anger (colliding planets),
+  sadness (a falling star), anxiety (restless orbits), guilt (an eclipse), loneliness (a lone
+  planet), hope (a star rising over the horizon). The same symbols show up in the stream, the
+  stories and the calendar; the selected one moves.
 - 🔥 **Burn it.** The text turns into embers and disappears. It is never sent to the server.
 - 🏮 **Release it** to the **Stream**: the text is physically deleted after 24 h.
 - 📖 **Keep it as a story**: a longer text (up to 5000 characters) that stays until you delete it
@@ -48,10 +50,10 @@ the ⚙ button at the top.
   gently and the post is never blocked.
 - 🔊 **Scream room** (on the SOS screen). Audio lives only in the phone's memory and is never
   uploaded.
-- 📅 **Mood calendar** (in the bottom menu). Your tagged emotions by day, with a moving emoji for
-  your week; when you release or burn a text, its emoji flies into the calendar. Only the day and
-  the emotion are saved, and only on your device. Next to it: how everyone feels this week (plain
-  totals, no link to anyone).
+- 📅 **Mood calendar** (in the bottom menu). Your tagged emotions by day and a strip for this week;
+  when you release or burn a text, its symbol flies into the calendar. Only the day and the emotion
+  are saved, and only on your device. Next to it: how everyone feels this week (plain totals, no
+  link to anyone).
 - 🎧 **Calming sounds.** River, rain or campfire while you write or breathe.
 - 🌗 **Light and dark mode.** Follows the system setting, has a toggle, and doesn't flash while
   loading.
@@ -69,12 +71,12 @@ the ⚙ button at the top.
 
 ## Built with
 
-| Area    | What                                                                                                                               |
-| ------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| Server  | [Deno](https://deno.com) 2 + Deno KV, zero dependencies                                                                            |
-| Client  | Vanilla HTML / CSS / JS (PWA), no libraries and no build step                                                                      |
-| Fonts   | [Lora](https://fonts.google.com/specimen/Lora) for headings, [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) for text |
-| Testing | `deno test`, CI on GitHub Actions (fmt + lint + test)                                                                              |
+| Area    | What                                                                                                                     |
+| ------- | ------------------------------------------------------------------------------------------------------------------------ |
+| Server  | [Deno](https://deno.com) 2 + Deno KV, zero dependencies                                                                  |
+| Client  | Vanilla HTML / CSS / JS (PWA), no libraries and no build step                                                            |
+| Fonts   | [Lora](https://fonts.google.com/specimen/Lora) for headings, [Nunito](https://fonts.google.com/specimen/Nunito) for text |
+| Testing | `deno test`, CI on GitHub Actions (fmt + lint + test)                                                                    |
 
 **"Let it drift" color palette** (every color lives at the top of `public/css/main.css`, in
 `:root`):
@@ -144,9 +146,10 @@ public/js/ui.js      button ripple, reveal on scroll, count-up
 public/js/app.js     routing, writing, stream, stories, settings
 public/js/burn.js    burn animation (Canvas)
 public/js/scream.js  scream room (audio only in RAM)
+public/js/icons.js   emotion symbols (space phenomena) and line icons
 public/js/mood.js    mood calendar (local only) and the shared weekly mood
 public/js/sounds.js  calming sounds (Web Audio loop, files in public/sounds/)
-public/fonts/        Lora and Nunito Sans (woff2 + OFL licenses)
+public/fonts/        Lora and Nunito (woff2 + OFL licenses)
 public/sounds/       river, rain and campfire loops (Freesound, CC0)
 public/images/       og-image.webp
 docs/                README screenshots
@@ -169,8 +172,8 @@ docs/                README screenshots
 ## Credits
 
 - Fonts: [Lora](https://github.com/cyrealtype/Lora-Cyrillic) (The Lora Project Authors) and
-  [Nunito Sans](https://github.com/Fonthausen/NunitoSans) (The Nunito Sans Project Authors), both
-  under the [SIL Open Font License 1.1](https://openfontlicense.org). The license texts are in
+  [Nunito](https://github.com/googlefonts/nunito) (The Nunito Project Authors), both under the
+  [SIL Open Font License 1.1](https://openfontlicense.org). The license texts are in
   `public/fonts/`.
 - Sounds from [Freesound](https://freesound.org), all
   [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/):

@@ -131,6 +131,9 @@
     if (active === "nustatymai") settingsBtn.setAttribute("aria-current", "page");
     else settingsBtn.removeAttribute("aria-current");
     placeTabGlow();
+    // Grįžus atgal (popstate) atviri lapai ir meniu neturi likti kabėti.
+    closeInfo();
+    setSoundMenu(false);
     if (active === "srautas") loadFeed();
     if (active === "istorijos") loadStories();
     if (active === "rasyti") loadSocialProof();
@@ -173,23 +176,62 @@
     history.replaceState(null, "", path);
   }
 
-  // ---------- „Kaip tai veikia" (kol žmogus jo neuždaro) ----------
+  // ---------- Info lapai (ⓘ antraštėse) ----------
+  // Lapas iš apačios; fonas tuo metu inert (nei Tab, nei skaitytuvas jo nemato).
+  // Rašymo ekrano „Kaip tai veikia" pats atsidaro pirmą kartą (ns_intro, tik localStorage).
 
   const INTRO_KEY = "ns_intro";
-  const intro = $("#intro-card");
-  intro.hidden = localStorage.getItem(INTRO_KEY) === "1";
+  const infoSheet = $("#info-sheet");
+  const BEHIND_SHEET = [".topbar", "#main", "#tabbar"];
+  let sheetOpener = null;
 
-  function closeIntro() {
-    localStorage.setItem(INTRO_KEY, "1");
-    if (REDUCED) {
-      intro.hidden = true;
-      return;
-    }
-    intro.classList.add("is-leaving");
-    intro.addEventListener("animationend", () => (intro.hidden = true), { once: true });
+  function setBehindInert(on) {
+    for (const sel of BEHIND_SHEET) $(sel).inert = on;
   }
-  $("#intro-close").addEventListener("click", closeIntro);
-  $("#intro-ok").addEventListener("click", closeIntro);
+
+  function openInfo(name, opener) {
+    const panel = infoSheet.querySelector(`[data-info-panel="${name}"]`);
+    if (!panel) return;
+    infoSheet.querySelectorAll("[data-info-panel]").forEach((el) => (el.hidden = el !== panel));
+    sheetOpener = opener || null;
+    infoSheet.hidden = false;
+    setBehindInert(true);
+    // Fokusas — pačiam lapui (be rėmelio), Tab veda į „Supratau".
+    panel.tabIndex = -1;
+    panel.focus();
+  }
+
+  function closeInfo() {
+    if (infoSheet.hidden) return;
+    infoSheet.hidden = true;
+    setBehindInert(false);
+    localStorage.setItem(INTRO_KEY, "1");
+    if (sheetOpener && sheetOpener.isConnected) sheetOpener.focus();
+    sheetOpener = null;
+  }
+
+  document.addEventListener("click", (e) => {
+    const opener = e.target.closest("[data-info]");
+    if (opener) return openInfo(opener.dataset.info, opener);
+    if (e.target.closest("[data-sheet-close]")) closeInfo();
+  });
+
+  // Tab ciklas lapo viduje + Escape uždaro.
+  infoSheet.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") return closeInfo();
+    if (e.key !== "Tab") return;
+    const panel = infoSheet.querySelector("[data-info-panel]:not([hidden])");
+    const focusable = [...panel.querySelectorAll("a[href], button")];
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  });
 
   // ---------- Rašymo ekranas ----------
 
@@ -222,6 +264,8 @@
       const on = el.dataset.emotion === selectedEmotion;
       el.classList.toggle("is-active", on);
       el.setAttribute("aria-pressed", String(on));
+      // Pažymėtos emocijos simbolis „atgyja", kiti — ramūs.
+      window.icons.setLive(el.querySelector(".emo-icon"), on);
     });
   }
 
@@ -247,16 +291,14 @@
       void target.offsetWidth;
       target.classList.add("is-receiving");
     };
-    const source = $(`.emo[data-emotion="${emotion}"] .emo-face`);
+    const source = $(`.emo[data-emotion="${emotion}"] .emo-icon`);
     if (REDUCED || !source || !source.animate) return pulse();
     const from = source.getBoundingClientRect();
     const to = target.querySelector(".tab-icon").getBoundingClientRect();
     const dx = to.left + to.width / 2 - (from.left + from.width / 2);
     const dy = to.top + to.height / 2 - (from.top + from.height / 2);
-    const fly = document.createElement("span");
-    fly.className = "emo-fly";
-    fly.setAttribute("aria-hidden", "true");
-    fly.textContent = window.mood.faces[emotion];
+    const fly = window.icons.emoSpan(emotion, false);
+    fly.classList.add("emo-fly");
     fly.style.left = from.left + from.width / 2 + "px";
     fly.style.top = from.top + from.height / 2 + "px";
     document.body.append(fly);
@@ -379,9 +421,11 @@
       if (total > seen) {
         const diff = total - seen;
         const banner = $("#hug-banner");
-        banner.textContent = diff === 1
+        const label = document.createElement("span");
+        label.textContent = diff === 1
           ? window.t("banner.one")
           : window.t("banner.many", { n: diff });
+        banner.replaceChildren(window.icons.line("heart-filled"), label);
         banner.hidden = false;
         banner.onclick = () => {
           banner.hidden = true;
@@ -396,6 +440,11 @@
   }
 
   // ---------- Raminantys garsai (rašymo ir SOS ekranuose) ----------
+  // Rašant — „Fonas" mygtukas laukelio kampe su meniu (Išjungta / Upė / Lietus / Laužas),
+  // SOS ekrane — chip'ai. Abu rodo tą pačią būseną (window.ambient.current).
+
+  const soundBtn = $("#sound-btn");
+  const soundMenu = $("#sound-menu");
 
   function syncAmbient(loading) {
     const current = window.ambient.current;
@@ -405,6 +454,14 @@
       chip.classList.toggle("is-loading", chip.dataset.sound === loading);
       chip.setAttribute("aria-pressed", String(on));
     });
+    document.querySelectorAll(".sound-opt").forEach((opt) => {
+      opt.setAttribute("aria-pressed", String(opt.dataset.sound === (current ?? "")));
+    });
+    soundBtn.classList.toggle("is-on", Boolean(current));
+    soundBtn.classList.toggle("is-loading", Boolean(loading));
+    $("#sound-label").textContent = current
+      ? window.t("sound.labelOn", { name: window.t("sound." + current) })
+      : window.t("sound.label");
   }
 
   function stopAmbient() {
@@ -412,22 +469,50 @@
     syncAmbient();
   }
 
-  document.addEventListener("click", async (e) => {
-    const chip = e.target.closest(".ambient .chip");
-    if (!chip) return;
-    const name = chip.dataset.sound;
-    if (window.ambient.current !== name) syncAmbient(name);
+  async function chooseSound(name) {
+    if (window.ambient.current === name) return;
+    if (!name) return stopAmbient();
+    syncAmbient(name);
     try {
       await window.ambient.toggle(name);
     } catch {
       toast(window.t("sound.fail"), "warn");
     }
     syncAmbient();
+  }
+
+  function setSoundMenu(open) {
+    soundMenu.hidden = !open;
+    soundBtn.setAttribute("aria-expanded", String(open));
+  }
+
+  soundBtn.addEventListener("click", () => setSoundMenu(soundMenu.hidden));
+  soundMenu.addEventListener("click", (e) => {
+    const opt = e.target.closest(".sound-opt");
+    if (!opt) return;
+    setSoundMenu(false);
+    soundBtn.focus();
+    chooseSound(opt.dataset.sound);
+  });
+  // Meniu užsidaro paspaudus šalia arba Escape.
+  document.addEventListener("click", (e) => {
+    if (!soundMenu.hidden && !e.target.closest(".sound")) setSoundMenu(false);
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !soundMenu.hidden) {
+      setSoundMenu(false);
+      soundBtn.focus();
+    }
+  });
+
+  document.addEventListener("click", (e) => {
+    const chip = e.target.closest(".ambient .chip");
+    if (!chip) return;
+    const name = chip.dataset.sound;
+    chooseSound(window.ambient.current === name ? "" : name);
   });
 
   // ---------- Kortelės (srautui ir istorijoms) ----------
-
-  const STORY_PREVIEW = 400;
 
   function formatTimeLeft(ms) {
     if (ms <= 0) return window.t("time.gone");
@@ -436,118 +521,138 @@
     return h > 0 ? window.t("time.hm", { h, m }) : window.t("time.m", { m });
   }
 
+  function iconButton(className, icon, label) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "icon-act " + className;
+    btn.title = label;
+    btn.setAttribute("aria-label", label);
+    btn.append(window.icons.line(icon));
+    return btn;
+  }
+
   function buildCard(post, now) {
     const isStory = post.kind === "istorija";
     const card = document.createElement("article");
     card.className = "card";
     card.dataset.emotion = post.emotion;
 
-    // Ta pati emocijos kalba kaip rašant ir kalendoriuje: emoji + pavadinimas.
-    const emo = document.createElement("span");
+    // Ta pati emocijos kalba kaip rašant ir kalendoriuje: simbolis + pavadinimas.
+    const emo = document.createElement("div");
     emo.className = "card-emo";
-    emo.textContent = (window.mood.faces[post.emotion] ?? "") + " " +
-      window.t("emo." + post.emotion);
-    card.append(emo);
+    const emoName = document.createElement("span");
+    emoName.textContent = window.t("emo." + post.emotion);
+    emo.append(window.icons.emoSpan(post.emotion, false), emoName);
 
+    // Ilgas tekstas — tik keturios eilutės; „Skaityti toliau" atsiranda tik jei
+    // tekstas tikrai netilpo (markClamped(), kai kortelė jau puslapyje).
     const text = document.createElement("p");
-    text.className = "card-text";
-    const shown = displayText(post.text);
-    if (isStory && shown.length > STORY_PREVIEW) {
-      const preview = shown.slice(0, STORY_PREVIEW).trimEnd() + "…";
-      text.textContent = preview;
-      const expand = document.createElement("button");
-      expand.type = "button";
-      expand.className = "expand";
-      expand.textContent = window.t("story.readAll");
-      let open = false;
-      expand.addEventListener("click", () => {
-        open = !open;
-        text.textContent = open ? shown : preview;
-        expand.textContent = open ? window.t("story.collapse") : window.t("story.readAll");
-      });
-      card.append(text, expand);
-    } else {
-      text.textContent = shown;
-      card.append(text);
-    }
+    text.className = "card-text is-clamped";
+    text.textContent = displayText(post.text);
+    const expand = document.createElement("button");
+    expand.type = "button";
+    expand.className = "expand";
+    expand.hidden = true;
+    expand.textContent = window.t("story.readAll");
+    expand.setAttribute("aria-expanded", "false");
+    expand.addEventListener("click", () => {
+      const open = text.classList.toggle("is-clamped") === false;
+      expand.textContent = window.t(open ? "story.collapse" : "story.readAll");
+      expand.setAttribute("aria-expanded", String(open));
+    });
+    card.append(emo, text, expand);
 
     const foot = document.createElement("div");
     foot.className = "card-foot";
 
+    const isHugged = hugged.has(post.id);
     const hug = document.createElement("button");
     hug.type = "button";
-    hug.className = "hug" + (hugged.has(post.id) ? " is-hugged" : "");
-    const hugIcon = document.createElement("span");
-    hugIcon.textContent = "🤍";
+    hug.className = "hug" + (isHugged ? " is-hugged" : "");
+    hug.setAttribute("aria-pressed", String(isHugged));
     const hugLabel = document.createElement("span");
     hugLabel.textContent = window.t("hug.label");
     const hugCount = document.createElement("span");
     hugCount.className = "hug-count";
     if (post.hugs > 0) window.ui.countUp(hugCount, post.hugs);
-    hug.append(hugIcon, hugLabel, hugCount);
+    hug.append(window.icons.line(isHugged ? "heart-filled" : "heart"), hugLabel, hugCount);
     hug.addEventListener("click", async () => {
       if (hugged.has(post.id)) return;
       hug.classList.add("is-hugged");
+      hug.setAttribute("aria-pressed", "true");
+      hug.firstChild.replaceWith(window.icons.line("heart-filled"));
       rememberHug(post.id);
       const data = await api(`/api/posts/${post.id}/hug`, { method: "POST" });
       if (data.ok) hugCount.textContent = String(data.hugs);
     });
 
-    const right = document.createElement("div");
-    right.className = "card-right";
-
-    if (!isStory) {
-      card.dataset.expires = post.expiresAt;
-      const timeLeft = document.createElement("span");
-      timeLeft.className = "time-left";
-      timeLeft.textContent = formatTimeLeft(post.expiresAt - now);
-      right.append(timeLeft);
-    }
+    const spacer = document.createElement("span");
+    spacer.className = "card-spacer";
+    foot.append(hug, spacer);
 
     if (isStory) {
-      const copyLink = document.createElement("button");
-      copyLink.type = "button";
-      copyLink.className = "copy-link";
-      copyLink.textContent = "🔗";
-      copyLink.title = window.t("story.copyLink");
-      copyLink.setAttribute("aria-label", window.t("story.copyLink"));
+      const copyLink = iconButton("copy-link", "link", window.t("story.copyLink"));
       copyLink.addEventListener("click", async () => {
         const url = location.origin + "/istorijos/" + post.id;
         await navigator.clipboard.writeText(url);
         toast(window.t("toast.linkCopied"), "calm");
       });
-      right.append(copyLink);
+      foot.append(copyLink);
+    } else {
+      card.dataset.expires = post.expiresAt;
+      const timeLeft = document.createElement("span");
+      timeLeft.className = "time-left";
+      const timeText = document.createElement("span");
+      timeText.textContent = formatTimeLeft(post.expiresAt - now);
+      timeLeft.append(window.icons.line("clock"), timeText);
+      foot.append(timeLeft);
     }
 
-    const report = document.createElement("button");
-    report.type = "button";
-    report.className = "report";
-    report.textContent = "⚑";
-    report.title = window.t("report.title");
-    report.setAttribute("aria-label", window.t("report.title"));
+    const report = iconButton("report", "flag", window.t("report.title"));
     report.addEventListener("click", async () => {
       if (!confirm(window.t("confirm.report"))) return;
       await api(`/api/posts/${post.id}/report`, { method: "POST" });
       card.remove();
       toast(window.t("toast.reported"));
     });
-
-    right.append(report);
-    foot.append(hug, right);
+    foot.append(report);
     card.append(foot);
-
-    if (!isStory) {
-      // "Dagtis" — kiek gyvybės likę (proporcija nuo 24 val.)
-      const fuse = document.createElement("div");
-      fuse.className = "fuse";
-      const total = post.expiresAt - post.createdAt;
-      const frac = Math.max(0, Math.min(1, (post.expiresAt - now) / total));
-      fuse.style.transform = `scaleX(${frac})`;
-      card.append(fuse);
-    }
 
     window.ui.reveal(card);
     return card;
+  }
+
+  // „Skaityti toliau" — tik toms kortelėms, kurių tekstas netelpa į keturias eilutes.
+  function markClamped(container) {
+    requestAnimationFrame(() => {
+      container.querySelectorAll(".card-text.is-clamped").forEach((text) => {
+        const expand = text.nextElementSibling;
+        expand.hidden = text.scrollHeight <= text.clientHeight + 1;
+      });
+    });
+  }
+
+  // Sąrašas, tuščia būsena (kai visai nieko) arba „šios emocijos dar nėra" (kai filtras).
+  function showPosts(listSel, emptySel, filterEmptySel, posts, now, filtered) {
+    const list = $(listSel);
+    list.textContent = "";
+    for (const post of posts) list.append(buildCard(post, now));
+    markClamped(list);
+    $(emptySel).hidden = posts.length > 0 || filtered;
+    $(filterEmptySel).hidden = posts.length > 0 || !filtered;
+  }
+
+  function markChips(group, attr, value) {
+    group.querySelectorAll(`[data-${attr}]`).forEach((el) => {
+      const on = el.dataset[attr] === value;
+      el.classList.toggle("is-active", on);
+      el.setAttribute("aria-pressed", String(on));
+    });
+  }
+
+  function spin(btn) {
+    btn.classList.add("is-spinning");
+    setTimeout(() => btn.classList.remove("is-spinning"), 450);
   }
 
   // ---------- Srautas ----------
@@ -559,15 +664,12 @@
     const chip = e.target.closest(".chip");
     if (!chip) return;
     feedFilter = chip.dataset.filter;
-    document.querySelectorAll("#feed-filters .chip").forEach((el) => {
-      el.classList.toggle("is-active", el.dataset.filter === feedFilter);
-    });
+    markChips($("#feed-filters"), "filter", feedFilter);
     loadFeed();
   });
 
   $("#btn-refresh").addEventListener("click", () => {
-    $("#btn-refresh").classList.add("is-spinning");
-    setTimeout(() => $("#btn-refresh").classList.remove("is-spinning"), 450);
+    spin($("#btn-refresh"));
     loadFeed();
   });
 
@@ -576,19 +678,14 @@
       const query = feedFilter ? "?emotion=" + feedFilter : "";
       const data = await api("/api/posts" + query);
       if (!data.ok) return;
-      const feed = $("#feed");
-      feed.textContent = "";
-      for (const post of data.posts) {
-        feed.append(buildCard(post, data.now));
-      }
-      $("#feed-empty").hidden = data.posts.length > 0;
+      showPosts("#feed", "#feed-empty", "#feed-filter-empty", data.posts, data.now, !!feedFilter);
 
       clearInterval(feedTicker);
       feedTicker = setInterval(() => {
         const now = Date.now();
         document.querySelectorAll(".card[data-expires]").forEach((card) => {
           const left = Number(card.dataset.expires) - now;
-          const el = card.querySelector(".time-left");
+          const el = card.querySelector(".time-left span");
           if (el) el.textContent = formatTimeLeft(left);
           if (left <= 0) card.remove();
         });
@@ -607,25 +704,20 @@
     const chip = e.target.closest(".chip");
     if (!chip) return;
     storyFilter = chip.dataset.filter;
-    document.querySelectorAll("#story-filters .chip").forEach((el) => {
-      el.classList.toggle("is-active", el.dataset.filter === storyFilter);
-    });
+    markChips($("#story-filters"), "filter", storyFilter);
     loadStories();
   });
 
   $("#story-sort").addEventListener("click", (e) => {
-    const chip = e.target.closest(".chip");
-    if (!chip) return;
-    storySort = chip.dataset.sort;
-    document.querySelectorAll("#story-sort .chip").forEach((el) => {
-      el.classList.toggle("is-active", el.dataset.sort === storySort);
-    });
+    const seg = e.target.closest(".seg");
+    if (!seg) return;
+    storySort = seg.dataset.sort;
+    markChips($("#story-sort"), "sort", storySort);
     loadStories();
   });
 
   $("#btn-refresh-stories").addEventListener("click", () => {
-    $("#btn-refresh-stories").classList.add("is-spinning");
-    setTimeout(() => $("#btn-refresh-stories").classList.remove("is-spinning"), 450);
+    spin($("#btn-refresh-stories"));
     loadStories();
   });
 
@@ -636,12 +728,14 @@
       params.set("sort", storySort);
       const data = await api("/api/stories?" + params.toString());
       if (!data.ok) return;
-      const feed = $("#story-feed");
-      feed.textContent = "";
-      for (const post of data.posts) {
-        feed.append(buildCard(post, data.now));
-      }
-      $("#story-empty").hidden = data.posts.length > 0;
+      showPosts(
+        "#story-feed",
+        "#story-empty",
+        "#story-filter-empty",
+        data.posts,
+        data.now,
+        !!storyFilter,
+      );
     } catch {
       toast(window.t("toast.storiesFail"), "warn");
     }
@@ -662,11 +756,15 @@
   const screamActions = $("#scream-actions");
   let screamBusy = false;
 
+  function setScreamIcon(name) {
+    screamIcon.replaceChildren(window.icons.line(name));
+  }
+
   function resetScream() {
     if (window.screamCleanup) window.screamCleanup();
     screamOrb.classList.remove("is-recording", "is-ready");
     screamOrb.disabled = false;
-    screamIcon.textContent = "🎙️";
+    setScreamIcon("mic");
     screamStatus.textContent = window.t("scream.tapToStart");
     screamActions.hidden = true;
     screamBusy = false;
@@ -680,7 +778,7 @@
       try {
         await window.screamStart();
         screamOrb.classList.add("is-recording");
-        screamIcon.textContent = "⏹";
+        setScreamIcon("stop");
         screamStatus.textContent = window.t("scream.recording");
       } catch {
         toast(window.t("scream.noMic"), "warn");
@@ -692,7 +790,7 @@
       screamOrb.classList.remove("is-recording");
       if (ok) {
         screamOrb.classList.add("is-ready");
-        screamIcon.textContent = "🔇";
+        setScreamIcon("check");
         screamStatus.textContent = window.t("scream.done");
         screamActions.hidden = false;
       } else {
@@ -730,6 +828,7 @@
   langSelect.value = window.i18n.lang;
   langSelect.addEventListener("change", () => {
     window.i18n.set(langSelect.value);
+    syncAmbient();
     const active = currentScreen();
     if (active === "srautas") loadFeed();
     if (active === "istorijos") loadStories();
@@ -762,8 +861,14 @@
   // ---------- Startas ----------
 
   window.i18n.apply();
+  setScreamIcon("mic");
+  syncAmbient();
   render();
   checkMyHugs();
+  // Pirmą kartą atėjus į rašymo ekraną — „Kaip tai veikia" atsidaro pats.
+  if (currentScreen() === "rasyti" && localStorage.getItem(INTRO_KEY) !== "1") {
+    openInfo("rasyti");
+  }
 
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("/sw.js").catch(() => {});
