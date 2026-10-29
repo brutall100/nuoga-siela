@@ -318,7 +318,7 @@ interface SitemapEntry {
 
 // Ta pati data, kuri jau rodoma pačiuose puslapiuose ("Paskutinį kartą
 // atnaujinta:") — nekuriame naujos, tik pakartojame jau tikslią.
-const LEGAL_PAGES_UPDATED = "2026-10-27";
+const LEGAL_PAGES_UPDATED = "2026-10-29";
 
 const STATIC_SITEMAP_ENTRIES: SitemapEntry[] = [
   { path: "/", changefreq: "daily", priority: "1.0" },
