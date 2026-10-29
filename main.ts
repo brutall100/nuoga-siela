@@ -330,25 +330,25 @@ const STATIC_SITEMAP_ENTRIES: SitemapEntry[] = [
   { path: "/kalendorius", changefreq: "weekly", priority: "0.4" },
   { path: "/nustatymai", changefreq: "monthly", priority: "0.4" },
   {
-    path: "/privatumas.html",
+    path: "/privatumas",
     changefreq: "monthly",
     priority: "0.3",
     lastmod: LEGAL_PAGES_UPDATED,
     alternates: [
-      { hreflang: "lt", href: `${SITE_URL}/privatumas.html` },
-      { hreflang: "en", href: `${SITE_URL}/privacy.html` },
-      { hreflang: "x-default", href: `${SITE_URL}/privatumas.html` },
+      { hreflang: "lt", href: `${SITE_URL}/privatumas` },
+      { hreflang: "en", href: `${SITE_URL}/privacy` },
+      { hreflang: "x-default", href: `${SITE_URL}/privatumas` },
     ],
   },
   {
-    path: "/privacy.html",
+    path: "/privacy",
     changefreq: "monthly",
     priority: "0.3",
     lastmod: LEGAL_PAGES_UPDATED,
     alternates: [
-      { hreflang: "en", href: `${SITE_URL}/privacy.html` },
-      { hreflang: "lt", href: `${SITE_URL}/privatumas.html` },
-      { hreflang: "x-default", href: `${SITE_URL}/privatumas.html` },
+      { hreflang: "en", href: `${SITE_URL}/privacy` },
+      { hreflang: "lt", href: `${SITE_URL}/privatumas` },
+      { hreflang: "x-default", href: `${SITE_URL}/privatumas` },
     ],
   },
 ];
@@ -436,8 +436,24 @@ ${entries}
 // paveikslėliai nesikeičia — juos naršyklė gali laikyti valandą.
 const REVALIDATE_EXT = new Set([".html", ".js", ".css", ".webmanifest", ".json"]);
 
+// Teisiniai puslapiai turi švarius kelius be .html (Play Console ir nuorodos naudoja juos);
+// senieji .html adresai nukreipiami 301, kad išliktų jau pasidalintos nuorodos ir indeksas.
+const CLEAN_PAGES: Record<string, string> = {
+  "/privatumas": "/privatumas.html",
+  "/privacy": "/privacy.html",
+};
+const CLEAN_REDIRECTS = new Map(Object.entries(CLEAN_PAGES).map(([clean, file]) => [file, clean]));
+
 async function serveStatic(pathname: string): Promise<Response> {
   if (pathname === "/") return serveIndexHtml("/");
+  const redirectTo = CLEAN_REDIRECTS.get(pathname);
+  if (redirectTo) {
+    return new Response(null, {
+      status: 301,
+      headers: { ...SECURITY_HEADERS, location: redirectTo },
+    });
+  }
+  if (CLEAN_PAGES[pathname]) pathname = CLEAN_PAGES[pathname];
   const path = pathname;
   // Apsauga nuo path traversal: leidžiami tik paprasti segmentai.
   if (path.includes("..") || path.includes("//") || path.includes("\\")) {

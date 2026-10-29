@@ -4,6 +4,12 @@ Visi pastebimi projekto pakeitimai bus fiksuojami šiame faile.
 
 Formatas paremtas [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [v3.5] — 2026-10-29
+
+- **Privatumo politika be `.html`:** `https://nuogasiela.lt/privatumas` (LT) ir `/privacy` (EN).
+  Senieji `/privatumas.html` ir `/privacy.html` nukreipiami 301 į naujus adresus; canonical,
+  hreflang, sitemap ir nuoroda nustatymuose atnaujinti.
+
 ## [v3.4] — 2026-10-28
 
 - **Savo srauto tekstą galima perkelti į istorijas:** autorius (tik jis) ant savo teksto sraute mato
