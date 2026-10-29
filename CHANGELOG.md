@@ -4,6 +4,11 @@ Visi pastebimi projekto pakeitimai bus fiksuojami šiame faile.
 
 Formatas paremtas [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [v3.8] — 2026-10-29
+
+- Pranešimai įjungti produkcijoje: VAPID raktai Deno Deploy aplinkoje (lokaliai — `.env`,
+  gitignored). CLAUDE.md: aplinkos kintamieji įsigalioja tik nuo kito build'o.
+
 ## [v3.7] — 2026-10-29
 
 - **Pranešimai apie naujus srauto tekstus (Web Push):** nustatymuose „Pranešimai apie srautą“ —
