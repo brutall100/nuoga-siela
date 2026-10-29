@@ -7,8 +7,8 @@ Formatas paremtas [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [v3.6] — 2026-10-29
 
 - **Privatumo politika: amžiaus riba 16+** (buvo 13), kad atitiktų Play tikslinę auditoriją;
-  atnaujinimo data 2026-10-29 (`ce2d0b0`). Sitemap `lastmod` (`LEGAL_PAGES_UPDATED`) atnaujintas
-  ta pačia data.
+  atnaujinimo data 2026-10-29 (`ce2d0b0`). Sitemap `lastmod` (`LEGAL_PAGES_UPDATED`) atnaujintas ta
+  pačia data.
 
 ## [v3.5] — 2026-10-29
 
