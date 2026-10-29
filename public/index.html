@@ -707,6 +707,22 @@
                 Keiksmažodžiai sraute rodomi kaip b***. Tavo paties rašymo tai neriboja.
               </p>
             </div>
+            <!-- Pranešimai apie naujus srauto tekstus — rodoma tik jei naršyklė palaiko Web Push
+                 ir serveryje nustatyti VAPID raktai (app.js initPush). -->
+            <div class="setting setting-push" id="push-setting" hidden>
+              <label for="push-select" data-i18n="set.push">Pranešimai apie srautą</label>
+              <select id="push-select">
+                <option value="off" data-i18n="set.pushOff">Išjungta</option>
+                <option value="daily" data-i18n="set.pushDaily">Kartą per dieną (19 val.)</option>
+                <option value="instant" data-i18n="set.pushInstant">
+                  Iškart (ne dažniau nei kas valandą)
+                </option>
+              </select>
+              <p class="muted" data-i18n="set.pushDesc">
+                Tik kai sraute yra naujų tekstų. Pranešime niekada nebūna paties teksto. Naktį
+                (22–8 val.) tylu.
+              </p>
+            </div>
           </div>
 
           <div class="panel about">
@@ -788,7 +804,8 @@
           <div class="setting-danger">
             <h2 data-i18n="set.dataTitle">Tavo duomenys</h2>
             <p class="muted" data-i18n="set.deleteDesc">
-              Iškart ištrina visus tavo paleistus tekstus, emocijų kalendorių ir įrenginio žymę.
+              Iškart ištrina visus tavo paleistus tekstus, emocijų kalendorių bei įrenginio žymę
+              ir išjungia pranešimus.
             </p>
             <button
               type="button"

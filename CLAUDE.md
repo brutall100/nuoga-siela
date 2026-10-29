@@ -302,6 +302,20 @@ pakeitęs `SHELL` sąrašą. Iki v2.10 SW buvo cache-first, ir pamiršus pakelti
 (`--watch=public/`) — pakeitus HTML serveris persikrauna. Deno Deploy kiekvienam diegimui paleidžia
 naują procesą, tad produkcijoje to nereikia.
 
+### Push pranešimai (`server/webpush.ts`, `server/notify.ts`)
+
+Web Push be priklausomybių: `webpush.ts` — tik protokolas (aes128gcm šifravimas + VAPID JWT per
+WebCrypto, `isAllowedEndpoint()` — tik žinomos push tarnybos, SSRF apsauga), `notify.ts` — kam ir
+kada siųsti (`runPushRound()`), KV — `store.ts` (`["push", sha256(endpoint)]`, TTL 90 d., likęs TTL
+išsaugomas atnaujinant kaip ir postams). Invariantai: prenumerata **niekada** nesiejama su
+`deviceHash` — klientas (`app.js` `pushPost()`) siunčia ją be `X-Device`; pranešime **niekada** nėra
+teksto turinio, tik skaičius. Režimai: `daily` (19 val. Vilniaus laiku), `instant` (po posto iškart,
+kitaip ne dažniau nei kas valandą), tylos valandos 22–8. Paleidžia `Deno.cron` kas valandą
+(`main.ts`) ir naujas srauto postas (`api.ts`, fire-and-forget). Be `VAPID_PUBLIC_KEY`/
+`VAPID_PRIVATE_KEY` (+ nebūtinas `VAPID_SUBJECT`) niekas nesiunčiama, o nustatymas nerodomas. Savo
+pranešimo garso Web Push neleidžia (TWA'oje kanalą valdo Chrome) — tam reikėtų natyvaus FCM kodo
+Android projekte.
+
 ### Saugumo header'iai
 
 `main.ts` taiko tą patį `SECURITY_HEADERS` rinkinį ir statikai, ir API atsakymams (CSP,

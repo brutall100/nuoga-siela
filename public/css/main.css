@@ -2411,7 +2411,8 @@ h2 {
 
 /* Jungiklis (switch) */
 
-.setting-toggle .muted {
+.setting-toggle .muted,
+.setting-push .muted {
   margin-top: 6px;
 }
 

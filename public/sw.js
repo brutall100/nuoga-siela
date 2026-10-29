@@ -82,3 +82,40 @@ async function networkFirst(req) {
 async function cacheFirst(req) {
   return (await caches.match(req)) ?? remember(req, await fetch(req));
 }
+
+// Web Push: serveris siunčia tik pavadinimą, skaičių ir kelią — niekada teksto turinio.
+// Tas pats tag: naujas pranešimas pakeičia seną, užrakto ekrane nesikaupia krūva.
+self.addEventListener("push", (e) => {
+  let data = {};
+  try {
+    data = e.data ? e.data.json() : {};
+  } catch {
+    // Netikėtas turinys — rodom bendrą pranešimą.
+  }
+  e.waitUntil(
+    self.registration.showNotification(data.title || "Nuoga Siela", {
+      body: data.body || "",
+      icon: "/icons/icon-512.png",
+      tag: "srautas",
+      renotify: true,
+      data: {
+        // Tik savos svetainės kelias (ne "//kitas.lt").
+        url: typeof data.url === "string" && /^\/(?!\/)/.test(data.url) ? data.url : "/srautas",
+      },
+    }),
+  );
+});
+
+self.addEventListener("notificationclick", (e) => {
+  e.notification.close();
+  const url = new URL(e.notification.data?.url || "/srautas", location.origin).href;
+  e.waitUntil((async () => {
+    const windows = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+    const open = windows.find((c) => new URL(c.url).origin === location.origin);
+    if (open) {
+      await open.focus();
+      return open.navigate(url).catch(() => {});
+    }
+    return self.clients.openWindow(url);
+  })());
+});

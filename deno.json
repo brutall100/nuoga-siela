@@ -11,6 +11,7 @@
     "semiColons": true,
     "singleQuote": false
   },
+  "unstable": ["cron"],
   "lint": {
     "exclude": ["public/"]
   },

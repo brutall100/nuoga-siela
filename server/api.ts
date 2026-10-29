@@ -7,6 +7,7 @@ import {
   checkRateLimit,
   createPost,
   deleteDeviceData,
+  deletePushSubscription,
   getStats,
   getWeeklyMood,
   hashDevice,
@@ -16,9 +17,13 @@ import {
   listMine,
   listStories,
   type PostKind,
+  type PushMode,
   reportPost,
+  savePushSubscription,
   unkeepStory,
 } from "./store.ts";
+import { runPushRound, vapidFromEnv } from "./notify.ts";
+import { b64urlDecode, isAllowedEndpoint } from "./webpush.ts";
 
 function json(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
@@ -50,6 +55,16 @@ function pingIndexNow(storyId: string): void {
 
 function badRequest(reason: string): Response {
   return json({ ok: false, reason }, 400);
+}
+
+// Prenumeratos raktų tikrinimas: p256dh — 65 baitų P-256 taškas, auth — 16 baitų.
+function decodedLength(value: unknown): number {
+  if (typeof value !== "string" || value.length > 200) return -1;
+  try {
+    return b64urlDecode(value).length;
+  } catch {
+    return -1;
+  }
 }
 
 async function deviceHashFrom(req: Request): Promise<string | null> {
@@ -123,6 +138,8 @@ export async function handleApi(req: Request, url: URL): Promise<Response> {
       const sos = detectCrisis(text);
       const post = await createPost(deviceHash, text, body.emotion, kind);
       if (kind === "istorija") pingIndexNow(post.id);
+      // „Iškart" prenumeratoriams — fire-and-forget, kaip ir IndexNow.
+      else runPushRound("post").catch(() => {});
       return json({
         ok: true,
         sos,
@@ -172,6 +189,59 @@ export async function handleApi(req: Request, url: URL): Promise<Response> {
       if (!deviceHash) return badRequest("Trūksta įrenginio identifikatoriaus.");
       const post = await reportPost(reportMatch[1], deviceHash);
       if (!post) return json({ ok: false, reason: "Šis tekstas jau išnyko." }, 404);
+      return json({ ok: true });
+    }
+
+    // Push pranešimai: be X-Device — prenumerata neturi jokio ryšio su įrenginio hash'u.
+    if (method === "GET" && path === "/api/push/key") {
+      return json({ ok: true, publicKey: vapidFromEnv()?.publicKey ?? null });
+    }
+
+    if (method === "POST" && path === "/api/push/subscribe") {
+      if (!vapidFromEnv()) return json({ ok: false, reason: "Pranešimai išjungti." }, 503);
+      let body: {
+        subscription?: { endpoint?: unknown; keys?: { p256dh?: unknown; auth?: unknown } };
+        mode?: unknown;
+        lang?: unknown;
+      };
+      try {
+        body = await req.json();
+      } catch {
+        return badRequest("Neteisingas užklausos formatas.");
+      }
+      const endpoint = body.subscription?.endpoint;
+      const p256dh = body.subscription?.keys?.p256dh;
+      const auth = body.subscription?.keys?.auth;
+      if (
+        typeof endpoint !== "string" || endpoint.length > 1024 || !isAllowedEndpoint(endpoint) ||
+        decodedLength(p256dh) !== 65 || decodedLength(auth) !== 16
+      ) {
+        return badRequest("Netinkama prenumerata.");
+      }
+      if (body.mode !== "daily" && body.mode !== "instant") {
+        return badRequest("Netinkamas režimas.");
+      }
+      const mode: PushMode = body.mode;
+      const lang = body.lang === "en" ? "en" : "lt";
+      await savePushSubscription(
+        { endpoint, p256dh: p256dh as string, auth: auth as string },
+        mode,
+        lang,
+      );
+      return json({ ok: true });
+    }
+
+    if (method === "POST" && path === "/api/push/unsubscribe") {
+      let body: { endpoint?: unknown };
+      try {
+        body = await req.json();
+      } catch {
+        return badRequest("Neteisingas užklausos formatas.");
+      }
+      if (typeof body.endpoint !== "string" || body.endpoint.length > 1024) {
+        return badRequest("Netinkama prenumerata.");
+      }
+      await deletePushSubscription(body.endpoint);
       return json({ ok: true });
     }
 
