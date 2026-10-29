@@ -312,9 +312,10 @@ išsaugomas atnaujinant kaip ir postams). Invariantai: prenumerata **niekada** n
 teksto turinio, tik skaičius. Režimai: `daily` (19 val. Vilniaus laiku), `instant` (po posto iškart,
 kitaip ne dažniau nei kas valandą), tylos valandos 22–8. Paleidžia `Deno.cron` kas valandą
 (`main.ts`) ir naujas srauto postas (`api.ts`, fire-and-forget). Be `VAPID_PUBLIC_KEY`/
-`VAPID_PRIVATE_KEY` (+ nebūtinas `VAPID_SUBJECT`) niekas nesiunčiama, o nustatymas nerodomas. Savo
-pranešimo garso Web Push neleidžia (TWA'oje kanalą valdo Chrome) — tam reikėtų natyvaus FCM kodo
-Android projekte.
+`VAPID_PRIVATE_KEY` (+ nebūtinas `VAPID_SUBJECT`) niekas nesiunčiama, o nustatymas nerodomas. Raktai
+lokaliai — `.env` (gitignored, Deno jo automatiškai neįkelia); Deno Deploy aplinkos kintamųjų
+pakeitimai galioja tik nuo kito build'o. Savo pranešimo garso Web Push neleidžia (TWA'oje kanalą
+valdo Chrome) — tam reikėtų natyvaus FCM kodo Android projekte.
 
 ### Saugumo header'iai
 
