@@ -4,6 +4,21 @@ Visi pastebimi projekto pakeitimai bus fiksuojami šiame faile.
 
 Formatas paremtas [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [v3.7] — 2026-10-29
+
+- **Pranešimai apie naujus srauto tekstus (Web Push):** nustatymuose „Pranešimai apie srautą“ —
+  Išjungta (numatyta) / Kartą per dieną (19 val.) / Iškart (pirmas iškart, kiti sujungiami ne
+  dažniau nei kas valandą). Siunčiama tik kai yra naujų tekstų; naktį (22–8 val. Vilniaus laiku)
+  tylu, sukaupta ateina ryte. Pranešime tik skaičius („Sraute 3 nauji tekstai“), niekada teksto.
+- Serveris: Web Push be priklausomybių (`server/webpush.ts` — RFC 8291 aes128gcm + VAPID per
+  WebCrypto), siuntimo taisyklės `server/notify.ts`, kas valandą `Deno.cron`. Prenumeratos KV
+  `["push", sha256(endpoint)]` be jokio ryšio su `deviceHash`, TTL 90 d.; 404/410 — ištrinama.
+  Endpoint'ai: `GET /api/push/key`, `POST /api/push/subscribe|unsubscribe`. Leidžiamos tik žinomos
+  push tarnybos (SSRF apsauga). Įjungiama nustačius `VAPID_PUBLIC_KEY`/`VAPID_PRIVATE_KEY` — be jų
+  nustatymas nerodomas.
+- „Ištrinti mano duomenis“ išjungia ir pranešimus. Privatumo politika (LT/EN) papildyta skiltimi
+  „Pranešimai“.
+
 ## [v3.6] — 2026-10-29
 
 - **Privatumo politika: amžiaus riba 16+** (buvo 13), kad atitiktų Play tikslinę auditoriją;

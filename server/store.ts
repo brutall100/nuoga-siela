@@ -416,3 +416,96 @@ export async function getWeeklyMood(): Promise<
   }
   return { counts, total };
 }
+
+// ---- Push pranešimų prenumeratos ----
+// Atskiras prefiksas be jokio ryšio su deviceHash ar postais: serveris žino tik
+// „šiam adresui siųsti kartą per dieną / iškart", bet ne kas tai ir ką rašė.
+// Raktas — endpoint'o SHA-256, kad prenumeratą rastume be pilno URL rakte.
+// Gyvena PUSH_TTL_MS nuo paskutinio atnaujinimo (klientas pratęsia atidarius
+// programą) — pamiršta prenumerata pati fiziškai išnyksta.
+
+export type PushMode = "daily" | "instant";
+export type PushLang = "lt" | "en";
+export const PUSH_TTL_MS = 90 * DAY_MS;
+// Srauto įrašų, iš kurių skaičiuojami „nauji tekstai", viršutinė riba.
+const PUSH_COUNT_LIMIT = 500;
+
+export interface PushRecord {
+  endpoint: string;
+  p256dh: string;
+  auth: string;
+  mode: PushMode;
+  lang: PushLang;
+  since: number; // skaičiuojami srauto tekstai, sukurti po šio laiko
+  lastSentAt: number;
+  expiresAt: number; // KV expireIn atspindys — atnaujinant TTL išsaugomas
+}
+
+async function pushKey(endpoint: string): Promise<Deno.KvKey> {
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(endpoint));
+  const hex = Array.from(new Uint8Array(digest))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+  return ["push", hex];
+}
+
+// Sukuria arba atnaujina prenumeratą; jau esamos since/lastSentAt nenumuša.
+export async function savePushSubscription(
+  sub: { endpoint: string; p256dh: string; auth: string },
+  mode: PushMode,
+  lang: PushLang,
+): Promise<PushRecord> {
+  const kv = await getKv();
+  const key = await pushKey(sub.endpoint);
+  const now = Date.now();
+  const existing = (await kv.get<PushRecord>(key)).value;
+  const record: PushRecord = {
+    ...sub,
+    mode,
+    lang,
+    since: existing?.since ?? now,
+    lastSentAt: existing?.lastSentAt ?? 0,
+    expiresAt: now + PUSH_TTL_MS,
+  };
+  await kv.set(key, record, { expireIn: PUSH_TTL_MS });
+  return record;
+}
+
+export async function deletePushSubscription(endpoint: string): Promise<void> {
+  const kv = await getKv();
+  await kv.delete(await pushKey(endpoint));
+}
+
+export async function listPushSubscriptions(): Promise<PushRecord[]> {
+  const kv = await getKv();
+  const out: PushRecord[] = [];
+  for await (const entry of kv.list<PushRecord>({ prefix: ["push"] })) out.push(entry.value);
+  return out;
+}
+
+// Po išsiųsto pranešimo: nuo dabar skaičiuojam iš naujo. Likęs TTL išsaugomas.
+export async function markPushSent(endpoint: string, at: number): Promise<void> {
+  const kv = await getKv();
+  const key = await pushKey(endpoint);
+  const entry = await kv.get<PushRecord>(key);
+  if (!entry.value) return;
+  const remaining = entry.value.expiresAt - Date.now();
+  if (remaining <= 0) return;
+  await kv.atomic()
+    .check(entry)
+    .set(key, { ...entry.value, since: at, lastSentAt: at }, { expireIn: remaining })
+    .commit();
+}
+
+// Matomų srauto tekstų sukūrimo laikai (naujausi pirmi) — tik skaičiavimui, be turinio.
+export async function listFeedTimes(): Promise<number[]> {
+  const kv = await getKv();
+  const out: number[] = [];
+  const now = Date.now();
+  for await (const entry of kv.list<Post>({ prefix: ["post"] }, { limit: PUSH_COUNT_LIMIT })) {
+    const p = entry.value;
+    if (p.hidden || (p.expiresAt > 0 && p.expiresAt <= now)) continue;
+    out.push(p.createdAt);
+  }
+  return out;
+}

@@ -95,6 +95,15 @@
       "set.lang": "Kalba",
       "set.soft": "Švelnus srautas",
       "set.softDesc": "Keiksmažodžiai sraute rodomi kaip b***. Tavo paties rašymo tai neriboja.",
+      "set.push": "Pranešimai apie srautą",
+      "set.pushOff": "Išjungta",
+      "set.pushDaily": "Kartą per dieną (19 val.)",
+      "set.pushInstant": "Iškart (ne dažniau nei kas valandą)",
+      "set.pushDesc":
+        "Tik kai sraute yra naujų tekstų. Pranešime niekada nebūna paties teksto. Naktį (22–8 val.) tylu.",
+      "toast.pushOn": "Pranešimai įjungti.",
+      "toast.pushOff": "Pranešimai išjungti.",
+      "toast.pushDenied": "Telefonas neleidžia pranešimų — įjunk juos programos nustatymuose.",
       "about.title": "Apie Nuogą Sielą",
       "about.mission1":
         "Nuoga Siela — vieta padėti tai, ką neši. Čia gali išsakyti, kas slegia, ir niekas nesužinos, kad tai tu: jokios registracijos, jokių vardų, jokių komentarų. Kiti gali tik paspausti „Suprantu tave“.",
@@ -103,7 +112,7 @@
       "set.dataTitle": "Tavo duomenys",
       "set.deleteBtn": "Ištrinti mano duomenis",
       "set.deleteDesc":
-        "Iškart ištrina visus tavo paleistus tekstus, emocijų kalendorių ir įrenginio žymę.",
+        "Iškart ištrina visus tavo paleistus tekstus, emocijų kalendorių bei įrenginio žymę ir išjungia pranešimus.",
       "set.supportTitle": "Palaikyk projektą",
       "set.supportDesc":
         "Jokių reklamų čia nebus niekada. Jei ši erdvė tau padėjo — gali pavaišinti kava.",
@@ -274,6 +283,15 @@
       "set.soft": "Gentle stream",
       "set.softDesc":
         "Profanity in the stream is shown as b***. Your own writing is never limited.",
+      "set.push": "Stream notifications",
+      "set.pushOff": "Off",
+      "set.pushDaily": "Once a day (7 pm)",
+      "set.pushInstant": "Right away (at most hourly)",
+      "set.pushDesc":
+        "Only when there are new texts in the stream. A notification never contains the text itself. Quiet at night (10 pm–8 am).",
+      "toast.pushOn": "Notifications on.",
+      "toast.pushOff": "Notifications off.",
+      "toast.pushDenied": "Notifications are blocked — allow them in the app settings.",
       "about.title": "About Nuoga Siela",
       "about.mission1":
         "Nuoga Siela (“Naked Soul”) is a place to set down what you carry. Say what weighs on you, and no one will know it was you: no sign-up, no names, no comments. Others can only tap “I understand you”.",
@@ -282,7 +300,7 @@
       "set.dataTitle": "Your data",
       "set.deleteBtn": "Delete my data",
       "set.deleteDesc":
-        "Immediately deletes all your released texts, your mood calendar and your device marker.",
+        "Immediately deletes all your released texts, your mood calendar and your device marker, and turns off notifications.",
       "set.supportTitle": "Support the project",
       "set.supportDesc":
         "There will never be ads here. If this space helped you — buy us a coffee.",

@@ -3,6 +3,7 @@
 // Loguose sąmoningai NĖRA IP adresų ar header'ių — tik metodas, kelias, statusas.
 
 import { handleApi } from "./server/api.ts";
+import { runPushRound } from "./server/notify.ts";
 import { getPublicStory, listStories, SITEMAP_STORY_LIMIT } from "./server/store.ts";
 import type { Emotion } from "./server/filter.ts";
 
@@ -479,6 +480,14 @@ async function serveStatic(pathname: string): Promise<Response> {
     if (!path.includes(".")) return serveIndexHtml(path);
     return new Response("Nerasta.", { status: 404, headers: SECURITY_HEADERS });
   }
+}
+
+// Kas valandą: „kartą per dieną" (19 val.) ir sukaupti „iškart" pranešimai.
+// Deno Deploy cron'us registruoja tik iš modulio viršaus. Be VAPID raktų ratas nieko nedaro.
+if (typeof Deno.cron === "function") {
+  Deno.cron("push-digest", "0 * * * *", async () => {
+    await runPushRound("tick");
+  });
 }
 
 Deno.serve({ port: PORT }, async (req) => {

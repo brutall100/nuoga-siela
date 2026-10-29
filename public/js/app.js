@@ -896,12 +896,121 @@
     localStorage.setItem(SOFT_KEY, softMode ? "1" : "0");
   });
 
+  // ---------- Pranešimai (Web Push) ----------
+  // Prenumerata neturi jokio ryšio su įrenginio kodu: pushPost() sąmoningai be X-Device,
+  // kad serveris nesusietų pranešimų adreso su tavo tekstais.
+  const PUSH_KEY = "ns_push";
+  const PUSH_SYNC_KEY = "ns_push_sync";
+  const PUSH_RESYNC_MS = 7 * 24 * 60 * 60 * 1000;
+  const pushSelect = $("#push-select");
+  let vapidKey = null;
+
+  function b64urlToBytes(text) {
+    const b64 = text.replace(/-/g, "+").replace(/_/g, "/");
+    const bin = atob(b64 + "=".repeat((4 - (b64.length % 4)) % 4));
+    return Uint8Array.from(bin, (c) => c.charCodeAt(0));
+  }
+
+  async function pushPost(path, body) {
+    const res = await fetch(path, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    return res.json();
+  }
+
+  async function currentPushSub(create) {
+    const reg = await navigator.serviceWorker.ready;
+    const sub = await reg.pushManager.getSubscription();
+    if (sub || !create) return sub;
+    // Pirmą kartą naršyklė registruojasi push tarnyboje; jei ji neatsako — nelaukiam amžinai.
+    return Promise.race([
+      reg.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: b64urlToBytes(vapidKey),
+      }),
+      new Promise((_, reject) => setTimeout(() => reject(new Error("push timeout")), 20000)),
+    ]);
+  }
+
+  // Grąžina false, jei telefonas pranešimų neleidžia.
+  async function setPushMode(mode) {
+    if (mode === "off") {
+      const sub = await currentPushSub(false);
+      if (sub) {
+        await pushPost("/api/push/unsubscribe", { endpoint: sub.endpoint }).catch(() => {});
+        await sub.unsubscribe();
+      }
+      localStorage.removeItem(PUSH_KEY);
+      localStorage.removeItem(PUSH_SYNC_KEY);
+      return true;
+    }
+    if ((await Notification.requestPermission()) !== "granted") return false;
+    const sub = await currentPushSub(true);
+    const data = await pushPost("/api/push/subscribe", {
+      subscription: sub.toJSON(),
+      mode,
+      lang: window.i18n.lang,
+    });
+    if (!data.ok) throw new Error(data.reason);
+    localStorage.setItem(PUSH_KEY, mode);
+    localStorage.setItem(PUSH_SYNC_KEY, String(Date.now()));
+    return true;
+  }
+
+  pushSelect.addEventListener("change", async () => {
+    const mode = pushSelect.value;
+    pushSelect.disabled = true;
+    try {
+      if (await setPushMode(mode)) {
+        toast(window.t(mode === "off" ? "toast.pushOff" : "toast.pushOn"), "calm");
+      } else {
+        toast(window.t("toast.pushDenied"), "warn");
+      }
+    } catch {
+      toast(window.t("toast.serverFail"), "warn");
+    }
+    pushSelect.value = localStorage.getItem(PUSH_KEY) || "off";
+    pushSelect.disabled = false;
+  });
+
+  // Nustatymas rodomas tik jei naršyklė palaiko Web Push ir serveris turi raktus.
+  // Įjungtą prenumeratą kartą per savaitę pratęsiam (serveryje ji gyvena 90 d.);
+  // jei leidimas atšauktas telefono nustatymuose — išjungiam ir serveryje.
+  async function initPush() {
+    if (!("serviceWorker" in navigator && "PushManager" in window && "Notification" in window)) {
+      return;
+    }
+    try {
+      const data = await (await fetch("/api/push/key")).json();
+      if (!data.publicKey) return;
+      vapidKey = data.publicKey;
+      $("#push-setting").hidden = false;
+      const mode = localStorage.getItem(PUSH_KEY);
+      pushSelect.value = mode || "off";
+      if (!mode) return;
+      if (Notification.permission !== "granted") {
+        await setPushMode("off");
+        pushSelect.value = "off";
+        return;
+      }
+      const synced = Number(localStorage.getItem(PUSH_SYNC_KEY) || 0);
+      if (Date.now() - synced > PUSH_RESYNC_MS) await setPushMode(mode);
+    } catch {
+      // Be ryšio ar be palaikymo — nustatymas tiesiog lieka, koks buvo.
+    }
+  }
+
   // Kalba: pakeitus perpiešiam statinius tekstus ir aktyvų sąrašą.
   const langSelect = $("#lang-select");
   langSelect.value = window.i18n.lang;
   langSelect.addEventListener("change", () => {
     window.i18n.set(langSelect.value);
     syncAmbient();
+    // Pranešimų kalba — serveryje kartu su prenumerata.
+    const pushMode = localStorage.getItem(PUSH_KEY);
+    if (pushMode) setPushMode(pushMode).catch(() => {});
     const active = currentScreen();
     if (active === "srautas") loadFeed();
     if (active === "istorijos") loadStories();
@@ -915,6 +1024,8 @@
     try {
       const data = await api("/api/mine/delete", { method: "POST" });
       if (data.ok) {
+        if (localStorage.getItem(PUSH_KEY)) await setPushMode("off").catch(() => {});
+        pushSelect.value = "off";
         localStorage.removeItem(DEVICE_KEY);
         localStorage.removeItem(HUGGED_KEY);
         localStorage.removeItem(MINE_KEY);
@@ -938,6 +1049,7 @@
   syncAmbient();
   render();
   checkMyHugs();
+  initPush();
   // Pirmą kartą atėjus į rašymo ekraną — „Kaip tai veikia" atsidaro pats.
   if (currentScreen() === "rasyti" && localStorage.getItem(INTRO_KEY) !== "1") {
     openInfo("rasyti");

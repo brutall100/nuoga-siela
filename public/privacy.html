@@ -126,6 +126,22 @@
         any text, device or person, and they delete themselves after 8 days.
       </p>
 
+      <h2>Notifications</h2>
+      <p>
+        Notifications about new stream texts are off until you turn them on in Settings. When on,
+        the server stores only your browser's push address and keys, the chosen mode ("once a
+        day" or "right away"), the language and when we last sent a notification.
+        <strong>This is not linked to your device code or your texts in any way</strong> — we don't
+        know who receives notifications or what they wrote.
+      </p>
+      <p>
+        A notification contains only the number of new texts, <strong>never the text
+        itself</strong>. It is delivered by your browser's or phone's push service (on Android —
+        Google Firebase Cloud Messaging); the content is encrypted, so the service cannot read it.
+        Turning notifications off or tapping "Delete my data" deletes the subscription immediately;
+        an unused subscription deletes itself after 90 days.
+      </p>
+
       <h2>Crisis support (SOS)</h2>
       <p>
         If your text contains words related to suicide or self-harm, the text is still published
@@ -144,7 +160,9 @@
       <h2>Sharing with third parties</h2>
       <p>
         We do not sell or share any data with third parties for advertising or analytics
-        purposes. The app runs on a single server (Deno Deploy) with no external tracking tools.
+        purposes. The app runs on a single server (Deno Deploy) with no external tracking tools. If
+        you turn on notifications, they are delivered through your browser's or phone's push
+        service (see "Notifications").
       </p>
 
       <h2>Children's privacy</h2>
