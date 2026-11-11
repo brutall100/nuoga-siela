@@ -4,6 +4,19 @@ Visi pastebimi projekto pakeitimai bus fiksuojami šiame faile.
 
 Formatas paremtas [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [v3.10] — 2026-11-11
+
+- **Filtras nebeatmeta tikro skausmo:** datos ir metų intervalai („mama mirė 2020-05-17“,
+  „1998–2020“) nebelaikomi telefono numeriais; „kazino“, „bitcoin“, „crypto“, „forex“ pavieniui
+  nebėra spamas — blokuojamos tik reklaminės frazės („kazino bonus“, „free spins“ ir pan.).
+- **Kontaktai susirašinėti blokuojami:** `@vardas` ir „telegram/insta/snap/discord… + vardas“ —
+  anoniminėje erdvėje tai būtų viliojimo kelias pažeidžiamiems žmonėms.
+- **Krizės atpažinimas platesnis:** „pasikorsiu“, „geriau manęs nebūtų“ (ir be diakritikos),
+  „nebenoriu būti“, „nusinuodyti“ ir angliški variantai („kill myself“, „suicide“, „want to die“,
+  „self-harm“…), nes sąsaja turi EN kalbą.
+- `sanitizeText()`: iš teksto prieš saugojimą išmetami valdymo simboliai (laužė `feed.xml`), `\r\n`
+  → `\n`.
+
 ## [v3.9] — 2026-10-29
 
 - CLAUDE.md: išimtas klaidingas teiginys, kad Deno Deploy aplinkos kintamieji įsigalioja tik nuo

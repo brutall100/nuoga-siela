@@ -2,7 +2,7 @@
 // Vienintelis identifikatorius — kliento atsiųstas X-Device UUID,
 // kuris čia pat paverčiamas salted hash'u ir toliau niekur nekeliauja.
 
-import { checkText, detectCrisis, isEmotion } from "./filter.ts";
+import { checkText, detectCrisis, isEmotion, sanitizeText } from "./filter.ts";
 import {
   checkRateLimit,
   createPost,
@@ -124,7 +124,7 @@ export async function handleApi(req: Request, url: URL): Promise<Response> {
       if (!isEmotion(body.emotion)) return badRequest("Pasirink emociją.");
       const kind: PostKind = body.kind === "istorija" ? "istorija" : "srautas";
 
-      const text = body.text.trim();
+      const text = sanitizeText(body.text);
       const filter = checkText(text);
       if (!filter.ok) return badRequest(filter.reason);
 

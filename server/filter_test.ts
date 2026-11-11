@@ -1,4 +1,4 @@
-import { checkText, detectCrisis, isEmotion, MAX_TEXT_LENGTH } from "./filter.ts";
+import { checkText, detectCrisis, isEmotion, MAX_TEXT_LENGTH, sanitizeText } from "./filter.ts";
 
 function assert(cond: boolean, msg: string) {
   if (!cond) throw new Error(msg);
@@ -50,4 +50,47 @@ Deno.test("isEmotion: validuoja emocijas", () => {
   assert(isEmotion("viltis"), "viltis");
   assert(!isEmotion("dziaugsmas"), "nežinoma emocija");
   assert(!isEmotion(42), "ne stringas");
+});
+
+Deno.test("checkText: datos ir metai nėra telefonai", () => {
+  assert(checkText("Mama mirė 2020-05-17 ir aš vis dar negaliu").ok, "ISO data");
+  assert(checkText("gimiau 1990 05 17").ok, "data su tarpais");
+  assert(checkText("17.05.2020 viskas pasikeitė").ok, "data dd.mm.yyyy");
+  assert(checkText("santuoka 1998–2020 baigėsi").ok, "metų intervalas");
+  assert(!checkText("skambink +370 612 34567").ok, "tikras numeris vis tiek blokuojamas");
+});
+
+Deno.test("checkText: skausmas apie lošimą ar kriptovaliutas — ne spamas", () => {
+  assert(checkText("Pralošiau viską kazino, žmona išėjo").ok, "kazino istorija");
+  assert(checkText("praradau santaupas bitcoin ir crypto").ok, "kripto istorija");
+  assert(!checkText("kazino bonusas tik šiandien").ok, "reklama blokuojama");
+});
+
+Deno.test("checkText: blokuoja kontaktus susirašinėti", () => {
+  assert(!checkText("rašyk man @vardas123").ok, "@handle");
+  assert(!checkText("mano telegram: jonas_88").ok, "telegram");
+  assert(!checkText("insta vardas.pavarde").ok, "instagram");
+  assert(checkText("instagram mane slegia, nebenoriu ten būti").ok, "žodis be kontakto");
+});
+
+Deno.test("sanitizeText: išmeta valdymo simbolius, palieka eilutes", () => {
+  assert(sanitizeText(" a\u0001b\r\nc\u007F ") === "ab\nc", "valymas");
+  assert(sanitizeText("x\ty") === "x\ty", "tab lieka");
+});
+
+Deno.test("detectCrisis: dažni variantai be diakritikos ir angliškai", () => {
+  for (
+    const t of [
+      "pasikorsiu",
+      "geriau manes nebebutu",
+      "geriau manęs nebūtų",
+      "nebenoriu būti",
+      "I want to kill myself",
+      "i just want to die",
+      "thinking about suicide",
+    ]
+  ) {
+    assert(detectCrisis(t), t);
+  }
+  assert(!detectCrisis("noriu pabūti viena"), "normalus tekstas");
 });
