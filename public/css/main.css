@@ -2778,3 +2778,37 @@ h2 {
     transform: none;
   }
 }
+
+/* ---------- Moderacija (/admin) ---------- */
+.text-input {
+  font: inherit;
+  color: var(--text);
+  background: var(--tile);
+  border: 1px solid var(--line-tile);
+  border-radius: 12px;
+  padding: 10px 14px;
+  width: 100%;
+}
+.admin-login {
+  display: grid;
+  gap: 10px;
+  margin: 16px 0;
+}
+.admin-login[hidden] {
+  display: none;
+}
+.admin-item {
+  margin: 12px 0;
+}
+.admin-item.is-hidden {
+  opacity: 0.75;
+}
+.admin-meta {
+  font-size: 13px;
+  color: var(--text-dim);
+}
+.admin-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}

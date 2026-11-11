@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="lt">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Moderacija — Nuoga Siela</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <script src="/js/theme.js"></script>
+    <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+  </head>
+  <body>
+    <!-- Tik savininkui: veikia, kai serveryje nustatytas ADMIN_TOKEN. Raktas laikomas tik šio
+         skirtuko sessionStorage. Matomi tik vieši duomenys — niekada įrenginio hash'ai. -->
+    <main class="legal admin">
+      <h1>Moderacija</h1>
+      <form class="admin-login" id="admin-login">
+        <label for="admin-token">Administratoriaus raktas</label>
+        <input class="text-input" id="admin-token" type="password" autocomplete="off" required>
+        <button class="btn btn-calm" type="submit">Prisijungti</button>
+      </form>
+      <p class="muted" id="admin-status"></p>
+      <div id="admin-list"></div>
+      <a class="back" href="/">← Grįžti į programą</a>
+    </main>
+    <script src="/js/admin.js"></script>
+  </body>
+</html>

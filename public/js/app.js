@@ -22,6 +22,17 @@
     localStorage.setItem(HUGGED_KEY, JSON.stringify([...hugged].slice(-500)));
   }
 
+  // Tekstai, apie kuriuos šiame įrenginyje pranešta — nebe rodomi (kol moderatorius peržiūri).
+  const REPORTED_KEY = "ns_reported";
+  const reported = new Set(JSON.parse(localStorage.getItem(REPORTED_KEY) || "[]"));
+  function rememberReport(id) {
+    reported.add(id);
+    localStorage.setItem(REPORTED_KEY, JSON.stringify([...reported].slice(-500)));
+  }
+
+  // Sutikimas su naudojimo taisyklėmis — vieną kartą, prieš pirmą paskelbimą (Play UGC politika).
+  const TERMS_KEY = "ns_terms";
+
   // Mano paleistų tekstų žymė (tik lokaliai — serveris manęs nepažįsta).
   const MINE_KEY = "ns_mine";
   const SEEN_HUGS_KEY = "ns_seen_hugs";
@@ -356,6 +367,10 @@
     if (busy) return;
     const text = input.value.trim();
     if (!text) return nudge(input);
+    if (localStorage.getItem(TERMS_KEY) !== "1") {
+      if (!confirm(window.t("confirm.terms"))) return;
+      localStorage.setItem(TERMS_KEY, "1");
+    }
     setBusy(true);
     try {
       const data = await api("/api/posts", {
@@ -640,6 +655,7 @@
     report.addEventListener("click", async () => {
       if (!confirm(window.t("confirm.report"))) return;
       await api(`/api/posts/${post.id}/report`, { method: "POST" });
+      rememberReport(post.id);
       card.remove();
       toast(window.t("toast.reported"));
     });
@@ -698,6 +714,7 @@
   function showPosts(listSel, emptySel, filterEmptySel, posts, now, filtered, mine) {
     const list = $(listSel);
     list.textContent = "";
+    posts = posts.filter((p) => !reported.has(p.id));
     for (const post of posts) list.append(buildCard(post, now, mine?.get(post.id)));
     markClamped(list);
     $(emptySel).hidden = posts.length > 0 || filtered;
@@ -1041,6 +1058,8 @@
         localStorage.removeItem(HUGGED_KEY);
         localStorage.removeItem(MINE_KEY);
         localStorage.removeItem(SEEN_HUGS_KEY);
+        localStorage.removeItem(REPORTED_KEY);
+        reported.clear();
         window.mood.clear();
         deviceId = crypto.randomUUID();
         localStorage.setItem(DEVICE_KEY, deviceId);

@@ -12,10 +12,13 @@ import {
   keepAsStory,
   listFeed,
   listMine,
+  listModeration,
   listPushSubscriptions,
   listStories,
   markPushFailed,
   markPushSent,
+  moderateDelete,
+  moderatePost,
   PUSH_MAX_FAILURES,
   reportPost,
   savePushSubscription,
@@ -311,4 +314,24 @@ Deno.test("markPushFailed: po kelių nesėkmių prenumerata ištrinama, sėkmė 
   for (let i = 0; i < PUSH_MAX_FAILURES; i++) await markPushFailed(sub.endpoint);
   subs = await listPushSubscriptions();
   assert(subs.length === 0, "ištrinta po nesėkmių");
+});
+
+Deno.test("moderacija: sąrašas, grąžinimas, trynimas (be deviceHash)", async () => {
+  const kv = await freshKv();
+  const author = await hashDevice("autorius-m");
+  const post = await createPost(author, "netikrai apskųstas", "pyktis");
+  for (const r of ["m1", "m2", "m3"]) await reportPost(post.id, await hashDevice(r));
+  let items = await listModeration();
+  assert(items.length === 1 && items[0].hidden && items[0].reports === 3, "paslėptas sąraše");
+  assert(!("deviceHash" in items[0]), "be deviceHash");
+  assert(await moderatePost(post.id, false), "grąžinta");
+  assert((await listFeed()).length === 1, "vėl sraute");
+  await reportPost(post.id, await hashDevice("m1"));
+  assert((await listFeed()).length === 1, "tas pats įrenginys antrą kartą nepraneša");
+  const story = await createPost(author, "istorija", "viltis", "istorija");
+  assert(await moderateDelete(story.id), "ištrinta");
+  assert((await getPublicStory(story.id)) === null, "permalink 404");
+  assert((await kv.get(["byDevice", author, story.id])).value === null, "byDevice ištrintas");
+  items = await listModeration();
+  assert(items.length === 0, "nebėra ką moderuoti");
 });

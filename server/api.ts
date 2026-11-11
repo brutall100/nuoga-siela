@@ -16,7 +16,10 @@ import {
   keepAsStory,
   listFeed,
   listMine,
+  listModeration,
   listStories,
+  moderateDelete,
+  moderatePost,
   type PostKind,
   type PushMode,
   reportPost,
@@ -91,6 +94,40 @@ async function readJson<T>(req: Request): Promise<T> {
   }
 }
 
+// Moderacija: tik su ADMIN_TOKEN (Deno Deploy aplinkos kintamasis). Be jo — 404, lyg nebūtų.
+const ADMIN_TOKEN = Deno.env.get("ADMIN_TOKEN") ?? "";
+
+async function isAdmin(req: Request): Promise<boolean> {
+  if (ADMIN_TOKEN.length < 16) return false;
+  const given = (req.headers.get("authorization") ?? "").replace(/^Bearer\s+/i, "");
+  // Lyginami hash'ai — vienodo ilgio, laikas nepriklauso nuo sutapusių simbolių.
+  const enc = new TextEncoder();
+  const [a, b] = await Promise.all([
+    crypto.subtle.digest("SHA-256", enc.encode(given)),
+    crypto.subtle.digest("SHA-256", enc.encode(ADMIN_TOKEN)),
+  ]);
+  const x = new Uint8Array(a);
+  const y = new Uint8Array(b);
+  let diff = 0;
+  for (let i = 0; i < x.length; i++) diff |= x[i] ^ y[i];
+  return diff === 0;
+}
+
+async function handleAdmin(req: Request, path: string): Promise<Response> {
+  if (!(await isAdmin(req))) return json({ ok: false, reason: "Nerasta." }, 404);
+  if (req.method === "GET" && path === "/api/admin/reported") {
+    return json({ ok: true, posts: await listModeration(), now: Date.now() });
+  }
+  const m = path.match(/^\/api\/admin\/posts\/([\w-]+)\/(hide|unhide|delete)$/);
+  if (req.method === "POST" && m) {
+    const ok = m[2] === "delete"
+      ? await moderateDelete(m[1])
+      : await moderatePost(m[1], m[2] === "hide");
+    return ok ? json({ ok: true }) : json({ ok: false, reason: "Nerasta." }, 404);
+  }
+  return json({ ok: false, reason: "Nerasta." }, 404);
+}
+
 async function deviceHashFrom(req: Request): Promise<string | null> {
   const uuid = req.headers.get("x-device");
   if (!uuid || uuid.length < 8 || uuid.length > 64) return null;
@@ -102,6 +139,8 @@ export async function handleApi(req: Request, url: URL): Promise<Response> {
   const method = req.method;
 
   try {
+    if (path.startsWith("/api/admin/")) return await handleAdmin(req, path);
+
     if (method === "GET" && path === "/api/posts") {
       const emotionParam = url.searchParams.get("emotion") ?? undefined;
       const emotion = isEmotion(emotionParam) ? emotionParam : undefined;

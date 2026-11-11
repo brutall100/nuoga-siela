@@ -157,6 +157,9 @@
       "toast.linkCopied": "Nuoroda nukopijuota.",
       "toast.deleted": "Ištrinta. Tavo įrenginys dabar — visiškai naujas nepažįstamasis.",
       "toast.serverFail": "Nepavyko susisiekti su serveriu.",
+      "confirm.terms":
+        "Prieš pirmą paskelbimą: čia negalima skelbti vardų, kontaktų, grasinimų ar savižudybės būdų. Pažeidžiantys tekstai ištrinami. Visos taisyklės — nuogasiela.lt/taisykles. Sutinki?",
+      "set.termsLink": "Naudojimo taisyklės →",
       "confirm.report": "Pranešti apie šį tekstą? Po kelių pranešimų jis dings.",
       "confirm.delete":
         "Ištrinti visus tavo paleistus tekstus, emocijų kalendorių ir įrenginio žymę? To atšaukti nebus galima.",
@@ -345,6 +348,9 @@
       "toast.linkCopied": "Link copied.",
       "toast.deleted": "Deleted. Your device is now a complete stranger.",
       "toast.serverFail": "Couldn't reach the server.",
+      "confirm.terms":
+        "Before your first post: no names, contacts, threats or suicide methods here. Texts that break the rules are deleted. Full terms — nuogasiela.lt/terms. Do you agree?",
+      "set.termsLink": "Terms of use →",
       "confirm.report": "Report this text? After a few reports it will disappear.",
       "confirm.delete":
         "Delete all your released texts, your mood calendar and your device marker? This cannot be undone.",
