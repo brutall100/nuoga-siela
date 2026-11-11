@@ -71,10 +71,13 @@ export function setKvForTesting(kv: Deno.Kv): void {
   kvPromise = Promise.resolve(kv);
 }
 
-const SALT = Deno.env.get("DEVICE_SALT") ?? "nuoga-siela-dev-salt";
+// Iki v3.17 produkcijoje DEVICE_SALT nebuvo nustatytas, tad hash'ai skaičiuoti su šia vieša
+// numatytąja druska. adoptLegacyDevice() perkelia tokio įrenginio duomenis prie naujos druskos.
+export const LEGACY_SALT = "nuoga-siela-dev-salt";
+const SALT = Deno.env.get("DEVICE_SALT") ?? LEGACY_SALT;
 
-export async function hashDevice(deviceUuid: string): Promise<string> {
-  const data = new TextEncoder().encode(SALT + ":" + deviceUuid);
+export async function hashDevice(deviceUuid: string, salt: string = SALT): Promise<string> {
+  const data = new TextEncoder().encode(salt + ":" + deviceUuid);
   const digest = await crypto.subtle.digest("SHA-256", data);
   return Array.from(new Uint8Array(digest))
     .map((b) => b.toString(16).padStart(2, "0"))
@@ -404,6 +407,56 @@ export async function checkGlobalRate(name: keyof typeof GLOBAL_LIMITS): Promise
     if (res.ok) return true;
   }
   return false;
+}
+
+// ---- Druskos keitimas: įrenginio duomenų perkėlimas prie naujo hash'o ----
+// Kai įrenginys kreipiasi pirmą kartą po DEVICE_SALT nustatymo, jo įrašai (byDevice,
+// post.deviceHash, hug/report žymės) perrašomi iš seno hash'o į naują — žmogus nepraranda ryšio
+// su savo tekstais. TTL išsaugomas (markTtl), kaip ir visur kitur. Rate limit raktai neperkeliami
+// (patys išnyksta per parą). Jau patikrinti hash'ai laikomi tik proceso atmintyje.
+
+const adoptedHashes = new Set<string>();
+
+export async function adoptLegacyDevice(deviceUuid: string, newHash: string): Promise<number> {
+  if (SALT === LEGACY_SALT || adoptedHashes.has(newHash)) return 0;
+  const moved = await migrateDeviceHash(await hashDevice(deviceUuid, LEGACY_SALT), newHash);
+  adoptedHashes.add(newHash);
+  if (adoptedHashes.size > 50000) adoptedHashes.clear();
+  return moved;
+}
+
+// Grąžina perkeltų įrašų skaičius. Eksportuojama testams (su aiškiais hash'ais).
+export async function migrateDeviceHash(oldHash: string, newHash: string): Promise<number> {
+  if (oldHash === newHash) return 0;
+  const kv = await getKv();
+  let moved = 0;
+  for await (const entry of kv.list<PostKind>({ prefix: ["byDevice", oldHash] })) {
+    const postId = entry.key[2] as string;
+    const kind: PostKind = entry.value === "istorija" ? "istorija" : "srautas";
+    const post = await kv.get<Post>([keyRoot(kind), postId]);
+    const op = kv.atomic().check(post).delete(entry.key);
+    if (post.value) {
+      const ttl = markTtl(post.value);
+      op.set([keyRoot(kind), postId], { ...post.value, deviceHash: newHash }, ttl)
+        .set(["byDevice", newHash, postId], kind, ttl);
+    }
+    if ((await op.commit()).ok && post.value) moved++;
+  }
+  for await (const entry of kv.list({ prefix: ["markByDevice", oldHash] })) {
+    const [, , type, postId] = entry.key as [string, string, "hug" | "report", string];
+    const post = (await findPost(kv, postId)).value;
+    const op = kv.atomic().delete(entry.key).delete([type, postId, oldHash]);
+    if (post) {
+      const ttl = markTtl(post);
+      op.set([type, postId, newHash], true, ttl).set(
+        markIndexKey(newHash, type, postId),
+        true,
+        ttl,
+      );
+    }
+    await op.commit();
+  }
+  return moved;
 }
 
 // ---- Dienos statistika (socialiniam įrodymui). Tik skaičiai, jokių sąsajų. ----

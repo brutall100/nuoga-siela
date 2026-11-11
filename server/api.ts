@@ -4,6 +4,7 @@
 
 import { checkText, detectCrisis, isEmotion, sanitizeText } from "./filter.ts";
 import {
+  adoptLegacyDevice,
   checkGlobalRate,
   checkRateLimit,
   createPost,
@@ -131,7 +132,10 @@ async function handleAdmin(req: Request, path: string): Promise<Response> {
 async function deviceHashFrom(req: Request): Promise<string | null> {
   const uuid = req.headers.get("x-device");
   if (!uuid || uuid.length < 8 || uuid.length > 64) return null;
-  return await hashDevice(uuid);
+  const hash = await hashDevice(uuid);
+  // Vienkartinis perkėlimas po DEVICE_SALT nustatymo (žr. store.ts adoptLegacyDevice).
+  await adoptLegacyDevice(uuid, hash);
+  return hash;
 }
 
 export async function handleApi(req: Request, url: URL): Promise<Response> {
