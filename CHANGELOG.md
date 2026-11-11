@@ -4,6 +4,13 @@ Visi pastebimi projekto pakeitimai bus fiksuojami šiame faile.
 
 Formatas paremtas [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [v3.19] — 2026-11-11
+
+- **Vienspalvė pranešimų ikona:** `public/icons/badge.svg` ir `badge-96.png` — baltas Nuogos Sielos
+  ženklo siluetas (liepsnelė ir bangos) permatomame fone; `sw.js` `showNotification()` `badge`.
+  Android būsenos juostoje dabar matomas savas ženklas, ne bendras Chrome ar varpelis. Android
+  programėlei — `monochromeIconUrl` Bubblewrap'e (`docs/play-darbai.lt.md`).
+
 ## [v3.18] — 2026-11-11
 
 - `docs/play-darbai.lt.md`: `DEVICE_SALT` ir Deno Deploy kintamieji pažymėti kaip nustatyti.
