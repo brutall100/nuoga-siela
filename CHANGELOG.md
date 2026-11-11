@@ -4,6 +4,10 @@ Visi pastebimi projekto pakeitimai bus fiksuojami šiame faile.
 
 Formatas paremtas [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [v3.15] — 2026-11-11
+
+- Lint: `const body` vietoj `let body` (`server/api.ts`) — CI Deno 2.9.8 `prefer-const` taisyklė.
+
 ## [v3.14] — 2026-11-11
 
 - **Privatumo politika (LT/EN) ištaisyta ir papildyta:** įrenginio kodas _siunčiamas_ serveriui ir

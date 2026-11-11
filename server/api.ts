@@ -177,8 +177,7 @@ export async function handleApi(req: Request, url: URL): Promise<Response> {
       const deviceHash = await deviceHashFrom(req);
       if (!deviceHash) return badRequest("Trūksta įrenginio identifikatoriaus.");
 
-      let body: { text?: unknown; emotion?: unknown; kind?: unknown };
-      body = await readJson(req);
+      const body: { text?: unknown; emotion?: unknown; kind?: unknown } = await readJson(req);
       if (typeof body.text !== "string") return badRequest("Trūksta teksto.");
       if (!isEmotion(body.emotion)) return badRequest("Pasirink emociją.");
       const kind: PostKind = body.kind === "istorija" ? "istorija" : "srautas";
@@ -267,12 +266,11 @@ export async function handleApi(req: Request, url: URL): Promise<Response> {
       if (!(await checkGlobalRate("push"))) {
         return json({ ok: false, reason: "Pabandyk po minutės." }, 429);
       }
-      let body: {
+      const body: {
         subscription?: { endpoint?: unknown; keys?: { p256dh?: unknown; auth?: unknown } };
         mode?: unknown;
         lang?: unknown;
-      };
-      body = await readJson(req);
+      } = await readJson(req);
       const endpoint = body.subscription?.endpoint;
       const p256dh = body.subscription?.keys?.p256dh;
       const auth = body.subscription?.keys?.auth;
@@ -296,8 +294,7 @@ export async function handleApi(req: Request, url: URL): Promise<Response> {
     }
 
     if (method === "POST" && path === "/api/push/unsubscribe") {
-      let body: { endpoint?: unknown };
-      body = await readJson(req);
+      const body: { endpoint?: unknown } = await readJson(req);
       if (typeof body.endpoint !== "string" || body.endpoint.length > 1024) {
         return badRequest("Netinkama prenumerata.");
       }
