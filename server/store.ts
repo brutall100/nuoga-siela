@@ -221,6 +221,12 @@ function markTtl(post: Post): { expireIn: number } | undefined {
   return { expireIn: Math.max(post.expiresAt - Date.now(), 1000) };
 }
 
+// Kas ką „suprato"/pranešė — atvirkštinis indeksas, kad „Ištrinti mano duomenis" ištrintų
+// ir šias žymes (jos sieja deviceHash su svetimu tekstu). Tas pats TTL kaip žymės.
+function markIndexKey(deviceHash: string, type: "hug" | "report", postId: string): Deno.KvKey {
+  return ["markByDevice", deviceHash, type, postId];
+}
+
 export async function hugPost(id: string, deviceHash: string): Promise<Post | null> {
   const kv = await getKv();
   const hugKey = ["hug", id, deviceHash];
@@ -230,7 +236,10 @@ export async function hugPost(id: string, deviceHash: string): Promise<Post | nu
   }
   const post = await updatePost(id, (p) => ({ ...p, hugs: p.hugs + 1 }));
   if (post) {
-    await kv.set(hugKey, true, markTtl(post));
+    await kv.atomic()
+      .set(hugKey, true, markTtl(post))
+      .set(markIndexKey(deviceHash, "hug", id), true, markTtl(post))
+      .commit();
     await bumpStat("hugs");
     // „Suprantu tave" keliauja kartu į būsimą istoriją.
     if (post.keptAs) await updatePost(post.keptAs, (s) => ({ ...s, hugs: s.hugs + 1 }));
@@ -250,7 +259,10 @@ export async function reportPost(id: string, deviceHash: string): Promise<Post |
     return { ...p, reports, hidden: reports >= REPORTS_TO_HIDE };
   });
   if (post) {
-    await kv.set(reportKey, true, markTtl(post));
+    await kv.atomic()
+      .set(reportKey, true, markTtl(post))
+      .set(markIndexKey(deviceHash, "report", id), true, markTtl(post))
+      .commit();
     // Paslėptas srauto tekstas neturi „prasmukti" į istorijas.
     if (post.hidden && post.keptAs) {
       await updatePost(post.keptAs, (s) => ({ ...s, hidden: true }));
@@ -330,6 +342,10 @@ export async function deleteDeviceData(deviceHash: string): Promise<number> {
     await kv.atomic().delete([keyRoot(kind), postId]).delete(entry.key).commit();
     deleted++;
   }
+  for await (const entry of kv.list({ prefix: ["markByDevice", deviceHash] })) {
+    const [, , type, postId] = entry.key as [string, string, string, string];
+    await kv.atomic().delete([type, postId, deviceHash]).delete(entry.key).commit();
+  }
   return deleted;
 }
 
@@ -361,6 +377,29 @@ export async function checkRateLimit(deviceHash: string, kind: PostKind): Promis
   if (count >= limit) return false;
   await kv.set(key, count + 1, { expireIn: windowMs });
   return true;
+}
+
+// Bendra (ne įrenginio) riba: įrenginio kodą kuria pats klientas, tad vienas žmogus su
+// daug kodų apeitų checkRateLimit(). Ši riba apriboja visą srautą — be jokio identifikatoriaus.
+export const GLOBAL_LIMITS = {
+  posts: { limit: 60, windowMs: 60 * 1000 },
+  reports: { limit: 30, windowMs: 60 * 1000 },
+  push: { limit: 30, windowMs: 60 * 1000 },
+} as const;
+
+export async function checkGlobalRate(name: keyof typeof GLOBAL_LIMITS): Promise<boolean> {
+  const kv = await getKv();
+  const { limit, windowMs } = GLOBAL_LIMITS[name];
+  const key = ["rate", "global", name, Math.floor(Date.now() / windowMs)];
+  for (let attempt = 0; attempt < 5; attempt++) {
+    const entry = await kv.get<number>(key);
+    const count = entry.value ?? 0;
+    if (count >= limit) return false;
+    const res = await kv.atomic().check(entry).set(key, count + 1, { expireIn: windowMs * 2 })
+      .commit();
+    if (res.ok) return true;
+  }
+  return false;
 }
 
 // ---- Dienos statistika (socialiniam įrodymui). Tik skaičiai, jokių sąsajų. ----
@@ -427,6 +466,8 @@ export async function getWeeklyMood(): Promise<
 export type PushMode = "daily" | "instant";
 export type PushLang = "lt" | "en";
 export const PUSH_TTL_MS = 90 * DAY_MS;
+// Netikras ar sugedęs adresas, kurio push tarnyba neatmeta 404/410, nekaupiamas amžinai.
+export const PUSH_MAX_FAILURES = 5;
 // Srauto įrašų, iš kurių skaičiuojami „nauji tekstai", viršutinė riba.
 const PUSH_COUNT_LIMIT = 500;
 
@@ -438,6 +479,7 @@ export interface PushRecord {
   lang: PushLang;
   since: number; // skaičiuojami srauto tekstai, sukurti po šio laiko
   lastSentAt: number;
+  failures?: number; // iš eilės nepavykę siuntimai; PUSH_MAX_FAILURES — trinama
   expiresAt: number; // KV expireIn atspindys — atnaujinant TTL išsaugomas
 }
 
@@ -465,6 +507,7 @@ export async function savePushSubscription(
     lang,
     since: existing?.since ?? now,
     lastSentAt: existing?.lastSentAt ?? 0,
+    failures: 0,
     expiresAt: now + PUSH_TTL_MS,
   };
   await kv.set(key, record, { expireIn: PUSH_TTL_MS });
@@ -493,7 +536,25 @@ export async function markPushSent(endpoint: string, at: number): Promise<void> 
   if (remaining <= 0) return;
   await kv.atomic()
     .check(entry)
-    .set(key, { ...entry.value, since: at, lastSentAt: at }, { expireIn: remaining })
+    .set(key, { ...entry.value, since: at, lastSentAt: at, failures: 0 }, {
+      expireIn: remaining,
+    })
+    .commit();
+}
+
+// Nepavykęs siuntimas: po PUSH_MAX_FAILURES iš eilės prenumerata ištrinama. Likęs TTL išsaugomas.
+export async function markPushFailed(endpoint: string): Promise<void> {
+  const kv = await getKv();
+  const key = await pushKey(endpoint);
+  const entry = await kv.get<PushRecord>(key);
+  if (!entry.value) return;
+  const failures = (entry.value.failures ?? 0) + 1;
+  const remaining = entry.value.expiresAt - Date.now();
+  if (failures >= PUSH_MAX_FAILURES || remaining <= 0) {
+    await kv.atomic().check(entry).delete(key).commit();
+    return;
+  }
+  await kv.atomic().check(entry).set(key, { ...entry.value, failures }, { expireIn: remaining })
     .commit();
 }
 

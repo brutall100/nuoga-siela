@@ -4,6 +4,7 @@
 
 import { checkText, detectCrisis, isEmotion, sanitizeText } from "./filter.ts";
 import {
+  checkGlobalRate,
   checkRateLimit,
   createPost,
   deleteDeviceData,
@@ -67,6 +68,29 @@ function decodedLength(value: unknown): number {
   }
 }
 
+// Didžiausias leidžiamas užklausos kūnas: 5000 ženklų tekstas (iki ~20 KB UTF-8) + JSON.
+export const MAX_BODY_BYTES = 32 * 1024;
+
+class BodyError extends Error {
+  constructor(readonly status: number, message: string) {
+    super(message);
+  }
+}
+
+async function readJson<T>(req: Request): Promise<T> {
+  const declared = Number(req.headers.get("content-length") ?? 0);
+  if (declared > MAX_BODY_BYTES) throw new BodyError(413, "Užklausa per didelė.");
+  const raw = await req.text();
+  if (new TextEncoder().encode(raw).length > MAX_BODY_BYTES) {
+    throw new BodyError(413, "Užklausa per didelė.");
+  }
+  try {
+    return JSON.parse(raw) as T;
+  } catch {
+    throw new BodyError(400, "Neteisingas užklausos formatas.");
+  }
+}
+
 async function deviceHashFrom(req: Request): Promise<string | null> {
   const uuid = req.headers.get("x-device");
   if (!uuid || uuid.length < 8 || uuid.length > 64) return null;
@@ -115,11 +139,7 @@ export async function handleApi(req: Request, url: URL): Promise<Response> {
       if (!deviceHash) return badRequest("Trūksta įrenginio identifikatoriaus.");
 
       let body: { text?: unknown; emotion?: unknown; kind?: unknown };
-      try {
-        body = await req.json();
-      } catch {
-        return badRequest("Neteisingas užklausos formatas.");
-      }
+      body = await readJson(req);
       if (typeof body.text !== "string") return badRequest("Trūksta teksto.");
       if (!isEmotion(body.emotion)) return badRequest("Pasirink emociją.");
       const kind: PostKind = body.kind === "istorija" ? "istorija" : "srautas";
@@ -128,6 +148,9 @@ export async function handleApi(req: Request, url: URL): Promise<Response> {
       const filter = checkText(text);
       if (!filter.ok) return badRequest(filter.reason);
 
+      if (!(await checkGlobalRate("posts"))) {
+        return json({ ok: false, reason: "Daug žmonių rašo — pabandyk po minutės." }, 429);
+      }
       if (!(await checkRateLimit(deviceHash, kind))) {
         const reason = kind === "istorija"
           ? "Istorijos — apgalvoti tekstai: daugiausia 2 per parą."
@@ -187,6 +210,9 @@ export async function handleApi(req: Request, url: URL): Promise<Response> {
     if (method === "POST" && reportMatch) {
       const deviceHash = await deviceHashFrom(req);
       if (!deviceHash) return badRequest("Trūksta įrenginio identifikatoriaus.");
+      if (!(await checkGlobalRate("reports"))) {
+        return json({ ok: false, reason: "Pabandyk po minutės." }, 429);
+      }
       const post = await reportPost(reportMatch[1], deviceHash);
       if (!post) return json({ ok: false, reason: "Šis tekstas jau išnyko." }, 404);
       return json({ ok: true });
@@ -199,16 +225,15 @@ export async function handleApi(req: Request, url: URL): Promise<Response> {
 
     if (method === "POST" && path === "/api/push/subscribe") {
       if (!vapidFromEnv()) return json({ ok: false, reason: "Pranešimai išjungti." }, 503);
+      if (!(await checkGlobalRate("push"))) {
+        return json({ ok: false, reason: "Pabandyk po minutės." }, 429);
+      }
       let body: {
         subscription?: { endpoint?: unknown; keys?: { p256dh?: unknown; auth?: unknown } };
         mode?: unknown;
         lang?: unknown;
       };
-      try {
-        body = await req.json();
-      } catch {
-        return badRequest("Neteisingas užklausos formatas.");
-      }
+      body = await readJson(req);
       const endpoint = body.subscription?.endpoint;
       const p256dh = body.subscription?.keys?.p256dh;
       const auth = body.subscription?.keys?.auth;
@@ -233,11 +258,7 @@ export async function handleApi(req: Request, url: URL): Promise<Response> {
 
     if (method === "POST" && path === "/api/push/unsubscribe") {
       let body: { endpoint?: unknown };
-      try {
-        body = await req.json();
-      } catch {
-        return badRequest("Neteisingas užklausos formatas.");
-      }
+      body = await readJson(req);
       if (typeof body.endpoint !== "string" || body.endpoint.length > 1024) {
         return badRequest("Netinkama prenumerata.");
       }
@@ -254,6 +275,7 @@ export async function handleApi(req: Request, url: URL): Promise<Response> {
 
     return json({ ok: false, reason: "Nerasta." }, 404);
   } catch (err) {
+    if (err instanceof BodyError) return json({ ok: false, reason: err.message }, err.status);
     console.error(`[api] ${method} ${path} klaida:`, err instanceof Error ? err.message : err);
     return json({ ok: false, reason: "Serverio klaida." }, 500);
   }

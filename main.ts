@@ -5,7 +5,7 @@
 import { handleApi } from "./server/api.ts";
 import { runPushRound } from "./server/notify.ts";
 import { getPublicStory, listStories, SITEMAP_STORY_LIMIT } from "./server/store.ts";
-import type { Emotion } from "./server/filter.ts";
+import { type Emotion, sanitizeText } from "./server/filter.ts";
 
 const PUBLIC_DIR = new URL("./public/", import.meta.url);
 const PORT = Number(Deno.env.get("PORT") ?? 8000);
@@ -36,6 +36,8 @@ const SECURITY_HEADERS: Record<string, string> = {
     "media-src 'self' blob:; connect-src 'self'; manifest-src 'self'; " +
     "base-uri 'none'; frame-ancestors 'none'",
   "x-content-type-options": "nosniff",
+  // Tik HTTPS metus (be includeSubDomains — subdomenų HTTPS nekontroliuojame).
+  "strict-transport-security": "max-age=31536000",
   "referrer-policy": "no-referrer",
   // Mikrofonas leidžiamas tik savai kilmei — Šauksmo kambariui. Garsas
   // niekada nepalieka naršyklės (žr. public/js/scream.js).
@@ -222,12 +224,17 @@ function excerpt(text: string, max: number): string {
 }
 
 // JSON-LD <script> blokai nėra CSP script-src taikymo objektas (naršyklės jų
-// nevykdo kaip JS), bet "</script>" sekoje esantis tekstas vis tiek nulaužtų
-// HTML parsinimą — todėl "</" pakeičiama į "<\/" prieš įterpiant.
+// nevykdo kaip JS), bet "</script>" ar "<!--" tekste vis tiek nulaužtų HTML
+// parsinimą — todėl visi "<" pakeičiami JSON escape'u \u003c (JSON reikšmė ta pati).
 function jsonLdScript(data: unknown): string {
   return `<script type="application/ld+json">${
-    JSON.stringify(data).replaceAll("</", "<\\/")
+    JSON.stringify(data).replaceAll("<", "\\u003c")
   }</script>`;
+}
+
+// XML'e (feed.xml) valdymo simboliai neleidžiami — seni įrašai galėjo jų turėti iki v3.10.
+function xmlText(text: string): string {
+  return escapeHtml(sanitizeText(text));
 }
 
 function renderStoryPage(
@@ -401,12 +408,12 @@ async function serveStoriesFeed(): Promise<Response> {
     const url = `${SITE_URL}/istorijos/${s.id}`;
     const iso = new Date(s.createdAt).toISOString();
     return `  <entry>
-    <title>${escapeHtml(excerpt(s.text, 60))}</title>
+    <title>${xmlText(excerpt(s.text, 60))}</title>
     <link href="${url}"/>
     <id>${url}</id>
     <published>${iso}</published>
     <updated>${iso}</updated>
-    <summary type="text">${escapeHtml(s.text)}</summary>
+    <summary type="text">${xmlText(s.text)}</summary>
   </entry>`;
   }).join("\n");
   const xml = `<?xml version="1.0" encoding="utf-8"?>
