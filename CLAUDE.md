@@ -162,7 +162,11 @@ ID formatą, ši savybė dings ir `listFeed`/`listStories` rūšiavimas suirs.
 Kiti raktų prefiksai: `["byDevice", deviceHash, postId]` (kam priklauso postas, naudojamas
 `/api/mine` ir trynimui), `["hug", postId, deviceHash]` / `["report", postId, deviceHash]`
 (idempotencijos žymės — vienas įrenginys = vienas balsas), `["rate", kind, deviceHash, timeBucket]`
-(rate limit), `["stats", dayKey, "posts"|"hugs"]` (dienos statistika socialiniam įrodymui),
+(rate limit), `["rate", "global", vardas, timeBucket]` (bendros ribos be jokio identifikatoriaus —
+`checkGlobalRate()`, nes įrenginio kodą kuria pats klientas ir vienas žmogus gali turėti daug kodų),
+`["markByDevice", deviceHash, "hug"|"report", postId]` (atvirkštinis indeksas, kad „Ištrinti mano
+duomenis" ištrintų ir hug/report žymes; tas pats TTL kaip žymės),
+`["stats", dayKey, "posts"|"hugs"]` (dienos statistika socialiniam įrodymui),
 `["stats", dayKey, "emo", emotion]` (kiek kartų per dieną pažymėta emocija — `GET /api/mood` bendrai
 savaitės nuotaikai; `expireIn` 8 d.). Visi `stats` raktai — tik suminiai skaičiai: niekada nepridėk
 prie jų `deviceHash`, posto ID ar bet ko, kas leistų juos susieti su žmogumi.
@@ -170,9 +174,30 @@ prie jų `deviceHash`, posto ID ar bet ko, kas leistų juos susieti su žmogumi.
 Testuose (`server_test.ts` failai) KV pakeičiamas `:memory:` egzemplioriumi per `setKvForTesting()`
 — niekada netestuok su realiu disko KV.
 
+### Moderacija ir taisyklės (Play UGC politika)
+
+`/admin` (`public/admin.html`, `public/js/admin.js`) + `/api/admin/*` — veikia tik su `ADMIN_TOKEN`
+(≥16 ženklų, Bearer, lyginama per hash'us); be jo endpoint'ai grąžina `404`, lyg jų nebūtų.
+Administratoriui grąžinami tik vieši laukai (`ModerationItem`) — **niekada `deviceHash`**. Grąžinant
+(`unhide`) pranešimai nunulinami, bet report žymės lieka — tie patys įrenginiai to paties teksto
+antrą kartą nepaslėps. Naudojimo taisyklės — `/taisykles` (LT), `/terms` (EN); klientas prieš pirmą
+paskelbimą klausia sutikimo (`ns_terms`), praneštą tekstą pranešusiajam slepia (`ns_reported`).
+
+Krizės tekstai (`PublicPost.sensitive`, skaičiuojama `toPublic()` per `detectCrisis()`, ne saugoma)
+kitiems rodomi suskleisti su „Rodyti tekstą“ ir nuoroda į SOS; SSR istorijos puslapyje —
+`STORY_HELP` prieš tekstą. Autorius savo tekstą mato iškart. SOS ekrane — Vilties, Jaunimo linijos
+ir 112, bei sakinys, kad tai ne psichologinė ar medicininė pagalba — neišimk jų.
+
+Nustatymų „Trynimo raktas“ parodo įrenginio kodą (`ns_device`) ir leidžia ištrinti tekstus pagal
+kitą raktą (tas pats `/api/mine/delete` su kitu `X-Device`). Tai sąmoningai vienintelis būdas
+atgauti kontrolę be paskyrų.
+
 ### Filtro filosofija (`server/filter.ts`)
 
-Keiksmažodžiai yra **sąmoningai leidžiami** produkto lygmenyje — tai išsiliejimo erdvė, ne
+Prieš tikrinimą tekstas valomas `sanitizeText()` (valdymo simboliai, `\r\n`). Spam žodynas — tik
+reklaminės frazės, ne pavieniai žodžiai („pralošiau viską kazino" yra skausmas, ne spamas); datos ir
+metų intervalai nelaikomi telefonais; `@vardas` ir „telegram/insta… + vardas" blokuojami (viliojimo
+kelias). Keiksmažodžiai yra **sąmoningai leidžiami** produkto lygmenyje — tai išsiliejimo erdvė, ne
 moderuojama bendruomenė. Filtras blokuoja tik: tuščią/per ilgą tekstą, nuorodas, el. paštus,
 telefonus (išskyrus `HELPLINE_NUMBERS` sąrašą), akivaizdų spam žodyną ir pasikartojančių simbolių
 virtines. Nepridėk keiksmažodžių blokavimo į `checkText()` — tam skirtas atskiras, tik-rodymo-lygio
@@ -318,7 +343,8 @@ neleidžia (TWA'oje kanalą valdo Chrome) — tam reikėtų natyvaus FCM kodo An
 
 ### Saugumo header'iai
 
-`main.ts` taiko tą patį `SECURITY_HEADERS` rinkinį ir statikai, ir API atsakymams (CSP,
+API užklausos kūnas ribojamas `MAX_BODY_BYTES` (32 KB, `readJson()` `server/api.ts`). `main.ts`
+taiko tą patį `SECURITY_HEADERS` rinkinį (įsk. HSTS) ir statikai, ir API atsakymams (CSP,
 `referrer-policy: no-referrer`, ir t.t.). `permissions-policy` sąmoningai leidžia
 `microphone=(self)` tik dėl Šauksmo kambario — nepridėk `camera` ar `geolocation` leidimų, jie
 eksplicitiškai uždrausti.

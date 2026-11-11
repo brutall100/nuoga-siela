@@ -50,7 +50,7 @@
       </a>
 
       <h1>Privacy Policy</h1>
-      <p class="updated muted">Last updated: 2026-10-29</p>
+      <p class="updated muted">Last updated: 2026-11-11</p>
 
       <p>
         Nuoga Siela (<strong>nuogasiela.lt</strong>) is an anonymous space to let things out. This
@@ -72,12 +72,17 @@
       <h2>Device identifier</h2>
       <p>
         The first time you open the app, your browser generates a random code
-        (<code>crypto.randomUUID()</code>) stored only on your device. The server never sees this
-        original code — it is converted into an irreversible cryptographic hash (SHA-256 with a
-        server-side salt) before it ever reaches the server in usable form. It is not possible to
-        recover your device code from this hash or to link it back to your identity. The hash is
-        used only for technical purposes: counting "I understand you" taps, rate limiting (how
-        many posts you can publish per hour), and showing you your own posts.
+        (<code>crypto.randomUUID()</code>) stored on your device. It is sent along with your
+        actions (posting, "I understand you", reporting), and the server immediately turns it
+        into an irreversible cryptographic hash (SHA-256 with a secret server-side salt).
+        <strong>The original code is never stored or logged</strong> — only the hash is. It is
+        not linked to your name, IP address or any other data; it is used only to show you your
+        own texts, let you delete them, count "I understand you" and reports once per device, and
+        limit how many texts can be posted.
+      </p>
+      <p>
+        In Settings ("Deletion key") you can view and save this code: with it you can delete your
+        texts from another device too. Treat it like a password.
       </p>
 
       <h2>What happens to your text</h2>
@@ -93,13 +98,22 @@
         </li>
         <li>
           <strong>"Keep as a story" (Stories)</strong> — the text stays visible indefinitely, until you
-          delete it yourself from Settings ("Delete my data").
+          delete it yourself from Settings ("Delete my data" or "Deletion key"). A story has its
+          own public page that <strong>search engines index</strong> (Google and others); we notify
+          Bing/Yandex of new stories via IndexNow (only the link is sent). A deleted story becomes
+          unavailable immediately, but may remain in search results for a while until they
+          refresh.
         </li>
       </ul>
 
       <h2>What we don't collect</h2>
       <ul>
-        <li>IP addresses — server logs only contain the method, path, and response status.</li>
+        <li>
+          IP addresses — the app doesn't store them, and its logs contain only the method, path and
+          response status. The hosting provider (see "Sharing with third parties") processes IP
+          addresses technically to deliver requests and protect against attacks, under its own
+          privacy policy.
+        </li>
         <li>Name, email, phone number, or other contact details.</li>
         <li>Tracking or advertising cookies. We use no third-party analytics or ad tools.</li>
         <li>Precise geolocation.</li>
@@ -150,19 +164,44 @@
         not store any text content linked to your identity.
       </p>
 
+      <h2>Moderation</h2>
+      <p>
+        Texts can be reported. After several reports a text is hidden, and reported texts are
+        reviewed by the project's author, who restores or deletes them. Review shows only what is
+        public anyway (text, emotion, number of reports) — never the device hash. Rules — see the
+        <a href="/terms">terms of use</a>.
+      </p>
+
       <h2>Data deletion</h2>
       <p>
         The "Delete my data" button in Settings immediately and permanently deletes all of your
-        posted texts (feed and stories) and your device marker from the server, and your mood
-        calendar from this device.
+        posted texts (feed and stories), your "I understand you" and report marks and your device
+        marker from the server, and your mood calendar from this device. Temporary rate-limit
+        counters expire on their own within 24 hours.
+      </p>
+
+      <h2>Legal basis and your rights</h2>
+      <p>
+        We process data based on our legitimate interest in providing this service and protecting
+        it from abuse (GDPR Art. 6(1)(f)), and notification subscriptions based on your consent
+        (GDPR Art. 6(1)(a)), which you can withdraw in Settings at any time. Your texts may reveal
+        feelings or health, which is why we never link them to your identity.
+      </p>
+      <p>
+        You have the right to access, erase and restrict processing of your data and to object to
+        processing. Since we can't identify you, you exercise these rights yourself in Settings or
+        by emailing us your deletion key. You also have the right to lodge a complaint with the
+        Lithuanian State Data Protection Inspectorate (<a href="https://vdai.lrv.lt">vdai.lrv.lt</a>).
       </p>
 
       <h2>Sharing with third parties</h2>
       <p>
         We do not sell or share any data with third parties for advertising or analytics
-        purposes. The app runs on a single server (Deno Deploy) with no external tracking tools. If
-        you turn on notifications, they are delivered through your browser's or phone's push
-        service (see "Notifications").
+        purposes. The app runs on the Deno Deploy hosting platform (Deno Land Inc., USA) with no
+        external tracking tools; data may be processed outside the EU under the provider's data
+        transfer safeguards. If you turn on notifications, they are delivered through your
+        browser's or phone's push service (see "Notifications"). Links to public stories are
+        shared with search engines (see "What happens to your text").
       </p>
 
       <h2>Children's privacy</h2>

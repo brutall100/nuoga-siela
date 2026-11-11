@@ -50,7 +50,7 @@
       </a>
 
       <h1>Privatumo politika</h1>
-      <p class="updated muted">Paskutinį kartą atnaujinta: 2026-10-29</p>
+      <p class="updated muted">Paskutinį kartą atnaujinta: 2026-11-11</p>
 
       <p>
         Nuoga Siela (<strong>nuogasiela.lt</strong>) yra anoniminė erdvė išsilieti. Ši privatumo
@@ -72,13 +72,17 @@
       <h2>Įrenginio identifikatorius</h2>
       <p>
         Pirmą kartą atsidarius programą, tavo naršyklėje sugeneruojamas atsitiktinis kodas
-        (<code>crypto.randomUUID()</code>), laikomas tik tavo įrenginyje. Serveris šio kodo
-        originalo <strong>niekada nemato</strong> — jis iš karto paverčiamas negrįžtamu
-        kriptografiniu hash'u (SHA-256 su serverio druska), prieš pasiekiant serverį prasmingu
-        pavidalu. Iš šio hash'o neįmanoma atkurti tavo įrenginio kodo ar susieti jo su tavo
-        tapatybe. Hash'as naudojamas tik techniniams tikslams: kiek kartų paspaudei „Suprantu
-        tave", rate limitui (kiek tekstų per valandą gali paleisti) ir tavo pačio tekstų sąrašui
-        rodyti.
+        (<code>crypto.randomUUID()</code>), laikomas tavo įrenginyje. Jis siunčiamas kartu su
+        tavo veiksmais (paskelbti, „Suprantu tave“, pranešti), o serveris jį iš karto paverčia
+        negrįžtamu kriptografiniu hash'u (SHA-256 su slapta serverio druska).
+        <strong>Originalus kodas niekur nesaugomas ir neįrašomas į žurnalus</strong> — saugomas
+        tik hash'as. Jis nesusietas su tavo vardu, IP adresu ar kitais duomenimis; naudojamas tik
+        tam, kad parodytume tavo tekstus, leistume juos ištrinti, skaičiuotume „Suprantu tave“ ir
+        pranešimus vieną kartą įrenginiui ir ribotume, kiek tekstų galima paskelbti.
+      </p>
+      <p>
+        Nustatymuose („Trynimo raktas“) gali pamatyti šį kodą ir jį išsisaugoti: juo savo tekstus
+        ištrinsi ir iš kito įrenginio. Laikyk jį kaip slaptažodį.
       </p>
 
       <h2>Ką darome su tavo tekstu</h2>
@@ -94,13 +98,21 @@
         </li>
         <li>
           <strong>„Palikti istoriją" (Istorijos)</strong> — tekstas lieka matomas neribotą laiką, kol
-          pats jo neištrini nustatymuose („Ištrinti mano duomenis").
+          pats jo neištrini nustatymuose („Ištrinti mano duomenis“ arba „Trynimo raktas“).
+          Istorija turi savo viešą puslapį, kurį <strong>indeksuoja paieškos sistemos</strong>
+          (Google ir kt.); apie naują istoriją iškart pranešame Bing/Yandex per IndexNow (siunčiama
+          tik nuoroda). Ištrinta istorija iškart tampa nepasiekiama, bet paieškos sistemų
+          rezultatuose gali dar kurį laiką likti, kol jos atsinaujins.
         </li>
       </ul>
 
       <h2>Ko nerenkame</h2>
       <ul>
-        <li>IP adresų — serverio žurnaluose saugomas tik metodas, kelias ir atsakymo statusas.</li>
+        <li>
+          IP adresų — programa jų nesaugo, o jos žurnaluose yra tik metodas, kelias ir atsakymo
+          statusas. Prieglobos tiekėjas (žr. „Duomenų dalijimasis“) IP adresus techniškai apdoroja,
+          kad pristatytų užklausas ir apsaugotų nuo atakų, pagal savo privatumo politiką.
+        </li>
         <li>Vardo, el. pašto, telefono numerio ar kitų kontaktinių duomenų.</li>
         <li>Slapukų sekimui ar reklamai. Nenaudojame jokių trečiųjų šalių analitikos ar reklamos
           įrankių.</li>
@@ -152,19 +164,44 @@
         jokio teksto turinio saugojimo su tavo tapatybe susietu pavidalu.
       </p>
 
+      <h2>Moderacija</h2>
+      <p>
+        Apie tekstą galima pranešti. Po kelių pranešimų jis paslepiamas, o apskųstus tekstus
+        peržiūri projekto autorius: grąžina arba ištrina. Peržiūrint matomas tik tas pats, kas
+        vieša (tekstas, emocija, pranešimų skaičius) — niekada įrenginio hash'as. Taisyklės —
+        <a href="/taisykles">naudojimo taisyklėse</a>.
+      </p>
+
       <h2>Duomenų trynimas</h2>
       <p>
         Nustatymuose esantis mygtukas „Ištrinti mano duomenis" iškart ir negrįžtamai ištrina visus
-        tavo paleistus tekstus (srautą ir istorijas) bei tavo įrenginio žymę iš serverio, o iš
-        šio įrenginio — ir emocijų kalendorių.
+        tavo paleistus tekstus (srautą ir istorijas), „Suprantu tave“ ir pranešimų žymes bei tavo
+        įrenginio žymę iš serverio, o iš šio įrenginio — ir emocijų kalendorių. Laikini ribojimo
+        skaitikliai patys išnyksta per 24 valandas.
+      </p>
+
+      <h2>Teisinis pagrindas ir tavo teisės</h2>
+      <p>
+        Duomenis tvarkome remdamiesi teisėtu interesu teikti šią paslaugą ir apsaugoti ją nuo
+        piktnaudžiavimo (BDAR 6 str. 1 d. f p.), o pranešimų prenumeratą — tavo sutikimu (BDAR 6
+        str. 1 d. a p.), kurį gali bet kada atšaukti nustatymuose. Tavo tekstai gali atskleisti
+        jausmus ar sveikatą, todėl jų niekada nesiejame su tavo tapatybe.
+      </p>
+      <p>
+        Turi teisę susipažinti su savo duomenimis, juos ištrinti, apriboti jų tvarkymą ir
+        nesutikti su tvarkymu. Kadangi mes tavęs neatpažįstame, šias teises įgyvendini pats
+        nustatymuose arba atsiųsdamas trynimo raktą el. paštu. Taip pat turi teisę pateikti skundą
+        Valstybinei duomenų apsaugos inspekcijai (<a href="https://vdai.lrv.lt">vdai.lrv.lt</a>).
       </p>
 
       <h2>Duomenų dalijimasis su trečiosiomis šalimis</h2>
       <p>
         Nieko neparduodame ir nesidaliname jokiais duomenimis su trečiosiomis šalimis reklamos ar
-        analitikos tikslais. Programa veikia viename serveryje (Deno Deploy) be jokių išorinių
-        sekimo įrankių. Jei įjungi pranešimus, jie pristatomi per tavo naršyklės ar telefono
-        pranešimų tarnybą (žr. „Pranešimai“).
+        analitikos tikslais. Programa veikia Deno Deploy (Deno Land Inc., JAV) prieglobos
+        platformoje be jokių išorinių sekimo įrankių; duomenys gali būti tvarkomi ir už ES ribų
+        pagal tiekėjo taikomas duomenų perdavimo garantijas. Jei įjungi pranešimus, jie
+        pristatomi per tavo naršyklės ar telefono pranešimų tarnybą (žr. „Pranešimai“). Viešų
+        istorijų nuorodos perduodamos paieškos sistemoms (žr. „Ką darome su tavo tekstu“).
       </p>
 
       <h2>Vaikų privatumas</h2>

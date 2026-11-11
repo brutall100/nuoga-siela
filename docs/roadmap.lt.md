@@ -37,10 +37,18 @@
 PWA (manifest + service worker jau yra) →
 [Bubblewrap](https://github.com/GoogleChromeLabs/bubblewrap) → TWA → Play Console. Prieš pateikimą:
 
-- [ ] PNG ikonos 192/512 px (Play nepriima SVG) — sugeneruoti iš `public/icons/icon.svg`
+- [x] PNG ikonos 512 px (`public/icons/icon-512.png`, `icon-maskable-512.png`)
 - [x] Privatumo politikos puslapis viešu URL — `https://nuogasiela.lt/privatumas` (LT),
       `https://nuogasiela.lt/privacy` (EN)
-- [ ] Data safety forma: „no data collected linked to user" (turim tik anoniminius hash'us);
-      mikrofonas naudojamas Šauksmo kambaryje, bet garsas niekada nepalieka įrenginio — žymėti „not
-      collected"
-- [ ] Self-harm policy: SOS ekranas su linijomis jau yra — Play to reikalauja tokio tipo app'ams
+- [x] Naudojimo taisyklės (`/taisykles`, `/terms`), sutikimas prieš pirmą paskelbimą, pranešimas
+      apie tekstą, moderacija (`/admin`, `ADMIN_TOKEN`) — Play UGC politika
+- [ ] `ADMIN_TOKEN` nustatyti Deno Deploy ir reguliariai peržiūrėti `/admin`
+- [ ] Data safety forma — **ne** „no data collected“: įrenginio hash'as pagal BDAR yra pseudoniminis
+      ID. Žymėti: _App activity → Other user-generated content_ (tekstai) ir _Device or other IDs_ —
+      renkama, nesidalinama, ne pardavimui, šifruojama perduodant, galima ištrinti (nustatymuose).
+      _Audio_ — nerenkama (garsas nepalieka įrenginio). Pranešimų prenumerata — su ID nesusieta.
+- [ ] Health apps deklaracija Play Console (emocinė savijauta, ne medicininė programa) — sakinys „ne
+      psichologinė ar medicininė pagalba“ jau SOS ekrane ir taisyklėse
+- [x] Self-harm: SOS ekranas su linijomis ir 112, krizės tekstai suskleisti su pagalbos nuoroda
+- [ ] TWA: Bubblewrap `enableNotifications: true` (kitaip Web Push programėlėje neveiks), vienspalvė
+      pranešimų ikona
