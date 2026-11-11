@@ -4,6 +4,17 @@ Visi pastebimi projekto pakeitimai bus fiksuojami šiame faile.
 
 Formatas paremtas [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [v3.14] — 2026-11-11
+
+- **Privatumo politika (LT/EN) ištaisyta ir papildyta:** įrenginio kodas _siunčiamas_ serveriui ir
+  iš karto hash'uojamas (anksčiau klaidingai rašyta, kad serveris jo „niekada nemato“); prieglobos
+  tiekėjas techniškai apdoroja IP; istorijas indeksuoja paieškos sistemos, IndexNow; nauji skyriai
+  „Moderacija“ ir „Teisinis pagrindas ir tavo teisės“ (BDAR 6 str., teisės, skundas VDAI); trynimo
+  raktas; Deno Deploy (JAV). Data — 2026-11-11 (ir sitemap `lastmod`).
+- `docs/roadmap.lt.md`: Play kontrolinis sąrašas atnaujintas — Data safety **ne** „no data
+  collected“, Health apps deklaracija, `ADMIN_TOKEN`, TWA `enableNotifications`.
+- CLAUDE.md: moderacija, krizės tekstai, trynimo raktas, bendros ribos, naujas KV prefiksas.
+
 ## [v3.13] — 2026-11-11
 
 - **Krizės tekstai sraute ir istorijose suskleisti:** „Šiame tekste — apie norą nebegyventi ar save
