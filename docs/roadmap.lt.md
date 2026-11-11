@@ -34,6 +34,8 @@
 
 ## Kelias į Google Play
 
+> Konkretus darbų sąrašas kitam kartui — [`play-darbai.lt.md`](play-darbai.lt.md).
+
 PWA (manifest + service worker jau yra) →
 [Bubblewrap](https://github.com/GoogleChromeLabs/bubblewrap) → TWA → Play Console. Prieš pateikimą:
 
@@ -42,7 +44,7 @@ PWA (manifest + service worker jau yra) →
       `https://nuogasiela.lt/privacy` (EN)
 - [x] Naudojimo taisyklės (`/taisykles`, `/terms`), sutikimas prieš pirmą paskelbimą, pranešimas
       apie tekstą, moderacija (`/admin`, `ADMIN_TOKEN`) — Play UGC politika
-- [ ] `ADMIN_TOKEN` nustatyti Deno Deploy ir reguliariai peržiūrėti `/admin`
+- [x] `ADMIN_TOKEN` nustatytas Deno Deploy; reguliariai peržiūrėti `/admin`
 - [ ] Data safety forma — **ne** „no data collected“: įrenginio hash'as pagal BDAR yra pseudoniminis
       ID. Žymėti: _App activity → Other user-generated content_ (tekstai) ir _Device or other IDs_ —
       renkama, nesidalinama, ne pardavimui, šifruojama perduodant, galima ištrinti (nustatymuose).

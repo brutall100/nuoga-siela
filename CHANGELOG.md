@@ -4,6 +4,12 @@ Visi pastebimi projekto pakeitimai bus fiksuojami šiame faile.
 
 Formatas paremtas [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [v3.16] — 2026-11-11
+
+- `docs/play-darbai.lt.md`: žingsnis po žingsnio sąrašas Google Play paruošimui (Deno Deploy
+  kintamieji, Bubblewrap `enableNotifications`, Data safety, Health apps, amžius, uždaras
+  testavimas, kasdienė moderacija). Roadmap'e — nuoroda ir `ADMIN_TOKEN` pažymėtas kaip nustatytas.
+
 ## [v3.15] — 2026-11-11
 
 - Lint: `const body` vietoj `let body` (`server/api.ts`) — CI Deno 2.9.8 `prefer-const` taisyklė.
