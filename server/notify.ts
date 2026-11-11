@@ -9,6 +9,7 @@ import {
   deletePushSubscription,
   listFeedTimes,
   listPushSubscriptions,
+  markPushFailed,
   markPushSent,
   type PushLang,
   type PushRecord,
@@ -121,6 +122,8 @@ export async function runPushRound(
             sent++;
           } else if (result === "gone") {
             await deletePushSubscription(rec.endpoint);
+          } else {
+            await markPushFailed(rec.endpoint);
           }
         }),
       );

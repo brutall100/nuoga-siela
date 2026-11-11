@@ -4,6 +4,21 @@ Visi pastebimi projekto pakeitimai bus fiksuojami šiame faile.
 
 Formatas paremtas [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [v3.11] — 2026-11-11
+
+- **Bendros ribos be identifikatoriaus** (`checkGlobalRate()`): įrenginio kodą kuria pats klientas,
+  tad vienas žmogus su daug kodų apeidavo įrenginio ribas. Dabar visam serveriui — ne daugiau 60
+  naujų tekstų, 30 pranešimų apie tekstus ir 30 push prenumeratų per minutę.
+- **Push prenumeratos nesikaupia:** po 5 nepavykusių siuntimų iš eilės prenumerata ištrinama
+  (anksčiau — tik po 404/410), sėkmė skaitiklį nunulina.
+- **„Ištrinti mano duomenis“ ištrina ir „Suprantu tave“ bei pranešimų žymes** (jos siejo įrenginio
+  hash'ą su svetimu tekstu) — naujas indeksas `["markByDevice", deviceHash, tipas, postId]`.
+- API užklausos kūnas ribojamas 32 KB (`413`).
+- `strict-transport-security: max-age=31536000`.
+- JSON-LD istorijos puslapyje: visi `<` → `\u003c` (anksčiau tik `</`; `<!--` tekste laužė HTML).
+  `feed.xml` išvalo valdymo simbolius ir iš senų įrašų.
+- Klientas: nepavykus „Suprantu tave“, širdelė grįžta ir rodomas pranešimas.
+
 ## [v3.10] — 2026-11-11
 
 - **Filtras nebeatmeta tikro skausmo:** datos ir metų intervalai („mama mirė 2020-05-17“,

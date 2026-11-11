@@ -597,8 +597,19 @@
       hug.setAttribute("aria-pressed", "true");
       hug.firstChild.replaceWith(window.icons.line("heart-filled"));
       rememberHug(post.id);
-      const data = await api(`/api/posts/${post.id}/hug`, { method: "POST" });
-      if (data.ok) hugCount.textContent = String(data.hugs);
+      try {
+        const data = await api(`/api/posts/${post.id}/hug`, { method: "POST" });
+        if (data.ok) return void (hugCount.textContent = String(data.hugs));
+      } catch {
+        /* žemiau — atšaukiam */
+      }
+      // Nepavyko — širdelė grįžta, kad būtų galima bandyti dar kartą.
+      hugged.delete(post.id);
+      localStorage.setItem(HUGGED_KEY, JSON.stringify([...hugged]));
+      hug.classList.remove("is-hugged");
+      hug.setAttribute("aria-pressed", "false");
+      hug.firstChild.replaceWith(window.icons.line("heart"));
+      toast(window.t("toast.serverFail"), "warn");
     });
 
     const spacer = document.createElement("span");

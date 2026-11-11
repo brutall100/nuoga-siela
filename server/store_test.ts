@@ -1,17 +1,24 @@
 import {
+  checkGlobalRate,
   checkRateLimit,
   createPost,
   deleteDeviceData,
   getPublicStory,
   getStats,
   getWeeklyMood,
+  GLOBAL_LIMITS,
   hashDevice,
   hugPost,
   keepAsStory,
   listFeed,
   listMine,
+  listPushSubscriptions,
   listStories,
+  markPushFailed,
+  markPushSent,
+  PUSH_MAX_FAILURES,
   reportPost,
+  savePushSubscription,
   setKvForTesting,
   STORY_LIMIT_PER_DAY,
   unkeepStory,
@@ -265,4 +272,43 @@ Deno.test("savaitės nuotaika: tik suminiai emocijų skaičiai", async () => {
   assert(!JSON.stringify(mood).includes(dev), "jokio įrenginio hash'o");
 
   kv.close();
+});
+
+Deno.test("checkGlobalRate: bendra riba be įrenginio identifikatoriaus", async () => {
+  await freshKv();
+  for (let i = 0; i < GLOBAL_LIMITS.reports.limit; i++) {
+    assert(await checkGlobalRate("reports"), `leidžiama ${i}`);
+  }
+  assert(!(await checkGlobalRate("reports")), "virš ribos — ne");
+  assert(await checkGlobalRate("posts"), "kita riba nepaveikta");
+});
+
+Deno.test("deleteDeviceData: ištrina ir „suprantu“/pranešimo žymes", async () => {
+  const kv = await freshKv();
+  const author = await hashDevice("autorius");
+  const me = await hashDevice("as");
+  const post = await createPost(author, "tekstas", "nerimas");
+  await hugPost(post.id, me);
+  await reportPost(post.id, me);
+  assert((await kv.get(["hug", post.id, me])).value === true, "hug žymė yra");
+  await deleteDeviceData(me);
+  assert((await kv.get(["hug", post.id, me])).value === null, "hug žymė ištrinta");
+  assert((await kv.get(["report", post.id, me])).value === null, "report žymė ištrinta");
+  let left = 0;
+  for await (const _ of kv.list({ prefix: ["markByDevice", me] })) left++;
+  assert(left === 0, "indeksas ištuštintas");
+  assert((await listFeed()).length === 1, "svetimas postas lieka");
+});
+
+Deno.test("markPushFailed: po kelių nesėkmių prenumerata ištrinama, sėkmė nunulina", async () => {
+  await freshKv();
+  const sub = { endpoint: "https://fcm.googleapis.com/fcm/send/x", p256dh: "p", auth: "a" };
+  await savePushSubscription(sub, "instant", "lt");
+  for (let i = 0; i < PUSH_MAX_FAILURES - 1; i++) await markPushFailed(sub.endpoint);
+  await markPushSent(sub.endpoint, Date.now());
+  let subs = await listPushSubscriptions();
+  assert(subs.length === 1 && subs[0].failures === 0, "sėkmė nunulina");
+  for (let i = 0; i < PUSH_MAX_FAILURES; i++) await markPushFailed(sub.endpoint);
+  subs = await listPushSubscriptions();
+  assert(subs.length === 0, "ištrinta po nesėkmių");
 });
