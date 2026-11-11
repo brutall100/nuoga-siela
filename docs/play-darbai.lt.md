@@ -16,9 +16,9 @@
 
 ## 2. Deno Deploy
 
-- [ ] _Settings → Environment Variables_ — patikrink, ar yra `DEVICE_SALT`.
-  - Jei **yra** — nieko nekeisk (pakeitus žmonės prarastų ryšį su savo tekstais).
-  - Jei **nėra** — sugeneruok (`openssl rand -hex 32`), įvesk, išsaugok Bitwarden.
+- [ ] `DEVICE_SALT` — jo nebuvo; nuo v3.17 galima saugiai įvesti (seni vartotojai perkeliami
+      automatiškai). Sugeneruok (`openssl rand -hex 32`), įvesk, išsaugok Bitwarden. **Įvedus
+      niekada nebekeisk.**
 - [ ] Ten pat turi būti `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `ADMIN_TOKEN`.
 
 ## 3. Android projektas (Bubblewrap / TWA)

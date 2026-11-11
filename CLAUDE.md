@@ -132,7 +132,10 @@ pažado lygio**. Kai keiti kodą, laikykis šių invariantų:
 - Vienintelis kliento identifikatorius yra `crypto.randomUUID()` naršyklėje (`public/js/app.js`,
   `DEVICE_KEY`). Serveris jo **niekada** nemato originalo pavidalu — `deviceHashFrom()`
   (`server/api.ts`) iš karto paverčia `sha256(SALT + uuid)` (`hashDevice()` `server/store.ts`), ir
-  originalus UUID toliau niekur nekeliauja, nesaugomas, neloginamas.
+  originalus UUID toliau niekur nekeliauja, nesaugomas, neloginamas. Iki v3.17 produkcijoje
+  `DEVICE_SALT` nebuvo nustatytas (naudota vieša `LEGACY_SALT`); `adoptLegacyDevice()` perkelia
+  tokio įrenginio duomenis prie naujo hash'o jo pirmos užklausos metu. **Nekeisk `DEVICE_SALT` dar
+  kartą** — perkėlimas veikia tik iš `LEGACY_SALT`, kitaip žmonės prarastų ryšį su tekstais.
 - Jokių IP adresų niekur. Log'ai (`main.ts` paskutinė eilutė) sąmoningai apsiriboja
   `metodas kelias statusas` — nepridėk header'ių ar IP į log'us net debug'inimo tikslais.
 - Srauto (`kind: "srautas"`) įrašai **visada** kuriami su `expireIn: POST_TTL_MS` KV raktui — tai

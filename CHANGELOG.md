@@ -4,6 +4,14 @@ Visi pastebimi projekto pakeitimai bus fiksuojami šiame faile.
 
 Formatas paremtas [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [v3.17] — 2026-11-11
+
+- **Saugus `DEVICE_SALT` įvedimas:** produkcijoje druska nebuvo nustatyta, todėl hash'ai skaičiuoti
+  su vieša numatytąja (`LEGACY_SALT`), o privatumo politika sako „slapta druska“. Nustačius
+  `DEVICE_SALT`, `adoptLegacyDevice()` per pirmą įrenginio užklausą perkelia jo tekstų nuosavybę
+  (`byDevice`, `post.deviceHash`) ir „Suprantu tave“/pranešimų žymes prie naujo hash'o, su likusiu
+  TTL — niekas nepraranda ryšio su savo tekstais.
+
 ## [v3.16] — 2026-11-11
 
 - `docs/play-darbai.lt.md`: žingsnis po žingsnio sąrašas Google Play paruošimui (Deno Deploy

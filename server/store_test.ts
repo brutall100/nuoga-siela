@@ -17,6 +17,7 @@ import {
   listStories,
   markPushFailed,
   markPushSent,
+  migrateDeviceHash,
   moderateDelete,
   moderatePost,
   PUSH_MAX_FAILURES,
@@ -334,4 +335,31 @@ Deno.test("moderacija: sąrašas, grąžinimas, trynimas (be deviceHash)", async
   assert((await kv.get(["byDevice", author, story.id])).value === null, "byDevice ištrintas");
   items = await listModeration();
   assert(items.length === 0, "nebėra ką moderuoti");
+});
+
+Deno.test("migrateDeviceHash: druskos keitimas neatima tekstų ir žymių", async () => {
+  const kv = await freshKv();
+  const oldHash = await hashDevice("mano-uuid", "sena-druska");
+  const newHash = await hashDevice("mano-uuid", "nauja-druska");
+  assert(oldHash !== newHash, "skirtingos druskos → skirtingi hash'ai");
+
+  const stream = await createPost(oldHash, "srauto tekstas", "nerimas");
+  const story = await createPost(oldHash, "istorija", "viltis", "istorija");
+  const other = await createPost(await hashDevice("kitas"), "svetimas", "pyktis");
+  await hugPost(other.id, oldHash);
+
+  const moved = await migrateDeviceHash(oldHash, newHash);
+  assert(moved === 2, `perkelti 2 tekstai, gauta ${moved}`);
+  assert((await listMine(oldHash)).length === 0, "senas hash'as nebeturi tekstų");
+  const mine = await listMine(newHash);
+  assert(mine.length === 2, "naujas hash'as mato abu tekstus");
+  const post = (await kv.get<{ deviceHash: string }>(["post", stream.id])).value;
+  assert(post?.deviceHash === newHash, "post.deviceHash atnaujintas");
+
+  const again = await hugPost(other.id, newHash);
+  assert(again?.hugs === 1, "perkelta hug žymė — antras kartas nesiskaičiuoja");
+  assert((await kv.get(["hug", other.id, oldHash])).value === null, "sena žymė ištrinta");
+
+  await deleteDeviceData(newHash);
+  assert((await getPublicStory(story.id)) === null, "istoriją galima ištrinti naujuoju hash'u");
 });
