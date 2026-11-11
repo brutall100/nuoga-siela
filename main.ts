@@ -237,8 +237,24 @@ function xmlText(text: string): string {
   return escapeHtml(sanitizeText(text));
 }
 
+// Krizės tekstų puslapyje — pagalba prieš tekstą (skaitytojas galėjo atkeliauti iš Google).
+const STORY_HELP = `      <aside class="story-help">
+        <p>Šiame tekste — apie labai sunkius jausmus. Jei ir tau dabar sunku, pasikalbėk su žmogumi:
+          <a href="tel:116123">Vilties linija 116 123</a>,
+          <a href="tel:880028888">Jaunimo linija 8 800 28888</a> (visą parą). Pavojus gyvybei —
+          <a href="tel:112">112</a>.</p>
+      </aside>
+`;
+
 function renderStoryPage(
-  story: { id: string; text: string; emotion: Emotion; hugs: number; createdAt: number },
+  story: {
+    id: string;
+    text: string;
+    emotion: Emotion;
+    hugs: number;
+    createdAt: number;
+    sensitive: boolean;
+  },
 ): string {
   const description = escapeHtml(excerpt(story.text, 155));
   const title = escapeHtml(`${excerpt(story.text, 60)} — Nuoga Siela`);
@@ -292,7 +308,7 @@ function renderStoryPage(
         ${emotionIcon(story.emotion)}<span>${emotionLabel}</span>
         <span class="story-hugs" aria-label="Suprantu tave: ${story.hugs}">${HEART_ICON}${story.hugs}</span>
       </p>
-      <p class="story-text">${escapeHtml(story.text)}</p>
+${story.sensitive ? STORY_HELP : ""}      <p class="story-text">${escapeHtml(story.text)}</p>
       <a class="back-link empty-link" href="/istorijos">← Grįžti į Nuogą Sielą</a>
     </main>
   </body>

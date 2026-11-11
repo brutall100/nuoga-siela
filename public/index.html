@@ -494,7 +494,18 @@
               <span class="hotline-number">8 800 28888</span>
               <span class="hotline-note" data-i18n="sos.youthNote">jaunimui, visą parą</span>
             </a>
+            <a class="hotline hotline-emergency" href="tel:112">
+              <span class="hotline-name" data-i18n="sos.emergency">Skubi pagalba</span>
+              <span class="hotline-number">112</span>
+              <span class="hotline-note" data-i18n="sos.emergencyNote">
+                jei gresia pavojus tavo ar kito gyvybei
+              </span>
+            </a>
           </div>
+          <p class="muted sos-disclaimer" data-i18n="sos.disclaimer">
+            Nuoga Siela — vieta išsilieti, bet ne psichologinė ar medicininė pagalba. Linijose
+            atsiliepia apmokyti žmonės.
+          </p>
           <div class="breathe-block">
             <h2 data-i18n="sos.breatheTitle">Pakvėpuokim kartu</h2>
             <div class="breathe-stage">
@@ -802,6 +813,37 @@
               </svg>
               <span data-i18n="set.supportBtn">Pavaišinti kava</span>
             </a>
+          </div>
+
+          <div class="panel recovery">
+            <h2 data-i18n="set.keyTitle">Trynimo raktas</h2>
+            <p class="muted" data-i18n="set.keyDesc">
+              Šis raktas — vienintelis ryšys su tavo tekstais. Išsisaugok jį, jei norėsi ištrinti
+              savo istorijas iš kito įrenginio ar išvalius naršyklę. Niekam jo nerodyk.
+            </p>
+            <button type="button" class="btn btn-calm" id="btn-key-show" data-i18n="set.keyShow">
+              Rodyti mano raktą
+            </button>
+            <div class="key-box" id="key-box" hidden>
+              <code class="key-value" id="key-value"></code>
+              <button type="button" class="btn btn-calm" id="btn-key-copy" data-i18n="set.keyCopy">
+                Kopijuoti
+              </button>
+            </div>
+            <form class="key-delete" id="key-delete-form">
+              <label for="key-input" data-i18n="set.keyInput">Turi raktą iš kito įrenginio?</label>
+              <input
+                class="text-input"
+                id="key-input"
+                autocomplete="off"
+                spellcheck="false"
+                data-i18n-placeholder="set.keyPlaceholder"
+                placeholder="Įklijuok raktą"
+              >
+              <button type="submit" class="btn btn-danger" data-i18n="set.keyDeleteBtn">
+                Ištrinti tekstus pagal raktą
+              </button>
+            </form>
           </div>
 
           <div class="setting-danger">
@@ -1140,6 +1182,10 @@
           <a class="hotline compact" href="tel:880028888">
             <span class="hotline-name" data-i18n="sos.youth">Jaunimo linija</span>
             <span class="hotline-number">8 800 28888</span>
+          </a>
+          <a class="hotline compact" href="tel:112">
+            <span class="hotline-name" data-i18n="sos.emergency">Skubi pagalba</span>
+            <span class="hotline-number">112</span>
           </a>
           <button
             type="button"

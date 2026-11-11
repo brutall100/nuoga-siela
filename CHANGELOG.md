@@ -4,6 +4,18 @@ Visi pastebimi projekto pakeitimai bus fiksuojami šiame faile.
 
 Formatas paremtas [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [v3.13] — 2026-11-11
+
+- **Krizės tekstai sraute ir istorijose suskleisti:** „Šiame tekste — apie norą nebegyventi ar save
+  žaloti…“ + „Rodyti tekstą“ + „Ir man dabar sunku →“ (į SOS). Skaitytojas pats renkasi, ar dabar
+  skaityti; autorius savo tekstą mato iškart. `PublicPost.sensitive` skaičiuojamas rodant
+  (`detectCrisis()`), ne saugomas. SSR istorijos puslapyje — pagalbos linijos prieš tekstą.
+- **SOS:** pridėta 112 („jei gresia pavojus tavo ar kito gyvybei“) ir sakinys, kad Nuoga Siela — ne
+  psichologinė ar medicininė pagalba; 112 ir krizės lape po paskelbimo.
+- **Trynimo raktas** nustatymuose: „Rodyti mano raktą“ (įrenginio kodas, kopijuoti) ir „Ištrinti
+  tekstus pagal raktą“ — istorijas galima ištrinti ir pametus telefoną ar išvalius naršyklę.
+  Naudojamas tas pats `POST /api/mine/delete` su kitu `X-Device`; serveris vis tiek mato tik hash'ą.
+
 ## [v3.12] — 2026-11-11
 
 - **Moderacija (Play naudotojų turinio politika):** `/admin` puslapis savininkui — apskųsti ir

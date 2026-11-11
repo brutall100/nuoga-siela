@@ -2812,3 +2812,79 @@ h2 {
   gap: 8px;
   margin-top: 10px;
 }
+
+/* ---------- Krizės tekstai, 112, trynimo raktas (v3.13) ---------- */
+.sensitive-cover {
+  display: grid;
+  gap: 10px;
+  justify-items: start;
+  margin: 6px 0 4px;
+  padding: 14px 16px;
+  border: 1px dashed var(--line-tile);
+  border-radius: 14px;
+  background: var(--tile);
+}
+.sensitive-cover p {
+  margin: 0;
+  color: var(--text-soft);
+  font-size: 14.5px;
+  line-height: 1.6;
+}
+.sensitive-cover .btn {
+  min-height: 40px;
+}
+.hotline-emergency .hotline-number {
+  color: var(--text-strong);
+}
+.sos-disclaimer {
+  margin: -12px 0 24px;
+  font-size: 13.5px;
+}
+.story-help {
+  margin: 0 0 18px;
+  padding: 12px 16px;
+  border: 1px dashed var(--line-tile);
+  border-radius: 14px;
+  background: var(--tile);
+}
+.story-help p {
+  margin: 0;
+  color: var(--text-soft);
+  font-size: 14.5px;
+  line-height: 1.6;
+}
+.story-help a {
+  color: var(--accent-text);
+}
+.recovery .btn,
+.key-delete .btn {
+  margin-top: 4px;
+}
+.key-box {
+  display: grid;
+  gap: 8px;
+  margin-top: 8px;
+}
+.key-box[hidden] {
+  display: none;
+}
+.key-value {
+  display: block;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--tile);
+  border: 1px solid var(--line-tile);
+  color: var(--text-strong);
+  font-size: 12.5px;
+  word-break: break-all;
+  user-select: all;
+}
+.key-delete {
+  display: grid;
+  gap: 8px;
+  margin-top: 18px;
+}
+.key-delete label {
+  color: var(--text-dim);
+  font-size: 14px;
+}

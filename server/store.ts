@@ -7,7 +7,7 @@
 //    istorija, kuri tampa matoma tik srauto tekstui išnykus (publishAt). Srauto
 //    įrašas vis tiek ištrinamas po 24 val. — tai autoriaus sprendimas palikti tekstą.
 
-import { type Emotion, EMOTIONS } from "./filter.ts";
+import { detectCrisis, type Emotion, EMOTIONS } from "./filter.ts";
 
 export const POST_TTL_MS = Number(Deno.env.get("POST_TTL_MS") ?? 24 * 60 * 60 * 1000);
 export const RATE_LIMIT_PER_HOUR = 5;
@@ -54,6 +54,9 @@ export interface PublicPost {
   hugs: number;
   createdAt: number;
   expiresAt: number;
+  // Tekstas apie norą nebegyventi / savęs žalojimą — klientas jį rodo suskleistą su pagalbos
+  // nuoroda (skaitantiems tai gali būti sunku). Skaičiuojama rodant, ne saugoma.
+  sensitive: boolean;
 }
 
 let kvPromise: Promise<Deno.Kv> | null = null;
@@ -98,6 +101,7 @@ function toPublic(p: Post): PublicPost {
     hugs: p.hugs,
     createdAt: p.createdAt,
     expiresAt: p.expiresAt,
+    sensitive: detectCrisis(p.text),
   };
 }
 

@@ -160,6 +160,26 @@
       "confirm.terms":
         "Prieš pirmą paskelbimą: čia negalima skelbti vardų, kontaktų, grasinimų ar savižudybės būdų. Pažeidžiantys tekstai ištrinami. Visos taisyklės — nuogasiela.lt/taisykles. Sutinki?",
       "set.termsLink": "Naudojimo taisyklės →",
+      "card.sensitive":
+        "Šiame tekste — apie norą nebegyventi ar save žaloti. Skaityk, tik jei dabar jautiesi pakankamai stipriai.",
+      "card.show": "Rodyti tekstą",
+      "card.help": "Ir man dabar sunku →",
+      "sos.emergency": "Skubi pagalba",
+      "sos.emergencyNote": "jei gresia pavojus tavo ar kito gyvybei",
+      "sos.disclaimer":
+        "Nuoga Siela — vieta išsilieti, bet ne psichologinė ar medicininė pagalba. Linijose atsiliepia apmokyti žmonės.",
+      "set.keyTitle": "Trynimo raktas",
+      "set.keyDesc":
+        "Šis raktas — vienintelis ryšys su tavo tekstais. Išsisaugok jį, jei norėsi ištrinti savo istorijas iš kito įrenginio ar išvalius naršyklę. Niekam jo nerodyk.",
+      "set.keyShow": "Rodyti mano raktą",
+      "set.keyCopy": "Kopijuoti",
+      "set.keyInput": "Turi raktą iš kito įrenginio?",
+      "set.keyPlaceholder": "Įklijuok raktą",
+      "set.keyDeleteBtn": "Ištrinti tekstus pagal raktą",
+      "toast.keyCopied": "Raktas nukopijuotas. Laikyk jį saugiai.",
+      "toast.keyDeleted": "Ištrinta tekstų: {n}.",
+      "toast.keyNothing": "Su šiuo raktu tekstų nerasta.",
+      "confirm.keyDelete": "Ištrinti visus su šiuo raktu paskelbtus tekstus? To atšaukti negalima.",
       "confirm.report": "Pranešti apie šį tekstą? Po kelių pranešimų jis dings.",
       "confirm.delete":
         "Ištrinti visus tavo paleistus tekstus, emocijų kalendorių ir įrenginio žymę? To atšaukti nebus galima.",
@@ -351,6 +371,26 @@
       "confirm.terms":
         "Before your first post: no names, contacts, threats or suicide methods here. Texts that break the rules are deleted. Full terms — nuogasiela.lt/terms. Do you agree?",
       "set.termsLink": "Terms of use →",
+      "card.sensitive":
+        "This text is about not wanting to live or self-harm. Read it only if you feel strong enough right now.",
+      "card.show": "Show text",
+      "card.help": "I'm struggling too →",
+      "sos.emergency": "Emergency",
+      "sos.emergencyNote": "if your life or someone else's is in danger",
+      "sos.disclaimer":
+        "Nuoga Siela is a place to let it out, not psychological or medical help. Trained people answer these lines.",
+      "set.keyTitle": "Deletion key",
+      "set.keyDesc":
+        "This key is the only link to your texts. Save it if you want to delete your stories from another device or after clearing the browser. Don't show it to anyone.",
+      "set.keyShow": "Show my key",
+      "set.keyCopy": "Copy",
+      "set.keyInput": "Have a key from another device?",
+      "set.keyPlaceholder": "Paste the key",
+      "set.keyDeleteBtn": "Delete texts with this key",
+      "toast.keyCopied": "Key copied. Keep it safe.",
+      "toast.keyDeleted": "Texts deleted: {n}.",
+      "toast.keyNothing": "No texts found for this key.",
+      "confirm.keyDelete": "Delete all texts posted with this key? This can't be undone.",
       "confirm.report": "Report this text? After a few reports it will disappear.",
       "confirm.delete":
         "Delete all your released texts, your mood calendar and your device marker? This cannot be undone.",
