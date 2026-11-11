@@ -4,6 +4,20 @@ Visi pastebimi projekto pakeitimai bus fiksuojami šiame faile.
 
 Formatas paremtas [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [v3.12] — 2026-11-11
+
+- **Moderacija (Play naudotojų turinio politika):** `/admin` puslapis savininkui — apskųsti ir
+  paslėpti tekstai, mygtukai „Grąžinti“ / „Paslėpti“ / „Ištrinti“. Veikia tik nustačius
+  `ADMIN_TOKEN` (≥16 ženklų) Deno Deploy aplinkoje; be jo `/api/admin/*` grąžina 404. Matomi tik
+  vieši duomenys, niekada `deviceHash`. Grąžinant pranešimai nunulinami, bet tie patys įrenginiai to
+  paties teksto antrą kartą paslėpti negali — tai atitaiso netikrus masinius pranešimus.
+- **Naudojimo taisyklės:** `/taisykles` (LT) ir `/terms` (EN) — kas leidžiama, ko ne (vardai,
+  kontaktai, grasinimai, neapykanta, savižudybės būdai, seksualinis turinys), kaip veikia
+  moderacija, „tai nėra profesionali pagalba“, 112. Sitemap ir nustatymų nuoroda.
+- Prieš pirmą paskelbimą — vienkartinis sutikimas su taisyklėmis (`ns_terms`).
+- Praneštas tekstas pranešusiajam nebe rodomas (`ns_reported`), net jei dar nepaslėptas.
+- `robots.txt`: `Disallow: /admin`, `/api/`.
+
 ## [v3.11] — 2026-11-11
 
 - **Bendros ribos be identifikatoriaus** (`checkGlobalRate()`): įrenginio kodą kuria pats klientas,

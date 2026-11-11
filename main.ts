@@ -326,7 +326,7 @@ interface SitemapEntry {
 
 // Ta pati data, kuri jau rodoma pačiuose puslapiuose ("Paskutinį kartą
 // atnaujinta:") — nekuriame naujos, tik pakartojame jau tikslią.
-const LEGAL_PAGES_UPDATED = "2026-10-29";
+const LEGAL_PAGES_UPDATED = "2026-11-11";
 
 const STATIC_SITEMAP_ENTRIES: SitemapEntry[] = [
   { path: "/", changefreq: "daily", priority: "1.0" },
@@ -357,6 +357,28 @@ const STATIC_SITEMAP_ENTRIES: SitemapEntry[] = [
       { hreflang: "en", href: `${SITE_URL}/privacy` },
       { hreflang: "lt", href: `${SITE_URL}/privatumas` },
       { hreflang: "x-default", href: `${SITE_URL}/privatumas` },
+    ],
+  },
+  {
+    path: "/taisykles",
+    changefreq: "monthly",
+    priority: "0.3",
+    lastmod: LEGAL_PAGES_UPDATED,
+    alternates: [
+      { hreflang: "lt", href: `${SITE_URL}/taisykles` },
+      { hreflang: "en", href: `${SITE_URL}/terms` },
+      { hreflang: "x-default", href: `${SITE_URL}/taisykles` },
+    ],
+  },
+  {
+    path: "/terms",
+    changefreq: "monthly",
+    priority: "0.3",
+    lastmod: LEGAL_PAGES_UPDATED,
+    alternates: [
+      { hreflang: "en", href: `${SITE_URL}/terms` },
+      { hreflang: "lt", href: `${SITE_URL}/taisykles` },
+      { hreflang: "x-default", href: `${SITE_URL}/taisykles` },
     ],
   },
 ];
@@ -449,6 +471,9 @@ const REVALIDATE_EXT = new Set([".html", ".js", ".css", ".webmanifest", ".json"]
 const CLEAN_PAGES: Record<string, string> = {
   "/privatumas": "/privatumas.html",
   "/privacy": "/privacy.html",
+  "/taisykles": "/taisykles.html",
+  "/terms": "/terms.html",
+  "/admin": "/admin.html",
 };
 const CLEAN_REDIRECTS = new Map(Object.entries(CLEAN_PAGES).map(([clean, file]) => [file, clean]));
 

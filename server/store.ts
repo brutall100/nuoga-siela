@@ -570,3 +570,53 @@ export async function listFeedTimes(): Promise<number[]> {
   }
   return out;
 }
+
+// ---- Moderacija (tik savininkui, ADMIN_TOKEN — žr. server/api.ts) ----
+// Administratorius mato tik tai, kas ir taip vieša (tekstas, emocija, skaičiai) — niekada
+// deviceHash. Reikalinga Play naudotojų turinio politikai ir netikrų pranešimų atitaisymui.
+
+export interface ModerationItem extends PublicPost {
+  reports: number;
+  hidden: boolean;
+}
+
+const MODERATION_SCAN_LIMIT = 10000;
+
+// Tekstai, apie kuriuos pranešta arba kurie paslėpti — daugiausia pranešimų pirmi.
+export async function listModeration(): Promise<ModerationItem[]> {
+  const kv = await getKv();
+  const out: ModerationItem[] = [];
+  for (const prefix of ["post", "story"]) {
+    for await (
+      const entry of kv.list<Post>({ prefix: [prefix] }, { limit: MODERATION_SCAN_LIMIT })
+    ) {
+      const p = entry.value;
+      if (p.reports > 0 || p.hidden) {
+        out.push({ ...toPublic(p), reports: p.reports, hidden: p.hidden });
+      }
+    }
+  }
+  return out.sort((a, b) => Number(a.hidden) - Number(b.hidden) || b.reports - a.reports);
+}
+
+// Paslėpti arba grąžinti. Grąžinant pranešimai nunulinami, bet jų žymės lieka — tie patys
+// įrenginiai to paties teksto antrą kartą paslėpti negali. Likęs TTL išsaugomas (updatePost).
+export async function moderatePost(id: string, hide: boolean): Promise<boolean> {
+  const post = await updatePost(id, (p) => ({ ...p, hidden: hide, reports: hide ? p.reports : 0 }));
+  if (!post) return false;
+  if (post.keptAs) await updatePost(post.keptAs, (s) => ({ ...s, hidden: hide }));
+  return true;
+}
+
+// Ištrinti visam laikui (ir laukiančią istoriją, į kurią srauto tekstas turėjo persikelti).
+export async function moderateDelete(id: string): Promise<boolean> {
+  const kv = await getKv();
+  const entry = await findPost(kv, id);
+  const p = entry.value;
+  if (!p) return false;
+  const op = kv.atomic()
+    .delete([keyRoot(p.kind), id])
+    .delete(["byDevice", p.deviceHash, id]);
+  if (p.keptAs) op.delete(["story", p.keptAs]).delete(["byDevice", p.deviceHash, p.keptAs]);
+  return (await op.commit()).ok;
+}
