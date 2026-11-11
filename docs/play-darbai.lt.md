@@ -12,14 +12,13 @@
 ## 1. Kodas
 
 - [ ] `git pull` (`main` šakoje).
-- [ ] `deno task test` — turi būti žalia (37+ testai).
+- [ ] `deno task test` — turi būti žalia (38+ testai).
 
 ## 2. Deno Deploy
 
-- [ ] `DEVICE_SALT` — jo nebuvo; nuo v3.17 galima saugiai įvesti (seni vartotojai perkeliami
-      automatiškai). Sugeneruok (`openssl rand -hex 32`), įvesk, išsaugok Bitwarden. **Įvedus
-      niekada nebekeisk.**
-- [ ] Ten pat turi būti `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `ADMIN_TOKEN`.
+- [x] `DEVICE_SALT` įvestas 2026-11-11 (išsaugotas Bitwarden). **Niekada nebekeisk ir neištrink** —
+      seni vartotojai perkeliami tik nuo senos numatytosios druskos.
+- [x] Ten pat yra `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `ADMIN_TOKEN`.
 
 ## 3. Android projektas (Bubblewrap / TWA)
 

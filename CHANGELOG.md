@@ -4,6 +4,10 @@ Visi pastebimi projekto pakeitimai bus fiksuojami šiame faile.
 
 Formatas paremtas [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [v3.18] — 2026-11-11
+
+- `docs/play-darbai.lt.md`: `DEVICE_SALT` ir Deno Deploy kintamieji pažymėti kaip nustatyti.
+
 ## [v3.17] — 2026-11-11
 
 - **Saugus `DEVICE_SALT` įvedimas:** produkcijoje druska nebuvo nustatyta, todėl hash'ai skaičiuoti
