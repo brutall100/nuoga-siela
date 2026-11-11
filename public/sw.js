@@ -96,6 +96,8 @@ self.addEventListener("push", (e) => {
     self.registration.showNotification(data.title || "Nuoga Siela", {
       body: data.body || "",
       icon: "/icons/icon-512.png",
+      // Android būsenos juostai — baltas ženklo siluetas (spalvota ikona ten virstų baltu kvadratu).
+      badge: "/icons/badge-96.png",
       tag: "srautas",
       renotify: true,
       data: {

@@ -27,7 +27,9 @@
 - [ ] `bubblewrap update`, tada `bubblewrap build` → naujas `.aab`.
 - [ ] Patikrink, ar pasirašymo rakto SHA-256 yra `public/.well-known/assetlinks.json` (dabar ten du
       piršto atspaudai). Jei programėlėje matosi naršyklės adreso juosta — atspaudas nesutampa.
-- [ ] (Nebūtina) Vienspalvė pranešimų ikona — kitaip būsenos juostoje rodomas bendras ženkliukas.
+- [ ] (Nebūtina) Vienspalvė pranešimų ikona: `twa-manifest.json` →
+      `"monochromeIconUrl": "https://nuogasiela.lt/icons/badge-96.png"` (svetainės pusė — `sw.js`
+      `badge` — jau padaryta v3.19).
 
 ## 4. Google Play Console
 
