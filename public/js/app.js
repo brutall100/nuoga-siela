@@ -592,6 +592,30 @@
     });
     card.append(emo, text, expand);
 
+    // Krizės tekstas — suskleistas: skaitytojas pats nusprendžia, ar dabar nori jį skaityti.
+    if (post.sensitive && !mine) {
+      text.hidden = true;
+      const cover = document.createElement("div");
+      cover.className = "sensitive-cover";
+      const note = document.createElement("p");
+      note.textContent = window.t("card.sensitive");
+      const show = document.createElement("button");
+      show.type = "button";
+      show.className = "btn btn-calm";
+      show.textContent = window.t("card.show");
+      const help = document.createElement("a");
+      help.className = "empty-link";
+      help.href = "/sos";
+      help.textContent = window.t("card.help");
+      show.addEventListener("click", () => {
+        cover.remove();
+        text.hidden = false;
+        expand.hidden = text.scrollHeight <= text.clientHeight + 1;
+      });
+      cover.append(note, show, help);
+      text.before(cover);
+    }
+
     const foot = document.createElement("div");
     foot.className = "card-foot";
 
@@ -703,7 +727,7 @@
   // „Skaityti toliau" — tik toms kortelėms, kurių tekstas netelpa į keturias eilutes.
   function markClamped(container) {
     requestAnimationFrame(() => {
-      container.querySelectorAll(".card-text.is-clamped").forEach((text) => {
+      container.querySelectorAll(".card-text.is-clamped:not([hidden])").forEach((text) => {
         const expand = text.nextElementSibling;
         expand.hidden = text.scrollHeight <= text.clientHeight + 1;
       });
@@ -1045,6 +1069,45 @@
     if (active === "kalendorius") window.mood.render();
   });
 
+  // ---------- Trynimo raktas ----------
+  // Įrenginio kodas — vienintelis ryšys su tavo tekstais. Parodomas tik paspaudus; juo galima
+  // ištrinti istorijas iš kito įrenginio ar išvalius naršyklę (serveris mato tik jo hash'ą).
+
+  $("#btn-key-show").addEventListener("click", () => {
+    $("#key-value").textContent = deviceId;
+    $("#key-box").hidden = false;
+    $("#btn-key-show").hidden = true;
+  });
+
+  $("#btn-key-copy").addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(deviceId);
+      toast(window.t("toast.keyCopied"), "calm");
+    } catch {
+      /* naršyklė neleido — raktas matomas ekrane */
+    }
+  });
+
+  $("#key-delete-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const key = $("#key-input").value.trim();
+    if (key.length < 8 || key.length > 64) return nudge($("#key-input"));
+    if (!confirm(window.t("confirm.keyDelete"))) return;
+    try {
+      const data = await api("/api/mine/delete", { method: "POST", headers: { "x-device": key } });
+      if (!data.ok) return toast(data.reason || window.t("toast.serverFail"), "warn");
+      $("#key-input").value = "";
+      toast(
+        data.deleted > 0
+          ? window.t("toast.keyDeleted", { n: data.deleted })
+          : window.t("toast.keyNothing"),
+        "calm",
+      );
+    } catch {
+      toast(window.t("toast.serverFail"), "warn");
+    }
+  });
+
   $("#btn-delete-data").addEventListener("click", async () => {
     if (!confirm(window.t("confirm.delete"))) {
       return;
@@ -1063,6 +1126,8 @@
         window.mood.clear();
         deviceId = crypto.randomUUID();
         localStorage.setItem(DEVICE_KEY, deviceId);
+        $("#key-box").hidden = true;
+        $("#btn-key-show").hidden = false;
         hugged.clear();
         mineCount = 0;
         toast(window.t("toast.deleted"), "calm");
